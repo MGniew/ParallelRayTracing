@@ -11,6 +11,26 @@ public:
                        float* startPoint,
                        float* directionVector) = 0; //returns true if hit, cordinates in param
     virtual float* getNormalVector(float* crossPoint) = 0;
+
+
+
+    float getSpecShin();
+    void setSpecShin(float value);
+
+    float *getSpec();
+    void setSpec(float *value);
+
+    float *getDif();
+    void setDif(float *value);
+
+    float *getAmb();
+    void setAmb(float *value);
+
+private:
+    float* amb;
+    float* dif;
+    float* spec;
+    float specShin;
 };
 
 #endif // SCENEOBJECT_H

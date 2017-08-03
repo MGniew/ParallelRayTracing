@@ -2,25 +2,13 @@
 
 Light::Light()
 {
-    pos = new float[3];
-    pos[0] = 0.0;
-    pos[0] = 0.0;
-    pos[0] = 10.0;
-    amb = new float[3];
-    amb[0] = 0.1;
-    amb[1] = 0.1;
-    amb[2] = 0.1;
-    dif = new float[3];
-    dif[0] = 1.0;
-    dif[1] = 1.0;
-    dif[2] = 1.0;
-    spec = new float[3];
-    spec[0] = 1.0;
-    spec[1] = 1.0;
-    spec[2] = 1.0;
+    pos = new Vector3<float>(0.0, 0.0, 10.0);
+    amb = new Vector3<float>(0.1, 0.1, 0.1);
+    dif = new Vector3<float>(1.0, 1.0, 1.0);
+    spec = new Vector3<float>(1.0, 1.0, 1.0);
 }
 
-Light::Light(float *pos, float *amb, float *dif, float *spec)
+Light::Light(Vector3<float>* pos, Vector3<float>* amb, Vector3<float>* dif, Vector3<float>* spec)
 {
     this->pos = pos;
     this->amb = amb;
@@ -38,48 +26,48 @@ Light::~Light()
 
 void Light::setPos(float x, float y, float z)
 {
-    pos[0] = x;
-    pos[1] = y;
-    pos[2] = z;
+    pos->x = x;
+    pos->y = y;
+    pos->z = z;
 }
 
 void Light::setAmb(float r, float g, float b)
 {
-    amb[0] = r;
-    amb[1] = g;
-    amb[2] = b;
+    amb->x = r;
+    amb->y = g;
+    amb->z = b;
 }
 
 void Light::setDif(float r, float g, float b)
 {
-    dif[0] = r;
-    dif[1] = g;
-    dif[2] = b;
+    dif->x = r;
+    dif->y = g;
+    dif->z = b;
 }
 
 void Light::setSpec(float r, float g, float b)
 {
-    spec[0] = r;
-    spec[1] = g;
-    spec[2] = b;
+    spec->x = r;
+    spec->y = g;
+    spec->z = b;
 }
 
-float *Light::getSpec()
+Vector3<float>* Light::getSpec()
 {
     return spec;
 }
 
-float *Light::getDif()
+Vector3<float>* Light::getDif()
 {
     return dif;
 }
 
-float *Light::getAmb()
+Vector3<float>* Light::getAmb()
 {
     return amb;
 }
 
-float *Light::getPos()
+Vector3<float>* Light::getPos()
 {
     return pos;
 }

@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include "vector3.h" //temporary tests only
+#include <iostream>
 
 int main(int argc, char *argv[])
 {

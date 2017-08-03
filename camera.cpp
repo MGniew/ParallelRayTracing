@@ -2,7 +2,7 @@
 
 Camera* Camera::instance = NULL;
 
-Camera::Camera(float *eye, float *look, float *up, float zNear, float zFar, int pixWidth, int pixHeight)
+Camera::Camera(Vector3<float>* eye, Vector3<float>* look, Vector3<float>* up, float zNear, float zFar, int pixWidth, int pixHeight)
 {
     this->zNear = zNear;
     this->zFar = zFar;
@@ -65,32 +65,32 @@ void Camera::setPixHeight(int value)
     pixHeight = value;
 }
 
-float *Camera::getEye()
+Vector3<float>* Camera::getEye()
 {
     return eye;
 }
 
-void Camera::setEye(float *value)
+void Camera::setEye(Vector3<float>* value)
 {
     eye = value;
 }
 
-float *Camera::getLook()
+Vector3<float>* Camera::getLook()
 {
     return look;
 }
 
-void Camera::setLook(float *value)
+void Camera::setLook(Vector3<float>* value)
 {
     look = value;
 }
 
-float *Camera::getUp()
+Vector3<float>* Camera::getUp()
 {
     return up;
 }
 
-void Camera::setUp(float *value)
+void Camera::setUp(Vector3<float>* value)
 {
     up = value;
 }

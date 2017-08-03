@@ -10,17 +10,17 @@ Sphere::~Sphere()
 
 }
 
-bool Sphere::trace(float* rossPoint, float* startPoint, float* directionVector) {
+bool Sphere::trace(Vector3<float>* crossPoint, Vector3<float>* startPoint, Vector3<float>* directionVector) {
 
      return false;
 }
 
-float* Sphere::getNormalVector(float* crossPoint) {
+Vector3<float>* Sphere::getNormalVector(Vector3<float>* crossPoint) {
 
     return nullptr;
 }
 
-float* Sphere::getPixelColor(float* normalVector) {
+Vector3<float>* Sphere::getPixelColor(Vector3<float>* normalVector) {
 
     return nullptr;
 }

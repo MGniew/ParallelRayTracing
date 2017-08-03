@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include "light.h"
-#include "sceneobject.h"
+class SceneObject; //hack circural includes - real include in .cpp
 
 class Scene
 {

@@ -1,4 +1,7 @@
 #include "scene.h"
+#include "sceneobject.h"
+
+Scene* Scene::instance = nullptr;
 
 Scene::Scene()
 {
@@ -9,6 +12,11 @@ Scene::Scene()
 Scene::~Scene()
 {
     delete backgroundColor;
+}
+
+Scene *Scene::getInstance()
+{
+    return instance;
 }
 
 Vector3<float>* Scene::getBackgroundColor()

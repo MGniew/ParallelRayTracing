@@ -10,7 +10,7 @@ SceneObject::~SceneObject()
 
 }
 
-float SceneObject::getSpecShin() const
+float SceneObject::getSpecShin()
 {
     return specShin;
 }
@@ -20,32 +20,38 @@ void SceneObject::setSpecShin(float value)
     specShin = value;
 }
 
-float *SceneObject::getSpec() const
+Vector3<float>* SceneObject::getSpec()
 {
     return spec;
 }
 
-void SceneObject::setSpec(float *value)
+void SceneObject::setSpec(float r, float g, float b)
 {
-    spec = value;
+    spec->x = r;
+    spec->y = g;
+    spec->z = b;
 }
 
-float *SceneObject::getDif() const
+Vector3<float>* SceneObject::getDif()
 {
     return dif;
 }
 
-void SceneObject::setDif(float *value)
+void SceneObject::setDif(float r, float g, float b)
 {
-    dif = value;
+    dif->x = r;
+    dif->y = g;
+    dif->z = b;
 }
 
-float *SceneObject::getAmb() const
+Vector3<float>* SceneObject::getAmb()
 {
     return amb;
 }
 
-void SceneObject::setAmb(float *value)
+void SceneObject::setAmb(float r, float g, float b)
 {
-    amb = value;
+    amb->x = r;
+    amb->y = g;
+    amb->z = b;
 }

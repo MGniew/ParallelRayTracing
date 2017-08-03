@@ -1,6 +1,6 @@
 #include "camera.h"
 
-Camera* Camera::instance = NULL;
+Camera* Camera::instance = nullptr;
 
 Camera::Camera(Vector3<float>* eye, Vector3<float>* look, Vector3<float>* up, float zNear, float zFar, int pixWidth, int pixHeight)
 {

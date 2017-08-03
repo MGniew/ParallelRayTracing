@@ -44,7 +44,8 @@ HEADERS += \
     triangle.h \
     raytracer.h \
     light.h \
-    camera.h
+    camera.h \
+    vector3.h
 
 FORMS += \
         mainwindow.ui

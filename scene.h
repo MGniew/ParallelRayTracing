@@ -14,11 +14,13 @@ public:
     Light** Lights;
     SceneObject** sceneObjects;
     int*** pixels; // HxW*3
-    int* backgroundColor;
+    Vector3<float>* backgroundColor;
 
     static Scene* getInstance();
     void loadScene (char* file);
 
+    Vector3<float>* getBackgroundColor();
+    void setBackgroundColor(float r, float g, float b);
 };
 
 #endif // SCENE_H

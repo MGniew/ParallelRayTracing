@@ -10,16 +10,14 @@ Triangle::~Triangle()
 
 }
 
-bool Triangle::trace(float* crossPoint, float* startPoint, float* directionVector) {
+bool Triangle::trace(Vector3<float>* crossPoint, Vector3<float>* startPoint, Vector3<float>* directionVector) {
     return false;
 }
 
-float* Triangle::getNormalVector(float* crossPoint) {
-
+Vector3<float>* Triangle::getNormalVector(Vector3<float>* crossPoint) {
     return nullptr;
 }
 
-float* Triangle::getPixelColor(float* normalVector) {
-
+Vector3<float>* Triangle::getPixelColor(Vector3<float>* normalVector) {
     return nullptr;
 }

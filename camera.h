@@ -19,6 +19,14 @@ public:
 
     static Camera* instance;
     static Camera* getInstance();
+    static Camera* getInstance(Vector3<float>* eye,
+                   Vector3<float>* look,
+                   Vector3<float>* up,
+                   float zNear,
+                   float zFar,
+                   int pixWidth,
+                   int pixHeight,
+                   float povy);
 
     Vector3<float> getWorldPosOfPixel(int x, int y);
 

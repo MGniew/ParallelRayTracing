@@ -5,9 +5,22 @@ SceneObject::SceneObject()
 
 }
 
+SceneObject::SceneObject(Vector3<float>* amb,
+                         Vector3<float>* dif,
+                         Vector3<float>* spec,
+                         float specShin){
+    this->amb = amb;
+    this->dif = dif;
+    this->spec = spec;
+    this->specShin = specShin;
+
+}
+
 SceneObject::~SceneObject()
 {
-
+    delete spec;
+    delete dif;
+    delete amb;
 }
 
 float SceneObject::getSpecShin()

@@ -4,8 +4,10 @@
 #include "light.h"
 #include "camera.h"
 #include "raytracer.h"
+#include <iostream>
 
 class SceneObject; //hack circural includes - real include in .cpp
+class Sphere;
 
 class Scene
 {
@@ -16,7 +18,7 @@ public:
     static Scene* instance;
     Light** Lights;
     SceneObject** sceneObjects;
-    int*** pixels; // HxW*3
+    Vector3<float>*** pixels; // HxW*3
     Vector3<float>* backgroundColor;
     Vector3<float>* globalAmbient;
 

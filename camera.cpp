@@ -25,6 +25,29 @@ Camera::Camera(Vector3<float>* eye,
     worldWidth = aspect * worldHeight;
 }
 
+Camera::~Camera()
+{
+    delete eye;
+    delete up;
+    delete look;
+}
+
+
+Camera *Camera::getInstance(Vector3<float>* eye,
+               Vector3<float>* look,
+               Vector3<float>* up,
+               float zNear,
+               float zFar,
+               int pixWidth,
+               int pixHeight,
+               float povy)
+{
+    if (instance == nullptr) {
+        instance = new Camera(eye, look, up, zNear, zFar, pixWidth, pixHeight, povy);
+    }
+    return instance;
+}
+
 Camera *Camera::getInstance()
 {
     return instance;

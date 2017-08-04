@@ -7,7 +7,12 @@
 class Sphere : public SceneObject
 {
 public:
-    Sphere();
+    Sphere(Vector3<float>* amb,
+           Vector3<float>* dif,
+           Vector3<float>* spec,
+           float specShin,
+           Vector3<float>* pos,
+           float radius);
     ~Sphere();
     Vector3<float> getLocalColor(Vector3<float>& normalVector,
                                          Vector3<float>& crossPoint,
@@ -18,6 +23,7 @@ public:
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
 
     float radius;
+    Vector3<float>* pos;
 };
 
 #endif // SPHERE_H

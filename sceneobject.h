@@ -8,7 +8,8 @@ class SceneObject
 {
 public:
     SceneObject();
-    ~SceneObject();
+    SceneObject(Vector3<float>* amb, Vector3<float>* dif, Vector3<float>* spec, float specShin);
+    virtual ~SceneObject();
     virtual Vector3<float> getLocalColor(Vector3<float>& normalVector,
                                                  Vector3<float>& crossPoint,
                                                  Vector3<float>& observationVector) = 0; //returns RGB, uses Phong model

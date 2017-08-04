@@ -1,7 +1,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <array>
 #include "vector3.h"
 
 class Camera

@@ -55,6 +55,10 @@ public:
         return Vector(y*v.z -  z*v.y, x*v.z - z*v.x, x*v.y - y*v.x);
     }
 
+    Vector3 multiplyByVector(Vector3 &v) {
+        return Vector3(x*v.x, y*v.y, z*v.z);
+    }
+
 
 
 private:

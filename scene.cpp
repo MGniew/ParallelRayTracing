@@ -14,6 +14,18 @@ Scene::~Scene()
     delete backgroundColor;
 }
 
+Vector3<float> *Scene::getGlobalAmbient()
+{
+    return globalAmbient;
+}
+
+void Scene::setGlobalAmbient(float r, float g, float b)
+{
+    backgroundColor->x = r;
+    backgroundColor->y = g;
+    backgroundColor->z = b;
+}
+
 Scene *Scene::getInstance()
 {
     return instance;

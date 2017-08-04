@@ -36,15 +36,40 @@ Vector3<float> Sphere::getNormalVector(Vector3<float>& crossPoint) {
 
     return Vector3<float>(crossPoint.x, crossPoint.y, crossPoint.z);
 }
-//WIP
-Vector3<float> Sphere::getPixelColor(Vector3<float>& normalVector, Vector3<float>& crossPoint) {
 
+//WIP /crosspoint, normalVector, observationVector (ray to object!)
+
+//possible bugs:
+    // - observationVector shlould be normalized and multpily by *-1
+    // normal vector should be normalized
+    // pow??
+    // return statment
+    // TODO::multpile light source
+    // why not now? because Im going forward to implement early beta raytracer
+
+Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
+                                     Vector3<float>& crossPoint,
+                                     Vector3<float>& observationVector) {
+
+    Scene* scene = Scene::getInstance();
     //for now make it work for 1 light source.
-    Vector3<float>* lightPossition = Scene::getInstance()->Lights[0]->pos;
+    Vector3<float>* lightPossition = scene->Lights[0]->pos;
     Vector3<float> lightVector = *lightPossition - crossPoint;
     lightVector.normalize();
     float n_dot_l = lightVector.scalarProduct(normalVector);
     Vector3<float> reflectionVector = normalVector*(2*n_dot_l) - lightVector;
     reflectionVector.normalize();
-    //float v_dot_r = reflectionVector.scalarProduct() // kierunkiem obserwacji
+    float v_dot_r = reflectionVector.scalarProduct(observationVector);
+    if (v_dot_r < 0)
+        v_dot_r = 0;
+
+    if (n_dot_l > 0)
+        return  (dif->multiplyByVector(*scene->Lights[0]->dif))*n_dot_l +
+                spec->multiplyByVector(*scene->Lights[0]->spec)*pow(double(v_dot_r), 20.0) +
+                amb->multiplyByVector(*scene->Lights[0]->amb) +
+                amb->multiplyByVector(*scene->getGlobalAmbient());
+    else
+        return amb->multiplyByVector(*scene->getGlobalAmbient());
+
 }
+

@@ -9,7 +9,9 @@ class SceneObject
 public:
     SceneObject();
     ~SceneObject();
-    virtual Vector3<float> getPixelColor(Vector3<float> &normalVector, Vector3<float> &crossPoint) = 0; //returns RGB, uses Phong model
+    virtual Vector3<float> getLocalColor(Vector3<float>& normalVector,
+                                                 Vector3<float>& crossPoint,
+                                                 Vector3<float>& observationVector) = 0; //returns RGB, uses Phong model
     virtual bool trace(Vector3<float> &crossPoint,
                        Vector3<float> &startPoint,
                        Vector3<float> &directionVector) = 0; //returns true if hit, cordinates in param
@@ -27,7 +29,7 @@ public:
     Vector3<float>* getAmb();
     void setAmb(float r, float g, float b);
 
-private:
+protected:
     Vector3<float>* amb;
     Vector3<float>* dif;
     Vector3<float>* spec;

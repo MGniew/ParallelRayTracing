@@ -2,6 +2,7 @@
 #define CAMERA_H
 
 #include "vector3.h"
+#include <math.h>
 
 class Camera
 {
@@ -12,11 +13,14 @@ public:
            float zNear,
            float zFar,
            int pixWidth,
-           int pixHeight);
+           int pixHeight,
+           float povy);
     ~Camera();
 
     static Camera* instance;
     static Camera* getInstance();
+
+    Vector3<float> getWorldPosOfPixel(int x, int y);
 
     float getZNear();
     void setZNear(float value);
@@ -39,6 +43,9 @@ public:
     Vector3<float>* getUp();
     void setUp(Vector3<float>* value);
 
+    float getPovy();
+    void setPovy(float value);
+
 private:
     Vector3<float>* eye;
     Vector3<float>* look;
@@ -48,6 +55,12 @@ private:
     float zFar;
     int pixWidth;
     int pixHeight;
+    float povy;
+    float aspect;
+    float worldWidth;
+    float worldHeight;
+
+
 };
 
 #endif // CAMERA_H

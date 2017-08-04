@@ -2,6 +2,9 @@
 #define SCENE_H
 
 #include "light.h"
+#include "camera.h"
+#include "raytracer.h"
+
 class SceneObject; //hack circural includes - real include in .cpp
 
 class Scene

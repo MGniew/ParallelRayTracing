@@ -38,13 +38,14 @@ public:
         return Vector3(v*x, v*y, v*z);
     }
 
-    void normalize()
+    Vector3 normalize()
     {
         float d = x*x + y*y + z*z;
         d = sqrt(d);
         x/=d;
         y/=d;
         z/=d;
+        return Vector3(x, y, z);
     }
 
     float scalarProduct(Vector3 &v){
@@ -52,17 +53,12 @@ public:
     }
 
     Vector3 vectorProduct(Vector3 &v) {
-        return Vector(y*v.z -  z*v.y, x*v.z - z*v.x, x*v.y - y*v.x);
+        return Vector3(y*v.z -  z*v.y, x*v.z - z*v.x, x*v.y - y*v.x);
     }
 
     Vector3 multiplyByVector(Vector3 &v) {
         return Vector3(x*v.x, y*v.y, z*v.z);
     }
-
-
-
-private:
-
 
 };
 

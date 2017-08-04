@@ -1,8 +1,14 @@
 #include "sphere.h"
 
-Sphere::Sphere()
+Sphere::Sphere(Vector3<float>* amb,
+               Vector3<float>* dif,
+               Vector3<float>* spec,
+               float specShin,
+               Vector3<float>* pos,
+               float radius) : SceneObject(amb, dif, spec, specShin)
 {
-
+    this->pos = pos;
+    this->radius = radius;
 }
 
 Sphere::~Sphere()

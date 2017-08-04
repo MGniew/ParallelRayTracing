@@ -1,5 +1,8 @@
 #include "glwidget.h"
 
+#include "scene.h"
+#include "camera.h"
+
 GLwidget::GLwidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 
@@ -18,6 +21,24 @@ void GLwidget::initializeGL()
     glEnable(GL_LIGHTING);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
+
+    Camera* camera = Camera::getInstance(new Vector3<float>(0.0, 0.0, -1.0),
+                                         new Vector3<float>(0.0, 0.0, 1.0),
+                                         new Vector3<float>(0.0, 1.0, 0.0),
+                                         1.0,
+                                         10.0,
+                                         400,
+                                         400,
+                                         70.0);
+
+    Scene* scene = Scene::getInstance();
+
+
+
+    delete scene;
+    delete camera;
+
+
 
 }
 

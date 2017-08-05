@@ -7,19 +7,21 @@ Scene* Scene::instance = nullptr;
 Scene::Scene()
 {
     backgroundColor = new Vector3<float>(0.5, 0.5, 0.5);
-    globalAmbient = new Vector3<float>(0.5, 0.5, 0.5);
+    globalAmbient = new Vector3<float>(0.25, 0.15, 0.1);
 
     Lights = new Light*[1];
     Lights[0] = new Light();
+    numOfLights = 1;
     std::cout << "lights are ready" << std::endl;
 
     sceneObjects = new SceneObject*[1];
-    sceneObjects[0] = new Sphere(new Vector3<float>(0.8, 0.8, 0.8),
+    sceneObjects[0] = new Sphere(new Vector3<float>(1.0, 1.0, 1.0),
                                  new Vector3<float>(0.6, 0.7, 0.8),
-                                 new Vector3<float>(1.0, 1.0, 1.0),
+                                 new Vector3<float>(0.8, 0.8, 0.8),
                                  30.0,
-                                 new Vector3<float>(0.0, 0.0, 3.0),
+                                 new Vector3<float>(0.0, 0.0, 5.0),
                                  1.0);
+    numOfObjects = 1;
 
     std::cout << "Objects are ready" << std::endl;
 
@@ -40,9 +42,11 @@ Scene::~Scene()
 
     delete Lights[0];
     delete [] Lights;
+    numOfLights = 0 ;
 
     delete sceneObjects[0];
     delete [] sceneObjects;
+    numOfObjects = 0;
 
     for (int i = 0; i <  Camera::getInstance()->getPixWidth(); i++) {
         for (int j = 0; j <  Camera::getInstance()->getPixHeight(); j++)
@@ -54,6 +58,21 @@ Scene::~Scene()
     instance = nullptr;
     std::cout << "bye scene" << std::endl;
 
+}
+
+int Scene::getNumOfObjects()
+{
+    return numOfObjects;
+}
+
+int Scene::getNumOfLights()
+{
+    return numOfLights;
+}
+
+Vector3<float> ***Scene::getPixels()
+{
+    return pixels;
 }
 
 Vector3<float> *Scene::getGlobalAmbient()

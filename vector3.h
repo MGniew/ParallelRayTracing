@@ -60,6 +60,18 @@ public:
         return Vector3(x*v.x, y*v.y, z*v.z);
     }
 
+    void setValues(type x, type y, type z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+
+    void setValues(const Vector3 &v){
+        x = v.x;
+        y = v.y;
+        z = v.z;
+    }
+
 };
 
 #endif // VECTOR3_H

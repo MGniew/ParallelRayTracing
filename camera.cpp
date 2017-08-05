@@ -1,4 +1,5 @@
 #include "camera.h"
+#include <iostream>
 
 Camera* Camera::instance = nullptr;
 
@@ -19,7 +20,8 @@ Camera::Camera(Vector3<float>* eye,
     this->look = look;
     this->up = up;
     this->povy = povy;
-
+    up->normalize();
+    look->normalize();
     aspect = pixWidth/pixHeight;
     worldHeight = 2*tan(povy/2) * zNear;
     worldWidth = aspect * worldHeight;
@@ -57,10 +59,11 @@ Camera *Camera::getInstance()
 Vector3<float> Camera::getWorldPosOfPixel(int x, int y)
 {
     Vector3<float> screenCenter = *eye + look->normalize()*zNear;
+
     Vector3<float> screenWidthVector = up->vectorProduct(*look).normalize();
-    Vector3<float> screenHeightVector = screenWidthVector.vectorProduct(*look); //change to up vec?
-    Vector3<float> translationVectorX = (screenWidthVector * -(worldWidth/(float)pixWidth)).normalize(); //przeciwny zwrot
-    Vector3<float> translationVectorY = (screenHeightVector * -(worldHeight/(float)pixHeight)).normalize();
+    Vector3<float> screenHeightVector = screenWidthVector.vectorProduct(*look).normalize(); //change to up vec?
+    Vector3<float> translationVectorX = (screenWidthVector.normalize() * -(worldWidth/(float)pixWidth)); //przeciwny zwrot
+    Vector3<float> translationVectorY = (screenHeightVector.normalize() * -(worldHeight/(float)pixHeight));
     Vector3<float> startingPoint = screenCenter + screenWidthVector * (worldWidth/2) +
                                    screenHeightVector * (worldHeight/2);
 

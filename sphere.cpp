@@ -29,9 +29,8 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
      d = b*b - 4*a*c;
 
      if (d<0) return false;
-
+     sqr = sqrt(d);
          if (d>0) {
-            sqr = sqrt(d);
             r1 = (-b - sqr)/(2*a);
             r2 = (-b + sqr)/(2*a);
             if (r1 < 0 && r2 < 0) return false;

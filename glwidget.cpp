@@ -20,14 +20,11 @@ void GLwidget::initializeGL()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    camera = Camera::getInstance(new Vector3<float>(0.0, 0.0, -5.0),
-                                         new Vector3<float>(0.0, 0.0, 1.0),
-                                         new Vector3<float>(0.0, 1.0, 0.0),
-                                         1.0,
-                                         15.0,
-                                         400,
-                                         400,
-                                         70.0);
+    camera = Camera::getInstance(new Vector3<float>(0.0, 0.0, -10.0),
+                                         20.0, 0.0, 0.0,
+                                         10.0, 30.0,
+                                         400, 400,
+                                         45.0);
 
     scene = Scene::getInstance();
     RayTracer rayTracer;

@@ -8,8 +8,9 @@ class Camera
 {
 public:
     Camera(Vector3<float>* eye,
-           Vector3<float>* look,
-           Vector3<float>* up,
+           float rotationX,
+           float rotationY,
+           float rotationZ,
            float zNear,
            float zFar,
            int pixWidth,
@@ -20,8 +21,9 @@ public:
     static Camera* instance;
     static Camera* getInstance();
     static Camera* getInstance(Vector3<float>* eye,
-                   Vector3<float>* look,
-                   Vector3<float>* up,
+                   float rotationX,
+                   float rotationY,
+                   float rotationZ,
                    float zNear,
                    float zFar,
                    int pixWidth,

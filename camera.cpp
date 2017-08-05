@@ -4,8 +4,9 @@
 Camera* Camera::instance = nullptr;
 
 Camera::Camera(Vector3<float>* eye,
-               Vector3<float>* look,
-               Vector3<float>* up,
+               float rotationX,
+               float rotationY,
+               float rotationZ,
                float zNear,
                float zFar,
                int pixWidth,
@@ -17,11 +18,21 @@ Camera::Camera(Vector3<float>* eye,
     this->pixHeight = pixHeight;
     this->pixWidth = pixWidth;
     this->eye = eye;
-    this->look = look;
-    this->up = up;
     this->povy = povy;
-    up->normalize();
-    look->normalize();
+
+
+    this->look = new Vector3<float>(0.0,0.0,1.0);
+    this->up = new Vector3<float>(0.0,1.0,0.0);
+
+    //make this a fuction...
+    look->rotateX(rotationX);
+    look->rotateY(rotationY);
+    look->rotateZ(rotationZ);
+
+    up->rotateX(rotationX);
+    up->rotateY(rotationY);
+    up->rotateZ(rotationZ);
+
     aspect = pixWidth/pixHeight;
     worldHeight = 2*tan(povy/2) * zNear;
     worldWidth = aspect * worldHeight;
@@ -36,8 +47,9 @@ Camera::~Camera()
 
 
 Camera *Camera::getInstance(Vector3<float>* eye,
-               Vector3<float>* look,
-               Vector3<float>* up,
+               float rotationX,
+               float rotationY,
+               float rotationZ,
                float zNear,
                float zFar,
                int pixWidth,
@@ -45,7 +57,7 @@ Camera *Camera::getInstance(Vector3<float>* eye,
                float povy)
 {
     if (instance == nullptr) {
-        instance = new Camera(eye, look, up, zNear, zFar, pixWidth, pixHeight, povy);
+        instance = new Camera(eye, rotationX, rotationY, rotationZ, zNear, zFar, pixWidth, pixHeight, povy);
     }
     return instance;
 }
@@ -60,11 +72,10 @@ Vector3<float> Camera::getWorldPosOfPixel(int x, int y)
 {
     //lol look to punkt! debilu...
     //hmm jeszcze coś do poprawy, ale co :)?
-    Vector3<float> lookVector = *look - *eye;
+    Vector3<float> lookVector = *look;
     Vector3<float> screenCenter = *eye + lookVector.normalize()*zNear;
-       std::cout << screenCenter.x << " " << screenCenter.y << " " << screenCenter.z << std::endl;
     Vector3<float> screenWidthVector = up->vectorProduct(lookVector).normalize();
-    Vector3<float> screenHeightVector = screenWidthVector.vectorProduct(lookVector).normalize(); //change to up vec?
+   // Vector3<float> screenHeightVector = screenWidthVector.vectorProduct(lookVector).normalize(); //change to up vec?
     Vector3<float> translationVectorX = (screenWidthVector.normalize() * -(worldWidth/(float)pixWidth)); //przeciwny zwrot
     Vector3<float> translationVectorY = (up->normalize() * -(worldHeight/(float)pixHeight));
     Vector3<float> startingPoint = screenCenter + screenWidthVector * (worldWidth/2) +

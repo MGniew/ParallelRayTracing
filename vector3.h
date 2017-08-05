@@ -72,6 +72,25 @@ public:
         z = v.z;
     }
 
+    //rotation matrix
+    void rotateX(float alpha){
+        alpha = alpha * M_PI/180;
+        y = cos(alpha)*y + -sin(alpha)*z;
+        z = sin(alpha)*y + cos(alpha)*z;
+    }
+
+    void rotateY(float alpha){
+        alpha = alpha * M_PI/180;
+        x = cos(alpha)*x + sin(alpha) * z;
+        z = -sin(alpha)*x + cos(alpha) * z;
+    }
+
+    void rotateZ(float alpha) {
+        alpha = alpha * M_PI/180;
+        x = cos(alpha)*x + -sin(alpha)*y;
+        y = sin(alpha)*x + cos(alpha)*y;
+    }
+
 };
 
 #endif // VECTOR3_H

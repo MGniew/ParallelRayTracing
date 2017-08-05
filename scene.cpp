@@ -14,14 +14,21 @@ Scene::Scene()
     numOfLights = 1;
     std::cout << "lights are ready" << std::endl;
 
-    sceneObjects = new SceneObject*[1];
+    sceneObjects = new SceneObject*[2];
     sceneObjects[0] = new Sphere(new Vector3<float>(1.0, 1.0, 1.0),
                                  new Vector3<float>(0.6, 0.7, 0.8),
                                  new Vector3<float>(0.8, 0.8, 0.8),
                                  30.0,
-                                 new Vector3<float>(0.0, 0.0, 5.0),
+                                 new Vector3<float>(1.5, 0.0, 2.0),
                                  1.0);
-    numOfObjects = 1;
+
+    sceneObjects[1] = new Sphere(new Vector3<float>(1.0, 1.0, 1.0),
+                                 new Vector3<float>(0.6, 0.7, 0.8),
+                                 new Vector3<float>(0.8, 0.8, 0.8),
+                                 30.0,
+                                 new Vector3<float>(-1.5, 0.0, 2.0),
+                                 1.0);
+    numOfObjects = 2;
 
     std::cout << "Objects are ready" << std::endl;
 

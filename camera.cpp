@@ -58,14 +58,17 @@ Camera *Camera::getInstance()
 //from up left
 Vector3<float> Camera::getWorldPosOfPixel(int x, int y)
 {
-    Vector3<float> screenCenter = *eye + look->normalize()*zNear;
-
-    Vector3<float> screenWidthVector = up->vectorProduct(*look).normalize();
-    Vector3<float> screenHeightVector = screenWidthVector.vectorProduct(*look).normalize(); //change to up vec?
+    //lol look to punkt! debilu...
+    //hmm jeszcze coś do poprawy, ale co :)?
+    Vector3<float> lookVector = *look - *eye;
+    Vector3<float> screenCenter = *eye + lookVector.normalize()*zNear;
+       std::cout << screenCenter.x << " " << screenCenter.y << " " << screenCenter.z << std::endl;
+    Vector3<float> screenWidthVector = up->vectorProduct(lookVector).normalize();
+    Vector3<float> screenHeightVector = screenWidthVector.vectorProduct(lookVector).normalize(); //change to up vec?
     Vector3<float> translationVectorX = (screenWidthVector.normalize() * -(worldWidth/(float)pixWidth)); //przeciwny zwrot
-    Vector3<float> translationVectorY = (screenHeightVector.normalize() * -(worldHeight/(float)pixHeight));
+    Vector3<float> translationVectorY = (up->normalize() * -(worldHeight/(float)pixHeight));
     Vector3<float> startingPoint = screenCenter + screenWidthVector * (worldWidth/2) +
-                                   screenHeightVector * (worldHeight/2);
+                                   *up * (worldHeight/2);
 
     return startingPoint + translationVectorX*x + translationVectorY*y;
 

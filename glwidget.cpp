@@ -20,7 +20,7 @@ void GLwidget::initializeGL()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    camera = Camera::getInstance(new Vector3<float>(0.0, 0.0, -3.0),
+    camera = Camera::getInstance(new Vector3<float>(0.0, 0.0, -5.0),
                                          new Vector3<float>(0.0, 0.0, 1.0),
                                          new Vector3<float>(0.0, 1.0, 0.0),
                                          1.0,

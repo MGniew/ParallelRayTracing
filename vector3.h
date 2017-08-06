@@ -91,6 +91,10 @@ public:
         y = sin(alpha)*x + cos(alpha)*y;
     }
 
+    float powDistanceFrom(Vector3 &v){
+        return pow(x - v.x,2) + pow(y - v.y, 2) + pow(z - v.z,2);
+    }
+
 };
 
 #endif // VECTOR3_H

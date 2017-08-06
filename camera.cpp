@@ -34,6 +34,7 @@ Camera::Camera(Vector3<float>* eye,
     up->rotateZ(rotationZ);
 
     aspect = pixWidth/pixHeight;
+    povy = povy * M_PI/180;
     worldHeight = 2*tan(povy/2) * zNear;
     worldWidth = aspect * worldHeight;
 }
@@ -70,13 +71,11 @@ Camera *Camera::getInstance()
 //from up left
 Vector3<float> Camera::getWorldPosOfPixel(int x, int y)
 {
-    //lol look to punkt! debilu...
-    //hmm jeszcze coś do poprawy, ale co :)?
+
     Vector3<float> lookVector = *look;
     Vector3<float> screenCenter = *eye + lookVector.normalize()*zNear;
     Vector3<float> screenWidthVector = up->vectorProduct(lookVector).normalize();
-   // Vector3<float> screenHeightVector = screenWidthVector.vectorProduct(lookVector).normalize(); //change to up vec?
-    Vector3<float> translationVectorX = (screenWidthVector.normalize() * -(worldWidth/(float)pixWidth)); //przeciwny zwrot
+    Vector3<float> translationVectorX = (screenWidthVector.normalize() * -(worldWidth/(float)pixWidth));
     Vector3<float> translationVectorY = (up->normalize() * -(worldHeight/(float)pixHeight));
     Vector3<float> startingPoint = screenCenter + screenWidthVector * (worldWidth/2) +
                                    *up * (worldHeight/2);

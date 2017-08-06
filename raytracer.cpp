@@ -1,4 +1,5 @@
 #include "raytracer.h"
+#include "sceneobject.h"
 
 RayTracer::RayTracer()
 {
@@ -16,9 +17,8 @@ void RayTracer::basicRaytracer()
     Vector3<float> worldPosOfPixel;
     Vector3<float> directionVector;
     Vector3<float> crossPoint;
-    std::list<SceneObject*> listOfHitObjects;
-    bool inters;
-    float distance;
+    SceneObject* sceneObject;
+
     //for every pixel
     for(int i = 0; i < camera->getPixWidth(); i++) {
         for(int j = 0; j < camera->getPixHeight(); j++) {
@@ -26,40 +26,58 @@ void RayTracer::basicRaytracer()
             //get ray
             worldPosOfPixel = camera->getWorldPosOfPixel(i,j);
 
+            //calcualte starting dir vector
             directionVector = worldPosOfPixel - *camera->getEye();
             directionVector.normalize();
 
+            sceneObject = getClosest(crossPoint, worldPosOfPixel, directionVector);
 
-            //find objects intersect with ray
-            for(int obj = 0; obj < scene->getNumOfObjects(); obj++)
-            {
-                if ((scene->sceneObjects[obj])->trace(crossPoint, worldPosOfPixel, directionVector)) {
-                    listOfHitObjects.push_back(scene->sceneObjects[obj]);
-                }
-            }
 
-            scene->sceneObjects[0]->getAmb();
-            if (listOfHitObjects.empty()) {
+            if (sceneObject == nullptr) {
                 buffer[i][j]->setValues(*scene->getBackgroundColor());
 
             }
             else {
-                 Vector3<float> normalVector = listOfHitObjects.front()->getNormalVector(crossPoint);
+                 Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
                  Vector3<float> observationVector = directionVector*-1;
-                 buffer[i][j]->setValues(listOfHitObjects.front()->getLocalColor
+                 buffer[i][j]->setValues(sceneObject->getLocalColor
                                                         (normalVector,
                                                         crossPoint,
                                                         observationVector));
+            }
+    }
+    }
+}
 
+SceneObject *RayTracer::getClosest(Vector3<float> &crossPoint,
+                                   Vector3<float> &startingPoint,
+                                   Vector3<float> &directionVector)
+{
 
+    Scene* scene = Scene::getInstance();
+    Vector3<float> tempCrossPoint;
+    SceneObject* sceneObject = nullptr;
+    float distance, tempDistance;
+
+    for(int obj = 0; obj < scene->getNumOfObjects(); obj++)
+    {
+        if ((scene->sceneObjects[obj])->trace(tempCrossPoint, startingPoint, directionVector)) {
+            if (sceneObject == nullptr) {
+                sceneObject = scene->sceneObjects[obj];
+                distance = startingPoint.powDistanceFrom(tempCrossPoint);
+                crossPoint = tempCrossPoint;
+            }
+            else {
+                tempDistance = startingPoint.powDistanceFrom(tempCrossPoint);
+                if (tempDistance < distance) {
+                    distance = tempDistance;
+                    sceneObject = scene->sceneObjects[obj];
+                    crossPoint = tempCrossPoint;
+                }
             }
 
-            listOfHitObjects.clear();
-
+        }
     }
-    }
-
-
-
+    return sceneObject;
 }
 

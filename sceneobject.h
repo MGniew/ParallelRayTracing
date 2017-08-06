@@ -3,6 +3,8 @@
 
 #include "vector3.h"
 #include "scene.h"
+#include <cstdlib>
+#include <ctime>
 
 class SceneObject
 {

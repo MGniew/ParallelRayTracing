@@ -18,40 +18,42 @@ Sphere::~Sphere()
 
 bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector) {
 
-     float a, b, c, d, r;
+     float a, b, c, d, r1, r2;
+     float sqr;
 
+     Vector3<float> distance = startPoint-*pos;
      a = directionVector.scalarProduct(directionVector);
-     b = 2 * startPoint.scalarProduct(directionVector);
-     c = startPoint.scalarProduct(startPoint) - radius;
+     b = 2 * directionVector.scalarProduct(distance);
+     c = distance.scalarProduct(distance) - radius*radius;
 
      d = b*b - 4*a*c;
 
-     if (d>=0) {
-        r = -b - sqrt(d/(2*a));
+     if (d<0) return false;
+     sqr = sqrt(d);
+         if (d>0) {
+            r1 = (-b - sqr)/(2*a);
+            r2 = (-b + sqr)/(2*a);
+            if (r1 < 0 && r2 < 0) return false;
+            if (r1 < 0)
+                r1 = r2;
+         } else
+             r1 = (-b - sqr)/(2*a);
+         crossPoint.x = startPoint.x + r1*directionVector.x;
+         crossPoint.y = startPoint.y + r1*directionVector.y;
+         crossPoint.z = startPoint.z + r1*directionVector.z;
+         return true;
 
-        crossPoint.x = startPoint.x + r*directionVector.x;
-        crossPoint.y = startPoint.y + r*directionVector.y;
-        crossPoint.z = startPoint.z + r*directionVector.z;
-
-        return true;
-     }
-     return false;
 }
 
 Vector3<float> Sphere::getNormalVector(Vector3<float>& crossPoint) {
 
-    return Vector3<float>(crossPoint.x, crossPoint.y, crossPoint.z);
+    Vector3<float> normalVector = crossPoint - *pos;
+    if (Camera::getInstance()->getEye()->powDistanceFrom(*pos) < pow(radius, 2)) {
+        normalVector = normalVector*-1;
+    }
+    return normalVector.normalize();
 }
 
-//WIP /crosspoint, normalVector, observationVector (ray to object!)
-
-//possible bugs:
-    // - observationVector shlould be normalized and multpily by *-1
-    // normal vector should be normalized
-    // pow??
-    // return statment
-    // TODO::multpile light source
-    // why not now? because Im going forward to implement early beta raytracer
 
 Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
                                      Vector3<float>& crossPoint,
@@ -69,11 +71,12 @@ Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
     if (v_dot_r < 0)
         v_dot_r = 0;
 
-    if (n_dot_l > 0)
+    if (n_dot_l > 0) {
         return  (dif->multiplyByVector(*scene->Lights[0]->dif))*n_dot_l +
-                spec->multiplyByVector(*scene->Lights[0]->spec)*pow(double(v_dot_r), 20.0) +
+                spec->multiplyByVector(*scene->Lights[0]->spec)*pow(double(v_dot_r), specShin) +
                 amb->multiplyByVector(*scene->Lights[0]->amb) +
                 amb->multiplyByVector(*scene->getGlobalAmbient());
+    }
     else
         return amb->multiplyByVector(*scene->getGlobalAmbient());
 

@@ -2,10 +2,10 @@
 
 Light::Light()
 {
-    pos = new Vector3<float>(0.0, 0.0, 10.0);
-    amb = new Vector3<float>(0.1, 0.1, 0.1);
-    dif = new Vector3<float>(1.0, 1.0, 1.0);
-    spec = new Vector3<float>(1.0, 1.0, 1.0);
+    pos = new Vector3<float>(0.0, 3.0, -0.0);
+    amb = new Vector3<float>(0.0, 0.0, 0.0);
+    dif = new Vector3<float>(0.0, 1.0, 1.0);
+    spec = new Vector3<float>(1.0, 1.0, 0.0);
 }
 
 Light::Light(Vector3<float>* pos, Vector3<float>* amb, Vector3<float>* dif, Vector3<float>* spec)

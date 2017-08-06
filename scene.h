@@ -21,6 +21,8 @@ public:
     Vector3<float>*** pixels; // HxW*3
     Vector3<float>* backgroundColor;
     Vector3<float>* globalAmbient;
+    int numOfLights;
+    int numOfObjects;
 
     static Scene* getInstance();
     void loadScene (char* file);
@@ -30,6 +32,10 @@ public:
 
     Vector3<float> *getGlobalAmbient();
     void setGlobalAmbient(float r, float g, float b);
+
+    Vector3<float> ***getPixels();
+    int getNumOfLights();
+    int getNumOfObjects();
 };
 
 #endif // SCENE_H

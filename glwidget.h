@@ -3,6 +3,11 @@
 
 #include <QOpenGLWidget>
 #include <GL/glut.h>
+#include "scene.h"
+#include "camera.h"
+#include "raytracer.h"
+#include "vector3.h"
+#include "qpainter.h"
 
 class GLwidget : public QOpenGLWidget
 {
@@ -15,6 +20,8 @@ protected:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
+    Camera* camera;
+    Scene* scene;
 };
 
 #endif // GLWIDGET_H

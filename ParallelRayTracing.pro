@@ -26,11 +26,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    glwidget.cpp
+    glwidget.cpp \
+    scene.cpp \
+    sphere.cpp \
+    sceneobject.cpp \
+    triangle.cpp \
+    raytracer.cpp \
+    light.cpp \
+    camera.cpp
 
 HEADERS += \
         mainwindow.h \
-    glwidget.h
+    glwidget.h \
+    scene.h \
+    sphere.h \
+    sceneobject.h \
+    triangle.h \
+    raytracer.h \
+    light.h \
+    camera.h \
+    vector3.h
 
 FORMS += \
         mainwindow.ui

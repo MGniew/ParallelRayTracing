@@ -20,16 +20,17 @@ void GLwidget::initializeGL()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    camera = Camera::getInstance(new Vector3<float>(0.0, 0.0, -4.0),
-                                         0.0, 0.0, 0.0,
-                                         4.0, 30.0,
-                                         400, 400,
+    camera = Camera::getInstance(new Vector3<float>(7.0, 0.0, -2.0),
+                                         0.0, -45.0, 0.0,
+                                         1.0, 30.0,
+                                         700, 500,
                                          45.0);
 
     scene = Scene::getInstance();
     RayTracer rayTracer;
 
-    rayTracer.basicRaytracer();
+    //rayTracer.basicRayTracer();
+    rayTracer.recursiveRayTracer(8);
 }
 
 void GLwidget::resizeGL(int w, int h)
@@ -47,8 +48,8 @@ void GLwidget::paintGL()
     pixel = new float[3];
     QPainter qPainter(this);
 
-    for(int i = 0; i < 400; i++) {
-        for(int j = 0; j < 400; j++) {
+    for(int i = 0; i < 700; i++) {
+        for(int j = 0; j < 500; j++) {
             pixel[0] = scene->getPixels()[i][j]->x;
             pixel[1] = scene->getPixels()[i][j]->y;
             pixel[2] = scene->getPixels()[i][j]->z;

@@ -6,7 +6,7 @@ Scene* Scene::instance = nullptr;
 
 Scene::Scene()
 {
-    backgroundColor = new Vector3<float>(0.5, 0.5, 0.5);
+    backgroundColor = new Vector3<float>(1.0, 0.5, 0.5);
     globalAmbient = new Vector3<float>(0.4, 0.4, 0.4);
 
     Lights = new Light*[1];
@@ -19,8 +19,8 @@ Scene::Scene()
                                  new Vector3<float>(0.6, 0.7, 0.8),
                                  new Vector3<float>(0.8, 0.8, 0.8),
                                  10.0,
-                                 new Vector3<float>(0.0, 0.0, 0.0),
-                                 7.0);
+                                 new Vector3<float>(0, 0.0, 0.0),
+                                 10.0);
 
     sceneObjects[1] = new Sphere(new Vector3<float>(.3, 0.4, 0.4),
                                  new Vector3<float>(0.6, 0.7, 0.8),

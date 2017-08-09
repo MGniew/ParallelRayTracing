@@ -19,6 +19,14 @@ public:
         this->y = y;
         this->z = z;
     }
+
+    Vector3(const Vector3& v)
+    {
+        this->x = v.x;
+        this->y = v.y;
+        this->z = v.z;
+    }
+
     type x;
     type y;
     type z;
@@ -93,6 +101,12 @@ public:
 
     float powDistanceFrom(Vector3 &v){
         return pow(x - v.x,2) + pow(y - v.y, 2) + pow(z - v.z,2);
+    }
+
+    Vector3<float> reflect(Vector3 &n) {
+        float n_dot_l = this->scalarProduct(n);
+//        return n*(2*n_dot_l) - *this;
+        return *this - n*(2*n_dot_l);
     }
 
 };

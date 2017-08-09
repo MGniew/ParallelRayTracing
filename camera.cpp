@@ -33,10 +33,11 @@ Camera::Camera(Vector3<float>* eye,
     up->rotateY(rotationY);
     up->rotateZ(rotationZ);
 
-    aspect = pixWidth/pixHeight;
+    aspect = (float)pixWidth/pixHeight;
     povy = povy * M_PI/180;
     worldHeight = 2*tan(povy/2) * zNear;
     worldWidth = aspect * worldHeight;
+
 }
 
 Camera::~Camera()

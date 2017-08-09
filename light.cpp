@@ -2,7 +2,7 @@
 
 Light::Light()
 {
-    pos = new Vector3<float>(0.0, 3.0, -1.0);
+    pos = new Vector3<float>(0.0, 3.0, -3.0);
     amb = new Vector3<float>(0.1, 0.1, 0.1);
     dif = new Vector3<float>(0.7, 0.8, 0.61);
     spec = new Vector3<float>(0.9, 0.8, 0.8);

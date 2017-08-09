@@ -5,7 +5,11 @@ Sphere::Sphere(Vector3<float>* amb,
                Vector3<float>* spec,
                float specShin,
                Vector3<float>* pos,
-               float radius) : SceneObject(amb, dif, spec, specShin)
+               float radius,
+               float transparency,
+               float mirror,
+               float local,
+               float density) : SceneObject(amb, dif, spec, specShin, transparency, mirror, local, density)
 {
     this->pos = pos;
     this->radius = radius;
@@ -37,7 +41,8 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
             if (r1 < 0)
                 r1 = r2;
          } else
-             r1 = (-b - sqr)/(2*a);
+             r1 = (-b)/(2*a);
+
          crossPoint.x = startPoint.x + r1*directionVector.x;
          crossPoint.y = startPoint.y + r1*directionVector.y;
          crossPoint.z = startPoint.z + r1*directionVector.z;
@@ -48,12 +53,23 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
 Vector3<float> Sphere::getNormalVector(Vector3<float>& crossPoint) {
 
     Vector3<float> normalVector = crossPoint - *pos;
-    if (Camera::getInstance()->getEye()->powDistanceFrom(*pos) < pow(radius, 2)) {
-        normalVector = normalVector*-1;
-    }
     return normalVector.normalize();
 }
 
+bool Sphere::isInShadow(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos)
+{
+    Scene* scene = Scene::getInstance();
+    Vector3<float> tempCrossPoint;
+    float LightDistance = crossPoint.powDistanceFrom(lightPos);
+
+    for(int obj = 0; obj < scene->getNumOfObjects(); obj++){
+        if ((scene->sceneObjects[obj])->trace(tempCrossPoint, crossPoint, directionVector)) {
+           if (tempCrossPoint.powDistanceFrom(crossPoint) < LightDistance)
+           return true;
+        }
+    }
+    return false;
+}
 
 Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
                                      Vector3<float>& crossPoint,
@@ -65,17 +81,21 @@ Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
     Vector3<float> lightVector = *lightPossition - crossPoint;
     lightVector.normalize();
     float n_dot_l = lightVector.scalarProduct(normalVector);
-    Vector3<float> reflectionVector = normalVector*(2*n_dot_l) - lightVector;
+ //   lightVector = lightVector*-1; //to sphere -- need to prop. calc. reflection
+    Vector3<float> reflectionVector = (lightVector*-1).reflect(normalVector);
     reflectionVector.normalize();
     float v_dot_r = reflectionVector.scalarProduct(observationVector);
     if (v_dot_r < 0)
         v_dot_r = 0;
 
-    if (n_dot_l > 0) {
+
+    //float distance = pos->powDistanceFrom(*lightPossition);
+    if (n_dot_l > 0 && !isInShadow(crossPoint, lightVector, *lightPossition)) {
         return  (dif->multiplyByVector(*scene->Lights[0]->dif))*n_dot_l +
                 spec->multiplyByVector(*scene->Lights[0]->spec)*pow(double(v_dot_r), specShin) +
-                amb->multiplyByVector(*scene->Lights[0]->amb) +
+                amb->multiplyByVector(*scene->Lights[0]->amb)+
                 amb->multiplyByVector(*scene->getGlobalAmbient());
+        //(float)(1/(1 + 0.01*sqrt(distance) + 0.001*distance)))
     }
     else
         return amb->multiplyByVector(*scene->getGlobalAmbient());

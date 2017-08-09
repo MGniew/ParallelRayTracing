@@ -19,6 +19,14 @@ public:
         this->y = y;
         this->z = z;
     }
+
+    Vector3(const Vector3& v)
+    {
+        this->x = v.x;
+        this->y = v.y;
+        this->z = v.z;
+    }
+
     type x;
     type y;
     type z;
@@ -93,6 +101,37 @@ public:
 
     float powDistanceFrom(Vector3 &v){
         return pow(x - v.x,2) + pow(y - v.y, 2) + pow(z - v.z,2);
+    }
+
+    Vector3<float> reflect(Vector3 &n) {
+        float n_dot_l = this->scalarProduct(n);
+//        return n*(2*n_dot_l) - *this;
+        return *this - n*(2*n_dot_l);
+    }
+
+    Vector3<float> refract(Vector3 &normalVector, float a, float b) {
+        Vector3<float> n = normalVector;
+        float cosa = this->scalarProduct(normalVector);
+        if (cosa > 0){
+            cosa = -cosa;
+        }
+        else {
+            float temp;
+            temp = a;
+            a = b;
+            b = temp;
+            n = n*-1;
+        }
+        float r = a/b;
+        float k = 1 - r*r * (1 - cosa*cosa);
+        return *this*r + n*(r*cosa - sqrt(k));
+
+    }
+
+    bool isZeroVector() {
+        if (x == 0 && y == 0 && z == 0)
+            return true;
+        return false;
     }
 
 };

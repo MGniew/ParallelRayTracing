@@ -5,14 +5,25 @@ SceneObject::SceneObject()
 
 }
 
+
 SceneObject::SceneObject(Vector3<float>* amb,
                          Vector3<float>* dif,
                          Vector3<float>* spec,
-                         float specShin){
+                         float specShin,
+                         float transparency,
+                         float mirror,
+                         float local,
+                         float density){
     this->amb = amb;
     this->dif = dif;
     this->spec = spec;
     this->specShin = specShin;
+    this->transparency= transparency;
+    this->mirror = mirror;
+    this->local = local;
+    if (density < 1)
+        density = 1;
+    this->density = density;
 
 }
 
@@ -67,4 +78,44 @@ void SceneObject::setAmb(float r, float g, float b)
     amb->x = r;
     amb->y = g;
     amb->z = b;
+}
+
+float SceneObject::getTransparency()
+{
+    return transparency;
+}
+
+void SceneObject::setTransparency(float value)
+{
+    transparency = value;
+}
+
+float SceneObject::getMirror()
+{
+    return mirror;
+}
+
+void SceneObject::setMirror(float value)
+{
+    mirror = value;
+}
+
+float SceneObject::getLocal()
+{
+    return local;
+}
+
+void SceneObject::setLocal(float value)
+{
+    local = value;
+}
+
+float SceneObject::getDensity()
+{
+    return density;
+}
+
+void SceneObject::setDensity(float value)
+{
+    density = value;
 }

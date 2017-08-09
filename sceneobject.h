@@ -10,7 +10,15 @@ class SceneObject
 {
 public:
     SceneObject();
-    SceneObject(Vector3<float>* amb, Vector3<float>* dif, Vector3<float>* spec, float specShin);
+    SceneObject(Vector3<float>* amb,
+                Vector3<float>* dif,
+                Vector3<float>* spec,
+                float specShin,
+                float transparency,
+                float mirror,
+                float local,
+                float density);
+
     virtual ~SceneObject();
     virtual Vector3<float> getLocalColor(Vector3<float>& normalVector,
                                                  Vector3<float>& crossPoint,
@@ -32,11 +40,33 @@ public:
     Vector3<float>* getAmb();
     void setAmb(float r, float g, float b);
 
+    float getTransparency();
+
+    void setTransparency(float value);
+
+    float getMirror();
+    void setMirror(float value);
+
+    float getLocal();
+    void setLocal(float value);
+
+    float getDensity();
+    void setDensity(float value);
+
 protected:
     Vector3<float>* amb;
     Vector3<float>* dif;
     Vector3<float>* spec;
     float specShin;
+
+    //theoreticly trans + mir + local = 1, but lets make it more interesting
+    float transparency;
+    float mirror;
+    float local;
+    float density;
+
+
+
 };
 
 #endif // SCENEOBJECT_H

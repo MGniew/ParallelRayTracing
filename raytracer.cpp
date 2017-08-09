@@ -35,12 +35,15 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
     Vector3<float> localColor;
     Vector3<float> reflectedColor;
 
+    //refraction
+    Vector3<float> transparencyColor;
+    Vector3<float> transparencyRay;
+
     if (depth == 0)
         return Vector3<float>();
 
     depth--;
     sceneObject = getClosest(crossPoint, startPoint, directionVector);
-    //nie ma opcji - jakiś promień idzie źle :(
     if (sceneObject == nullptr)
         return Vector3<float>(*scene->backgroundColor);
 
@@ -48,16 +51,35 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
      Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
      Vector3<float> observationVector = directionVector*-1;
 
-     crossPoint = crossPoint + normalVector*0.0001;
-     localColor.setValues(sceneObject->getLocalColor
-                           (normalVector,
-                           crossPoint,
-                           observationVector));
 
-     reflectedRay = directionVector.reflect(normalVector);
-    reflectedRay.normalize();
-     reflectedColor = getColorRecursive(crossPoint, reflectedRay, depth);
-     return localColor*.75 + reflectedColor*.25;
+     if (observationVector.scalarProduct(normalVector) < 0) {
+         normalVector = normalVector*-1;
+     }
+    crossPoint = crossPoint + normalVector*0.0001;
+     if(sceneObject->getTransparency()>0) {
+         transparencyRay = directionVector.refract(normalVector, sceneObject->getDensity(), 1);
+         transparencyColor = getColorRecursive(crossPoint, transparencyRay, depth);
+     }
+
+
+
+
+     if (sceneObject->getLocal()>0) {
+         localColor.setValues(sceneObject->getLocalColor
+                               (normalVector,
+                               crossPoint,
+                               observationVector));
+     }
+     if (sceneObject->getMirror()>0) {
+         reflectedRay = directionVector.reflect(normalVector);
+         //reflectedRay.normalize();
+         reflectedColor = getColorRecursive(crossPoint, reflectedRay, depth);
+     }
+     if (sceneObject->getTransparency()>0) {
+         //reflectedRay =
+         //transparencyColor =
+     }
+     return localColor*sceneObject->getLocal() + reflectedColor*sceneObject->getMirror() + transparencyColor*sceneObject->getTransparency();
 
 
 }

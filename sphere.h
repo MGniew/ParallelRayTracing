@@ -12,7 +12,11 @@ public:
            Vector3<float>* spec,
            float specShin,
            Vector3<float>* pos,
-           float radius);
+           float radius,
+           float transparency,
+           float mirror,
+           float local,
+           float density);
     ~Sphere();
     Vector3<float> getLocalColor(Vector3<float>& normalVector,
                                          Vector3<float>& crossPoint,

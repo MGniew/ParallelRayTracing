@@ -109,6 +109,31 @@ public:
         return *this - n*(2*n_dot_l);
     }
 
+    Vector3<float> refract(Vector3 &normalVector, float a, float b) {
+        Vector3<float> n = normalVector;
+        float cosa = this->scalarProduct(normalVector);
+        if (cosa > 0){
+            cosa = -cosa;
+        }
+        else {
+            float temp;
+            temp = a;
+            a = b;
+            b = temp;
+            n = n*-1;
+        }
+        float r = a/b;
+        float k = 1 - r*r * (1 - cosa*cosa);
+        return *this*r + n*(r*cosa - sqrt(k));
+
+    }
+
+    bool isZeroVector() {
+        if (x == 0 && y == 0 && z == 0)
+            return true;
+        return false;
+    }
+
 };
 
 #endif // VECTOR3_H

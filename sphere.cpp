@@ -5,7 +5,11 @@ Sphere::Sphere(Vector3<float>* amb,
                Vector3<float>* spec,
                float specShin,
                Vector3<float>* pos,
-               float radius) : SceneObject(amb, dif, spec, specShin)
+               float radius,
+               float transparency,
+               float mirror,
+               float local,
+               float density) : SceneObject(amb, dif, spec, specShin, transparency, mirror, local, density)
 {
     this->pos = pos;
     this->radius = radius;
@@ -49,9 +53,6 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
 Vector3<float> Sphere::getNormalVector(Vector3<float>& crossPoint) {
 
     Vector3<float> normalVector = crossPoint - *pos;
-    if (Camera::getInstance()->getEye()->powDistanceFrom(*pos) <= pow(radius, 2)) {
-        normalVector = normalVector*-1;
-    }
     return normalVector.normalize();
 }
 

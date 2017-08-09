@@ -20,35 +20,45 @@ Scene::Scene()
                                  new Vector3<float>(0.8, 0.8, 0.8),
                                  10.0,
                                  new Vector3<float>(0, 0.0, 0.0),
-                                 10.0);
+                                 10.0,
+                                 0, .7, 0.3,
+                                 1.5);
 
     sceneObjects[1] = new Sphere(new Vector3<float>(.3, 0.4, 0.4),
                                  new Vector3<float>(0.6, 0.7, 0.8),
                                  new Vector3<float>(0.8, 0.8, 0.8),
                                  55.0,
                                  new Vector3<float>(-0.5, 0.0, 2.0),
-                                 1.0);
+                                 1.0,
+                                 0, 0.2, 0.8,
+                                 1.5);
 
     sceneObjects[2] = new Sphere(new Vector3<float>(.7, 0.7, 0.4),
                                  new Vector3<float>(0.6, 0.7, 0.8),
                                  new Vector3<float>(0.8, 0.8, 0.8),
                                  70.0,
                                  new Vector3<float>(1.5, 0.0, 2.0),
-                                 .5);
+                                 .5,
+                                 0, 0.2, 0.8,
+                                 1.5);
 
     sceneObjects[3] = new Sphere(new Vector3<float>(0.3, 0.2, 1.0),
                                  new Vector3<float>(0.9, 0.9, 0.9),
                                  new Vector3<float>(0.9, 0.5, 0.5),
                                  10.0,
-                                 new Vector3<float>(0.0, 0.0, 0.4),
-                                 .3);
+                                 new Vector3<float>(0.0, 1, 0.4),
+                                 2,
+                                 0.8, 0.0, 0.2,
+                                 3);
 
     sceneObjects[4] = new Sphere(new Vector3<float>(1.0, 0.4, 0.4),
                                  new Vector3<float>(0.9, 0.9, 0.9),
                                  new Vector3<float>(0.9, 0.5, 0.5),
                                  50.0,
                                  new Vector3<float>(0.0, 0.0, 7.0),
-                                 4);
+                                 4,
+                                 0, 0.2, 0.8,
+                                 1.5);
     numOfObjects = 5;
 
     std::cout << "Objects are ready" << std::endl;

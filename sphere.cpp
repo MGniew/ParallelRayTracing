@@ -77,7 +77,7 @@ Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
 
     Scene* scene = Scene::getInstance();
     //for now make it work for 1 light source.
-    Vector3<float>* lightPossition = scene->Lights[0]->pos;
+    Vector3<float>* lightPossition = scene->lights[0]->pos;
     Vector3<float> lightVector = *lightPossition - crossPoint;
     lightVector.normalize();
     float n_dot_l = lightVector.scalarProduct(normalVector);
@@ -91,9 +91,9 @@ Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
 
     //float distance = pos->powDistanceFrom(*lightPossition);
     if (n_dot_l > 0 && !isInShadow(crossPoint, lightVector, *lightPossition)) {
-        return  (dif->multiplyByVector(*scene->Lights[0]->dif))*n_dot_l +
-                spec->multiplyByVector(*scene->Lights[0]->spec)*pow(double(v_dot_r), specShin) +
-                amb->multiplyByVector(*scene->Lights[0]->amb)+
+        return  (dif->multiplyByVector(*scene->lights[0]->dif))*n_dot_l +
+                spec->multiplyByVector(*scene->lights[0]->spec)*pow(double(v_dot_r), specShin) +
+                amb->multiplyByVector(*scene->lights[0]->amb)+
                 amb->multiplyByVector(*scene->getGlobalAmbient());
         //(float)(1/(1 + 0.01*sqrt(distance) + 0.001*distance)))
     }

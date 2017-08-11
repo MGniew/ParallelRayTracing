@@ -6,6 +6,8 @@
 #include <sstream>
 #include "camera.h"
 #include "scene.h"
+#include "vector3.h"
+#include "sphere.h"
 
 
 class FileLoader

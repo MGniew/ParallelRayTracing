@@ -7,6 +7,7 @@
 class Camera
 {
 public:
+    Camera();
     Camera(Vector3<float>* eye,
            float rotationX,
            float rotationY,
@@ -17,6 +18,7 @@ public:
            int pixHeight,
            float povy);
     ~Camera();
+    void setUp(float rotationX, float rotationY, float rotationZ);
 
     static Camera* instance;
     static Camera* getInstance();

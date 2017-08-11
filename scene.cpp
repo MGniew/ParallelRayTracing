@@ -9,8 +9,8 @@ Scene::Scene()
     backgroundColor = new Vector3<float>(1.0, 0.5, 0.5);
     globalAmbient = new Vector3<float>(0.4, 0.4, 0.4);
 
-    Lights = new Light*[1];
-    Lights[0] = new Light();
+    lights = new Light*[1];
+    lights[0] = new Light();
     numOfLights = 1;
     std::cout << "lights are ready" << std::endl;
 
@@ -78,8 +78,8 @@ Scene::~Scene()
     delete backgroundColor;
     delete globalAmbient;
 
-    delete Lights[0];
-    delete [] Lights;
+    delete lights[0];
+    delete [] lights;
     numOfLights = 0 ;
 
     delete sceneObjects[0];
@@ -105,6 +105,26 @@ Scene::~Scene()
 int Scene::getNumOfObjects()
 {
     return numOfObjects;
+}
+
+void Scene::addObject(SceneObject *sceneObject)
+{
+    SceneObject** tempSceneObjects = new SceneObject*[numOfObjects+1];
+    std::copy(sceneObjects, sceneObjects+numOfObjects, tempSceneObjects);
+    tempSceneObjects[numOfObjects]=sceneObject;
+    numOfObjects++;
+    delete[] sceneObjects;
+    sceneObjects = tempSceneObjects;
+}
+
+void Scene::addLight(Light *light)
+{
+    Light** tempLight = new Light*[numOfLights+1];
+    std::copy(lights, lights+numOfLights, tempLight);
+    tempLight[numOfLights] = light;
+    numOfLights++;
+    delete[] lights;
+    lights = tempLight;
 }
 
 int Scene::getNumOfLights()

@@ -71,7 +71,9 @@ bool FileLoader::readCameraSettings(const char *line)
     float width, height;
     float povy;
 
-    if (sscanf(line, "camera %f %f %f %f %f %f %f %f %f %f %f",
+    if (sscanf(line, "camera eye<%f; %f; %f> rotationX<%f> "
+               "rotationY<%f> rotationZ<%f> zNear<%f> "
+               "zFar<%f> pixWidth<%f> pixHeight<%f> povy<%f>",
                &posX, &posY, &posZ, &rotX, &rotY, &rotZ, &zNear,
                &zFar, &width, &height, &povy) != 11) {
         return false;
@@ -88,7 +90,7 @@ bool FileLoader::readSceneSettings(const char *line)
 {
     float r, g, b;
     float ambR, ambG, ambB;
-    if (sscanf(line, "scene %f %f %f %f %f %f",
+    if (sscanf(line, "scene background<%f; %f; %f> global<%f; %f; %f>",
                &r, &g, &b, &ambR, &ambG, &ambB) != 6) {
         return false;
     }
@@ -108,7 +110,8 @@ bool FileLoader::readSphere(const char *line)
     float trans, mirror, local;
     float density;
 
-    if (sscanf(line, "sphere %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
+    if (sscanf(line, "sphere amb<%f; %f; %f> dif<%f; %f; %f> spec<%f; %f; %f> specShin<%f> "
+               "pos<%f; %f; %f> radius<%f> trans<%f> mirror<%f> local<%f> density<%f>",
                &ambR, &ambG, &ambB, &difR, &difG, &difB, &specR, &specG, &specB,
                &specShin, &posX, &posY, &posZ, &radius, &trans, &mirror, &local,
                &density) != 18) {
@@ -133,7 +136,7 @@ bool FileLoader::readLight(const char *line)
     float difR, difG, difB;
     float specR, specG, specB;
 
-    if (sscanf(line, "light %f %f %f %f %f %f %f %f %f %f %f %f",
+    if (sscanf(line, "light pos<%f; %f; %f> amb<%f; %f; %f> dif<%f; %f; %f> spec<%f; %f; %f>",
                &posX, &posY, &posZ, &ambR, &ambG, &ambB,
                &difR, &difG, &difB, &specR, &specG, &specB) != 12) {
         return false;

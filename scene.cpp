@@ -9,59 +9,10 @@ Scene::Scene()
     backgroundColor = new Vector3<float>(1.0, 0.5, 0.5);
     globalAmbient = new Vector3<float>(0.4, 0.4, 0.4);
 
-    lights = new Light*[1];
-    lights[0] = new Light();
-    numOfLights = 1;
-    std::cout << "lights are ready" << std::endl;
-
-    sceneObjects = new SceneObject*[5];
-    sceneObjects[0] = new Sphere(new Vector3<float>(.7, 0.3, .5),
-                                 new Vector3<float>(0.6, 0.7, 0.8),
-                                 new Vector3<float>(0.8, 0.8, 0.8),
-                                 10.0,
-                                 new Vector3<float>(0, 0.0, 0.0),
-                                 10.0,
-                                 0, .7, 0.3,
-                                 1.5);
-
-    sceneObjects[1] = new Sphere(new Vector3<float>(.3, 0.4, 0.4),
-                                 new Vector3<float>(0.6, 0.7, 0.8),
-                                 new Vector3<float>(0.8, 0.8, 0.8),
-                                 55.0,
-                                 new Vector3<float>(-0.5, 0.0, 2.0),
-                                 1.0,
-                                 0, 0.2, 0.8,
-                                 1.5);
-
-    sceneObjects[2] = new Sphere(new Vector3<float>(.7, 0.7, 0.4),
-                                 new Vector3<float>(0.6, 0.7, 0.8),
-                                 new Vector3<float>(0.8, 0.8, 0.8),
-                                 70.0,
-                                 new Vector3<float>(1.5, 0.0, 2.0),
-                                 .5,
-                                 0, 0.2, 0.8,
-                                 1.5);
-
-    sceneObjects[3] = new Sphere(new Vector3<float>(0.3, 0.2, 1.0),
-                                 new Vector3<float>(0.9, 0.9, 0.9),
-                                 new Vector3<float>(0.9, 0.5, 0.5),
-                                 10.0,
-                                 new Vector3<float>(0.0, 1, 0.4),
-                                 2,
-                                 0.8, 0.0, 0.2,
-                                 3);
-
-    sceneObjects[4] = new Sphere(new Vector3<float>(1.0, 0.4, 0.4),
-                                 new Vector3<float>(0.9, 0.9, 0.9),
-                                 new Vector3<float>(0.9, 0.5, 0.5),
-                                 50.0,
-                                 new Vector3<float>(0.0, 0.0, 7.0),
-                                 4,
-                                 0, 0.2, 0.8,
-                                 1.5);
-    numOfObjects = 5;
-
-    std::cout << "Objects are ready" << std::endl;
+    lights = nullptr;
+    sceneObjects = nullptr;
+    numOfLights = 0;
+    numOfObjects = 0;
 
     pixels = new Vector3<float>**[Camera::getInstance()->getPixWidth()];
     for (int i = 0; i < Camera::getInstance()->getPixWidth(); i++) {
@@ -78,15 +29,16 @@ Scene::~Scene()
     delete backgroundColor;
     delete globalAmbient;
 
-    delete lights[0];
+
+    for (int i=0; i<numOfLights; i++) {
+        delete lights[i];
+    }
     delete [] lights;
     numOfLights = 0 ;
 
-    delete sceneObjects[0];
-    delete sceneObjects[1];
-    delete sceneObjects[2];
-    delete sceneObjects[3];
-    delete sceneObjects[4];
+    for (int i=0; i<numOfObjects;i++) {
+        delete sceneObjects[i];
+    }
     delete [] sceneObjects;
     numOfObjects = 0;
 

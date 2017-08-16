@@ -76,29 +76,26 @@ Vector3<float> Sphere::getLocalColor(Vector3<float>& normalVector,
                                      Vector3<float>& observationVector) {
 
     Scene* scene = Scene::getInstance();
-    //for now make it work for 1 light source.
-    Vector3<float>* lightPossition = scene->lights[0]->pos;
-    Vector3<float> lightVector = *lightPossition - crossPoint;
-    lightVector.normalize();
-    float n_dot_l = lightVector.scalarProduct(normalVector);
- //   lightVector = lightVector*-1; //to sphere -- need to prop. calc. reflection
-    Vector3<float> reflectionVector = (lightVector*-1).reflect(normalVector);
-    reflectionVector.normalize();
-    float v_dot_r = reflectionVector.scalarProduct(observationVector);
-    if (v_dot_r < 0)
-        v_dot_r = 0;
+    Vector3<float> returnColor = amb->multiplyByVector(*scene->getGlobalAmbient());
+    for (int i=0; i<scene->getNumOfLights(); i++) {
+        Vector3<float>* lightPossition = scene->lights[i]->pos;
+        Vector3<float> lightVector = *lightPossition - crossPoint;
+        lightVector.normalize();
+        float n_dot_l = lightVector.scalarProduct(normalVector);
+        Vector3<float> reflectionVector = (lightVector*-1).reflect(normalVector);
+        reflectionVector.normalize();
+        float v_dot_r = reflectionVector.scalarProduct(observationVector);
+        if (v_dot_r < 0)
+            v_dot_r = 0;
 
-
-    //float distance = pos->powDistanceFrom(*lightPossition);
-    if (n_dot_l > 0 && !isInShadow(crossPoint, lightVector, *lightPossition)) {
-        return  (dif->multiplyByVector(*scene->lights[0]->dif))*n_dot_l +
-                spec->multiplyByVector(*scene->lights[0]->spec)*pow(double(v_dot_r), specShin) +
-                amb->multiplyByVector(*scene->lights[0]->amb)+
-                amb->multiplyByVector(*scene->getGlobalAmbient());
-        //(float)(1/(1 + 0.01*sqrt(distance) + 0.001*distance)))
+        if (n_dot_l > 0 && !isInShadow(crossPoint, lightVector, *lightPossition)) {
+            returnColor += (dif->multiplyByVector(*scene->lights[i]->dif))*n_dot_l +
+                    spec->multiplyByVector(*scene->lights[i]->spec)*pow(double(v_dot_r), specShin) +
+                    amb->multiplyByVector(*scene->lights[i]->amb);
+            //(float)(1/(1 + 0.01*sqrt(distance) + 0.001*distance)))
+        }
     }
-    else
-        return amb->multiplyByVector(*scene->getGlobalAmbient());
+    return returnColor;
 
 }
 

@@ -6,6 +6,7 @@
 #include "scene.h"
 #include "camera.h"
 #include "raytracer.h"
+#include "fileloader.h"
 #include "vector3.h"
 #include "qpainter.h"
 

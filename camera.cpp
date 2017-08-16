@@ -3,6 +3,20 @@
 
 Camera* Camera::instance = nullptr;
 
+Camera::Camera()
+{
+    zNear = 1;
+    zFar = 15;
+    pixHeight = 500;
+    pixWidth = 700;
+    eye = new Vector3<float>(0,0,0);
+    povy = 70;
+    look = new Vector3<float>(0.0,0.0,1.0);
+    up = new Vector3<float>(0.0,1.0,0.0);
+    setUp(0, 0, 0);
+
+}
+
 Camera::Camera(Vector3<float>* eye,
                float rotationX,
                float rotationY,
@@ -23,8 +37,19 @@ Camera::Camera(Vector3<float>* eye,
 
     this->look = new Vector3<float>(0.0,0.0,1.0);
     this->up = new Vector3<float>(0.0,1.0,0.0);
+    setUp(rotationX, rotationY, rotationZ);
 
-    //make this a fuction...
+}
+
+Camera::~Camera()
+{
+    delete eye;
+    delete up;
+    delete look;
+}
+
+void Camera::setUp(float rotationX, float rotationY, float rotationZ)
+{
     look->rotateX(rotationX);
     look->rotateY(rotationY);
     look->rotateZ(rotationZ);
@@ -37,14 +62,6 @@ Camera::Camera(Vector3<float>* eye,
     povy = povy * M_PI/180;
     worldHeight = 2*tan(povy/2) * zNear;
     worldWidth = aspect * worldHeight;
-
-}
-
-Camera::~Camera()
-{
-    delete eye;
-    delete up;
-    delete look;
 }
 
 
@@ -58,14 +75,17 @@ Camera *Camera::getInstance(Vector3<float>* eye,
                int pixHeight,
                float povy)
 {
-    if (instance == nullptr) {
-        instance = new Camera(eye, rotationX, rotationY, rotationZ, zNear, zFar, pixWidth, pixHeight, povy);
+    if (instance != nullptr) {
+        delete instance;
     }
+    instance = new Camera(eye, rotationX, rotationY, rotationZ, zNear, zFar, pixWidth, pixHeight, povy);
     return instance;
 }
 
 Camera *Camera::getInstance()
 {
+    if (instance == nullptr)
+        instance = new Camera();
     return instance;
 }
 

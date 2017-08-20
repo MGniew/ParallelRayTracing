@@ -53,6 +53,10 @@ public:
         return Vector3(v*x, v*y, v*z);
     }
 
+    Vector3 operator /(const float& v) {
+        return Vector3(v/x, v/y, v/z);
+    }
+
     Vector3 normalize()
     {
         float d = x*x + y*y + z*z;
@@ -139,6 +143,10 @@ public:
         if (x == 0 && y == 0 && z == 0)
             return true;
         return false;
+    }
+
+    float length() {
+        return sqrt(x*x + y*y + z*z);
     }
 
 };

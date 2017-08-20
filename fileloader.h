@@ -23,6 +23,7 @@ private:
     bool readLight(const char* line);
     bool readTriangle(const char* line);
     bool readObj(const char *line);
+
 };
 
 #endif // FILELOADER_H

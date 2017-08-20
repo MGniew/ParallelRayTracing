@@ -1,4 +1,6 @@
 #include "fileloader.h"
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "tiny_obj_loader.h"
 
 FileLoader::FileLoader()
 {
@@ -152,10 +154,87 @@ bool FileLoader::readLight(const char *line)
 
 bool FileLoader::readTriangle(const char *line)
 {
+
+
 return true;
 }
 
+
+//WIP:
 bool FileLoader::readObj(const char *line)
 {
+
+
+   const char *c = strrchr(line, ' ');
+   if (!(c && *(c+1))) return false;
+   c = c + 1;
+
+   tinyobj::attrib_t attrib;
+   std::vector<tinyobj::shape_t> shapes;
+   std::vector<tinyobj::material_t> materials;
+
+   std::string err;
+   bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, c);
+
+   if (!err.empty()) {
+     std::cerr << err << std::endl;
+   }
+
+   if (!ret) {
+      return false;
+   }
+
+   if (attrib.vertices.size() <= 0) return false;
+
+   // Loop over shapes
+   for (size_t s = 0; s < shapes.size(); s++) {
+     // Loop over faces(polygon)
+     size_t index_offset = 0;
+     for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+       int fv = shapes[s].mesh.num_face_vertices[f];
+       //mine
+       if (fv != 3) return false;
+       //endmine
+
+
+       // Loop over vertices in the face.
+       for (size_t v = 0; v < fv; v++) {
+         // access to vertex
+         tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+
+         try {
+             Vector3<float> point(attrib.vertices.at(3*idx.vertex_index+0),
+                     attrib.vertices.at(3*idx.vertex_index+1),
+                     attrib.vertices.at(3*idx.vertex_index+2));
+
+             std::cout<< point.x << " " << point.y << " " << point.z << std::endl;
+         }
+         catch (const std::out_of_range& oor) {
+             std::cerr << "Out of Range error - verticies: " << oor.what() << '\n';
+         }
+
+         if (attrib.normals.size() > 0) {
+             try {
+                 Vector3<float> point(attrib.normals.at(3*idx.normal_index+0),
+                         attrib.normals.at(3*idx.normal_index+0),
+                         attrib.normals.at(3*idx.normal_index+0));
+
+                 std::cout<< point.x << " " << point.y << " " << point.z << std::endl;
+             }
+             catch (const std::out_of_range& oor) {
+                 std::cerr << "Out of Range error: " << oor.what() << '\n';
+             }
+         }
+
+//         tinyobj::real_t tx = attrib.texcoords[2*idx.texcoord_index+0];
+//         tinyobj::real_t ty = attrib.texcoords[2*idx.texcoord_index+1];
+       }
+       index_offset += fv;
+
+       // per-face material
+//       shapes[s].mesh.material_ids[f];
+     }
+   }
+
 return true;
 }

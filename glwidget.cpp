@@ -21,7 +21,7 @@ void GLwidget::initializeGL()
     glEnable(GL_COLOR_MATERIAL);
 
     FileLoader fileLoader;
-    if(!fileLoader.ReadFile("scene.txt")) {
+    if(!fileLoader.ReadFile("scene.old.txt")) {
         exit(-1);
     }
 //    camera = Camera::getInstance(new Vector3<float>(7.0, 0.0, -2.0),
@@ -34,7 +34,7 @@ void GLwidget::initializeGL()
     RayTracer rayTracer;
 
     //rayTracer.basicRayTracer();
-    rayTracer.recursiveRayTracer(8);
+   rayTracer.recursiveRayTracer(1);
 }
 
 void GLwidget::resizeGL(int w, int h)

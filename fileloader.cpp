@@ -154,9 +154,8 @@ bool FileLoader::readLight(const char *line)
 
 bool FileLoader::readTriangle(const char *line)
 {
-
-
-return true;
+    Scene::getInstance()->addObject(new Triangle());
+    return true;
 }
 
 
@@ -186,28 +185,30 @@ bool FileLoader::readObj(const char *line)
 
    if (attrib.vertices.size() <= 0) return false;
 
+
+   Vector3<float>** tabOfPoints = new Vector3<float>*[3];
+   Vector3<float>** tabOfNormals = new Vector3<float>*[3];
+
+
    // Loop over shapes
    for (size_t s = 0; s < shapes.size(); s++) {
      // Loop over faces(polygon)
      size_t index_offset = 0;
      for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+
        int fv = shapes[s].mesh.num_face_vertices[f];
        //mine
        if (fv != 3) return false;
        //endmine
 
-
-       // Loop over vertices in the face.
+       // Loop over vertices in the face
        for (size_t v = 0; v < fv; v++) {
          // access to vertex
          tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-
          try {
-             Vector3<float> point(attrib.vertices.at(3*idx.vertex_index+0),
-                     attrib.vertices.at(3*idx.vertex_index+1),
-                     attrib.vertices.at(3*idx.vertex_index+2));
-
-             std::cout<< point.x << " " << point.y << " " << point.z << std::endl;
+             tabOfPoints[v] = new Vector3<float>(attrib.vertices.at(3*idx.vertex_index+0),
+                                                 attrib.vertices.at(3*idx.vertex_index+1),
+                                                 attrib.vertices.at(3*idx.vertex_index+2));
          }
          catch (const std::out_of_range& oor) {
              std::cerr << "Out of Range error - verticies: " << oor.what() << '\n';
@@ -215,15 +216,13 @@ bool FileLoader::readObj(const char *line)
 
          if (attrib.normals.size() > 0) {
              try {
-                 Vector3<float> point(attrib.normals.at(3*idx.normal_index+0),
-                         attrib.normals.at(3*idx.normal_index+0),
-                         attrib.normals.at(3*idx.normal_index+0));
-
-                 std::cout<< point.x << " " << point.y << " " << point.z << std::endl;
              }
              catch (const std::out_of_range& oor) {
                  std::cerr << "Out of Range error: " << oor.what() << '\n';
              }
+         }
+         else {
+              tabOfNormals[v] = new Vector3<float>(0,0,1);
          }
 
 //         tinyobj::real_t tx = attrib.texcoords[2*idx.texcoord_index+0];
@@ -233,8 +232,17 @@ bool FileLoader::readObj(const char *line)
 
        // per-face material
 //       shapes[s].mesh.material_ids[f];
+       Scene::getInstance()->addObject(new Triangle(tabOfPoints[0], tabOfPoints[1], tabOfPoints[2],
+                                                    tabOfNormals[0], tabOfNormals[1], tabOfNormals[2],
+                                                    0, 0,
+                                                    new Vector3<float>(0.5, 0.5, 0.5), new Vector3<float>(0.3, 0.3, 0.1),
+                                                    new Vector3<float>(0.7, 0.7, 0.7), 39, 0.0, 0.0, 1.0, 0.0));
      }
-   }
 
+
+   }
+   std::cout << Scene::getInstance()->getNumOfObjects() << std::endl;
+   delete [] tabOfPoints;
+   delete [] tabOfNormals;
 return true;
 }

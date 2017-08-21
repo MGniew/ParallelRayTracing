@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "vector3.h"
 #include "sphere.h"
+#include "triangle.h"
 
 
 class FileLoader

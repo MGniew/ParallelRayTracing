@@ -54,7 +54,7 @@ public:
     }
 
     Vector3 operator /(const float& v) {
-        return Vector3(v/x, v/y, v/z);
+        return Vector3(x/v, y/v, z/v);
     }
 
     Vector3 normalize()
@@ -113,10 +113,9 @@ public:
     float powDistanceFrom(Vector3 &v){
         return pow(x - v.x,2) + pow(y - v.y, 2) + pow(z - v.z,2);
     }
-
+//no need to change normal vector dir !
     Vector3<float> reflect(Vector3 &n) {
         float n_dot_l = this->scalarProduct(n);
-//        return n*(2*n_dot_l) - *this;
         return *this - n*(2*n_dot_l);
     }
 

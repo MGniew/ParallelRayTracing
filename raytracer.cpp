@@ -23,7 +23,6 @@ void RayTracer::recursiveRayTracer(int depth)
             buffer[i][j]->setValues(getColorRecursive(worldPosOfPixel, directionVector, depth));
 
         }
-            std::cout << i << std::endl;
     }
 }
 
@@ -57,6 +56,7 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
      if (observationVector.scalarProduct(normalVector) < 0) {
          normalVector = normalVector*-1;
      }
+
      crossPoint = crossPoint + normalVector*0.0001;
      if(sceneObject->getTransparency()>0) {
          transparencyRay = directionVector.refract(normalVector, sceneObject->getDensity(), 1);

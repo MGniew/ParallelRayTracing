@@ -34,7 +34,7 @@ void GLwidget::initializeGL()
     RayTracer rayTracer;
 
     //rayTracer.basicRayTracer();
-   rayTracer.recursiveRayTracer(1);
+   rayTracer.recursiveRayTracer(3);
 }
 
 void GLwidget::resizeGL(int w, int h)

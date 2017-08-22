@@ -209,6 +209,7 @@ bool FileLoader::readObj(const char *line)
              tabOfPoints[v] = new Vector3<float>(attrib.vertices.at(3*idx.vertex_index+0),
                                                  attrib.vertices.at(3*idx.vertex_index+1),
                                                  attrib.vertices.at(3*idx.vertex_index+2));
+                    std::cout<< tabOfPoints[0]->x << std::endl;
          }
          catch (const std::out_of_range& oor) {
              std::cerr << "Out of Range error - verticies: " << oor.what() << '\n';
@@ -216,6 +217,9 @@ bool FileLoader::readObj(const char *line)
 
          if (attrib.normals.size() > 0) {
              try {
+                 tabOfNormals[v] = new Vector3<float>(attrib.normals.at(3*idx.normal_index+0),
+                                                     attrib.normals.at(3*idx.normal_index+1),
+                                                     attrib.normals.at(3*idx.normal_index+2));
              }
              catch (const std::out_of_range& oor) {
                  std::cerr << "Out of Range error: " << oor.what() << '\n';

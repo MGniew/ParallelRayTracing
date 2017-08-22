@@ -72,7 +72,7 @@ public:
     }
 
     Vector3 vectorProduct(Vector3 &v) {
-        return Vector3(y*v.z -  z*v.y, x*v.z - z*v.x, x*v.y - y*v.x);
+        return Vector3(y*v.z -  z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);
     }
 
     Vector3 multiplyByVector(Vector3 &v) {

@@ -71,7 +71,6 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
      }
      if (sceneObject->getMirror()>0) {
          reflectedRay = directionVector.reflect(normalVector);
-         //reflectedRay.normalize();
          reflectedColor = getColorRecursive(crossPoint, reflectedRay, depth);
      }
 

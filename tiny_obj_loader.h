@@ -866,9 +866,9 @@ static void InitMaterial(material_t *material) {
   material->reflection_texname = "";
   material->alpha_texname = "";
   for (int i = 0; i < 3; i++) {
-    material->ambient[i] = 0.f;
-    material->diffuse[i] = 0.f;
-    material->specular[i] = 0.f;
+    material->ambient[i] = 0.5f;
+    material->diffuse[i] = 0.4f;
+    material->specular[i] = 0.4f;
     material->transmittance[i] = 0.f;
     material->emission[i] = 0.f;
   }

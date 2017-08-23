@@ -16,59 +16,31 @@ Triangle::Triangle(Vector3<float> *pointA,
                    float local,
                    float density) : SceneObject(amb, dif, spec, specShin, transparency, mirror, local, density)
 {
-
-
-    Vector3<float> ab = *pointB - *pointA;
-    Vector3<float> ac = *pointC - *pointA;
-    Vector3<float> normal = ab.vectorProduct(ac).normalize();
-
-
-
     this->pointA = pointA;
     this->pointB = pointB;
     this->pointC = pointC;
- //   normalA->setValues(normal.x, normal.y, normal.z);
-  //  normalB->setValues(normal.x, normal.y, normal.z);
-   // normalC->setValues(normal.x, normal.y, normal.z);
-    this->normalA = normalA;
-    this->normalB = normalB;
-    this->normalC = normalC;
-//    if (normalA != nullptr)
-//        this->normalA = normalA;
-//    else
-//        normalA = new Vector3<float>(normal.x, normal.y, normal.z);
-
-//    if (normalB != nullptr)
-//        this->normalB = normalB;
-//    else
-//        this->normalB = new Vector3<float>(normal.x, normal.y, normal.z);
-
-//    if (normalC != nullptr)
-//        this->normalC = normalC;
-//    else
-//        this->normalC = new Vector3<float>(normal.x, normal.y, normal.z);
-
-    std::cout << normalA->x << " " << normalA->y << " " << normalA->z << std::endl;
-    this->texCoordsX = texCoordsX;
-    this->texCoordsY = texCoordsY;
-
-}
-
-Triangle::Triangle() : SceneObject(new Vector3<float>(0.5, 0.5, 0.5), new Vector3<float>(0.3, 0.3, 0.1),
-                                   new Vector3<float>(0.7, 0.7, 0.7), 39, 0.0, 0.0, 1.0, 0.0)
-{
-    pointA = new Vector3<float>(0.0, 2.0, 2.0);
-    pointB = new Vector3<float>(-2.0, 0, 2.0);
-    pointC = new Vector3<float>(2.0, 0, 2.0);
 
     Vector3<float> ab = *pointB - *pointA;
     Vector3<float> ac = *pointC - *pointA;
     Vector3<float> normal = ab.vectorProduct(ac).normalize();
 
-    normalA = new Vector3<float>(normal.x, normal.y, normal.z);
-    normalB = new Vector3<float>(normal.x, normal.y, normal.z);
-    normalC = new Vector3<float>(normal.x, normal.y, normal.z);
+    if (normalA != nullptr)
+        this->normalA = normalA;
+    else
+        this->normalA = new Vector3<float>(normal.x, normal.y, normal.z);
 
+    if (normalB != nullptr)
+        this->normalB = normalB;
+    else
+        this->normalB = new Vector3<float>(normal.x, normal.y, normal.z);
+
+    if (normalC != nullptr)
+        this->normalC = normalC;
+    else
+        this->normalC = new Vector3<float>(normal.x, normal.y, normal.z);
+
+    this->texCoordsX = texCoordsX;
+    this->texCoordsY = texCoordsY;
 }
 
 Triangle::~Triangle()

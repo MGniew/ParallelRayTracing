@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "vector3.h"
 #include "sphere.h"
+#include "triangle.h"
 
 
 class FileLoader
@@ -23,6 +24,7 @@ private:
     bool readLight(const char* line);
     bool readTriangle(const char* line);
     bool readObj(const char *line);
+
 };
 
 #endif // FILELOADER_H

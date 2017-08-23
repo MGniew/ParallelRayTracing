@@ -53,6 +53,10 @@ public:
         return Vector3(v*x, v*y, v*z);
     }
 
+    Vector3 operator /(const float& v) {
+        return Vector3(x/v, y/v, z/v);
+    }
+
     Vector3 normalize()
     {
         float d = x*x + y*y + z*z;
@@ -68,7 +72,7 @@ public:
     }
 
     Vector3 vectorProduct(Vector3 &v) {
-        return Vector3(y*v.z -  z*v.y, x*v.z - z*v.x, x*v.y - y*v.x);
+        return Vector3(y*v.z -  z*v.y, z*v.x - x*v.z, x*v.y - y*v.x);
     }
 
     Vector3 multiplyByVector(Vector3 &v) {
@@ -109,10 +113,9 @@ public:
     float powDistanceFrom(Vector3 &v){
         return pow(x - v.x,2) + pow(y - v.y, 2) + pow(z - v.z,2);
     }
-
+//no need to change normal vector dir !
     Vector3<float> reflect(Vector3 &n) {
         float n_dot_l = this->scalarProduct(n);
-//        return n*(2*n_dot_l) - *this;
         return *this - n*(2*n_dot_l);
     }
 
@@ -139,6 +142,10 @@ public:
         if (x == 0 && y == 0 && z == 0)
             return true;
         return false;
+    }
+
+    float length() {
+        return sqrt(x*x + y*y + z*z);
     }
 
 };

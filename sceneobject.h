@@ -20,9 +20,12 @@ public:
                 float density);
 
     virtual ~SceneObject();
-    virtual Vector3<float> getLocalColor(Vector3<float>& normalVector,
-                                                 Vector3<float>& crossPoint,
-                                                 Vector3<float>& observationVector) = 0; //returns RGB, uses Phong model
+    Vector3<float> getLocalColor(Vector3<float>& normalVector,
+                                 Vector3<float>& crossPoint,
+                                 Vector3<float>& observationVector); //returns RGB, uses Phong model
+
+    bool isInShadow(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos);
+
     virtual bool trace(Vector3<float> &crossPoint,
                        Vector3<float> &startPoint,
                        Vector3<float> &directionVector) = 0; //returns true if hit, cordinates in param

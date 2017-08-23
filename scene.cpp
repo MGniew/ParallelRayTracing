@@ -20,8 +20,6 @@ Scene::Scene()
         for (int j = 0; j < Camera::getInstance()->getPixHeight(); j++)
             pixels[i][j] = new Vector3<float>(0.0, 0.0, 0.0);
     }
-    std::cout << "pixel array created" << std::endl;
-
 }
 
 Scene::~Scene()
@@ -50,8 +48,6 @@ Scene::~Scene()
     delete [] pixels;
 
     instance = nullptr;
-    std::cout << "bye scene" << std::endl;
-
 }
 
 int Scene::getNumOfObjects()

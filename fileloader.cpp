@@ -200,14 +200,14 @@ bool FileLoader::readObj(const char *line)
    std::vector<tinyobj::shape_t> shapes;
    std::vector<tinyobj::material_t> materials;
 
+   std::string err;
+   bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, c);
+
    if(materials.empty()) {
        tinyobj::material_t defaultMaterial;
        tinyobj::InitMaterial(&defaultMaterial);
        materials.push_back(defaultMaterial);
    }
-
-   std::string err;
-   bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, c);
 
    if (!err.empty()) {
      std::cerr << err << std::endl;
@@ -268,9 +268,8 @@ bool FileLoader::readObj(const char *line)
        // per-face material
        int current_material_id = shapes[s].mesh.material_ids[f];
 
-       // Invaid material ID. Use default material.
        if ((current_material_id < 0) || (current_material_id >= static_cast<int>(materials.size()))) {
-         current_material_id = 0; // Default material is added to the last item in `materials`.
+         current_material_id = 0;
         }
 
        diffuseVector = new Vector3<float>(materials[current_material_id].diffuse[0],

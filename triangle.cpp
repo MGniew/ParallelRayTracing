@@ -154,12 +154,10 @@ Vector3<float> Triangle::getNormalVector(Vector3<float>& crossPoint) {
     float bcArea = Area(bc, bp);
     float caArea = Area(ca, ap);
 
-    //this may be a const
-    float area = abArea + bcArea + caArea;
+    //division by total area is not nessesery since i must normalize result anyway
     Vector3<float> result = (*normalA*bcArea + *normalB*caArea + *normalC*abArea);
-    result = result/area;
+    result.normalize();
     return result;
-   // return Vector3<float>(normalA->x, normalB->y, normalC->z);
 }
 
 float Triangle::Area(Vector3<float> a, Vector3<float> b)

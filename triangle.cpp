@@ -62,7 +62,6 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
     Vector3<float> v0v2 = *pointC - *pointA;
     Vector3<float> pvec =  directionVector.vectorProduct(v0v2);
     float u,v;
-    //float t;
 
     float det = v0v1.scalarProduct(pvec);
 
@@ -78,7 +77,6 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
     v = directionVector.scalarProduct(qvec) * invDet;
     if (v < 0 || u + v > 1) return false;
 
-    //t = v0v2.scalarProduct(qvec) * invDet;
     crossPoint = *pointA + v0v1*u + v0v2*v;
 
     if ((v0v2.scalarProduct(qvec) * invDet) > kEpsilon){

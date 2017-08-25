@@ -24,17 +24,13 @@ void GLwidget::initializeGL()
     if(!fileLoader.ReadFile("scene.old.txt")) {
         exit(-1);
     }
-//    camera = Camera::getInstance(new Vector3<float>(7.0, 0.0, -2.0),
-//                                         0.0, -45.0, 0.0,
-//                                         1.0, 30.0,
-//                                         700, 500,
-//                                         45.0);
+
     camera = Camera::getInstance();
     scene = Scene::getInstance();
     RayTracer rayTracer;
 
     //rayTracer.basicRayTracer();
-   rayTracer.recursiveRayTracer(3);
+    rayTracer.recursiveRayTracer(3);
 }
 
 void GLwidget::resizeGL(int w, int h)

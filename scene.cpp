@@ -14,12 +14,7 @@ Scene::Scene()
     numOfLights = 0;
     numOfObjects = 0;
 
-    pixels = new Vector3<float>**[Camera::getInstance()->getPixWidth()];
-    for (int i = 0; i < Camera::getInstance()->getPixWidth(); i++) {
-        pixels[i] = new Vector3<float>*[Camera::getInstance()->getPixHeight()];
-        for (int j = 0; j < Camera::getInstance()->getPixHeight(); j++)
-            pixels[i][j] = new Vector3<float>(0.0, 0.0, 0.0);
-    }
+    pixels = nullptr;
 }
 
 Scene::~Scene()
@@ -73,6 +68,17 @@ void Scene::addLight(Light *light)
     numOfLights++;
     delete[] lights;
     lights = tempLight;
+}
+
+void Scene::setUpPixels()
+{
+    if(pixels != nullptr) return;
+    pixels = new Vector3<float>**[Camera::getInstance()->getPixWidth()];
+        for (int i = 0; i < Camera::getInstance()->getPixWidth(); i++) {
+            pixels[i] = new Vector3<float>*[Camera::getInstance()->getPixHeight()];
+            for (int j = 0; j < Camera::getInstance()->getPixHeight(); j++)
+                pixels[i][j] = new Vector3<float>(0.0, 0.0, 0.0);
+        }
 }
 
 int Scene::getNumOfLights()

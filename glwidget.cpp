@@ -20,17 +20,17 @@ void GLwidget::initializeGL()
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
 
-    camera = Camera::getInstance(new Vector3<float>(7.0, 0.0, -2.0),
-                                         0.0, -45.0, 0.0,
-                                         1.0, 30.0,
-                                         700, 500,
-                                         45.0);
+    FileLoader fileLoader;
+    if(!fileLoader.ReadFile("scene.old.txt")) {
+        exit(-1);
+    }
 
+    camera = Camera::getInstance();
     scene = Scene::getInstance();
     RayTracer rayTracer;
 
     //rayTracer.basicRayTracer();
-    rayTracer.recursiveRayTracer(15);
+    rayTracer.recursiveRayTracer(3);
 }
 
 void GLwidget::resizeGL(int w, int h)
@@ -47,9 +47,11 @@ void GLwidget::paintGL()
     float* pixel;
     pixel = new float[3];
     QPainter qPainter(this);
+    int iMax = Camera::getInstance()->getPixWidth();
+    int jMax = Camera::getInstance()->getPixHeight();
 
-    for(int i = 0; i < 700; i++) {
-        for(int j = 0; j < 500; j++) {
+    for(int i = 0; i < iMax; i++) {
+        for(int j = 0; j < jMax; j++) {
             pixel[0] = scene->getPixels()[i][j]->x;
             pixel[1] = scene->getPixels()[i][j]->y;
             pixel[2] = scene->getPixels()[i][j]->z;

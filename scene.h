@@ -6,17 +6,17 @@
 #include "raytracer.h"
 #include <iostream>
 
-class SceneObject; //hack circural includes - real include in .cpp
+class SceneObject;
 class Sphere;
 
 class Scene
 {
 public:
-    Scene(); //parser from txt?
+    Scene();
     ~Scene();
 
     static Scene* instance;
-    Light** Lights;
+    Light** lights;
     SceneObject** sceneObjects;
     Vector3<float>*** pixels; // HxW*3
     Vector3<float>* backgroundColor;
@@ -36,6 +36,8 @@ public:
     Vector3<float> ***getPixels();
     int getNumOfLights();
     int getNumOfObjects();
+    void addObject(SceneObject* sceneObject);
+    void addLight(Light* light);
 };
 
 #endif // SCENE_H

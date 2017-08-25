@@ -34,7 +34,8 @@ SOURCES += \
     raytracer.cpp \
     light.cpp \
     camera.cpp \
-    fileloader.cpp
+    fileloader.cpp \
+    masterthread.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,7 +48,8 @@ HEADERS += \
     light.h \
     camera.h \
     vector3.h \
-    fileloader.h
+    fileloader.h \
+    masterthread.h
 
 FORMS += \
         mainwindow.ui

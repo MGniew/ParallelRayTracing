@@ -3,12 +3,15 @@
 GLwidget::GLwidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 setFixedSize(200, 200);
+connect(&masterThread, SIGNAL(workIsReady()), this, SLOT(refresh()));
+
+scene = Scene::getInstance();
+camera = Camera::getInstance();
 }
 
 GLwidget::~GLwidget()
 {
-    delete scene;
-    delete camera;
+
 }
 
 void GLwidget::initializeGL()
@@ -19,18 +22,6 @@ void GLwidget::initializeGL()
     glEnable(GL_LIGHTING);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_COLOR_MATERIAL);
-
-    FileLoader fileLoader;
-    if(!fileLoader.ReadFile("scene.old.txt")) {
-        exit(-1);
-    }
-
-    camera = Camera::getInstance();
-    scene = Scene::getInstance();
-    RayTracer rayTracer;
-
-    //rayTracer.basicRayTracer();
-    rayTracer.recursiveRayTracer(3);
 }
 
 void GLwidget::resizeGL(int w, int h)
@@ -47,8 +38,8 @@ void GLwidget::paintGL()
     float* pixel;
     pixel = new float[3];
     QPainter qPainter(this);
-    int iMax = Camera::getInstance()->getPixWidth();
-    int jMax = Camera::getInstance()->getPixHeight();
+    int iMax = camera->getPixWidth();
+    int jMax = camera->getPixHeight();
 
     for(int i = 0; i < iMax; i++) {
         for(int j = 0; j < jMax; j++) {
@@ -64,4 +55,9 @@ void GLwidget::paintGL()
     }
     delete pixel;
     glFlush();
+}
+
+void GLwidget::refresh()
+{
+  update();
 }

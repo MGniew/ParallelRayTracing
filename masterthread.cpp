@@ -7,9 +7,10 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
     if(!fileLoader.ReadFile("scene.old.txt")) {
         exit(-1);
     }
-
     camera = Camera::getInstance();
     scene = Scene::getInstance();
+
+
     start(HighPriority);
 
 }
@@ -27,7 +28,7 @@ void MasterThread::run()
 
 
     RayTracer rayTracer;
-    rayTracer.recursiveRayTracer(2);
+    rayTracer.recursiveRayTracer(3);
     emit workIsReady();
 
 //    while(isAlive)

@@ -38,6 +38,7 @@ public:
     int getNumOfObjects();
     void addObject(SceneObject* sceneObject);
     void addLight(Light* light);
+    void setUpPixels();
 };
 
 #endif // SCENE_H

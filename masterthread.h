@@ -9,6 +9,11 @@
 #include "qwaitcondition.h"
 
 
+#include <mpi.h>
+#include <stdio.h>
+
+
+
 class MasterThread : public QThread
 {
     Q_OBJECT

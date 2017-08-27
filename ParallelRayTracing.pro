@@ -35,7 +35,9 @@ SOURCES += \
     light.cpp \
     camera.cpp \
     fileloader.cpp \
-    masterthread.cpp
+    masterthread.cpp \
+    mastermpi.cpp \
+    slavempi.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -49,9 +51,22 @@ HEADERS += \
     camera.h \
     vector3.h \
     fileloader.h \
-    masterthread.h
+    masterthread.h \
+    mastermpi.h \
+    slavempi.h
 
 FORMS += \
         mainwindow.ui
 
 LIBS += -lglut -lGLU
+
+QMAKE_CXX = mpicxx
+QMAKE_CXX_RELEASE = $$QMAKE_CXX
+QMAKE_CXX_DEBUG = $$QMAKE_CXX
+QMAKE_LINK = $$QMAKE_CXX
+QMAKE_CC = mpicc
+
+#QMAKE_CFLAGS += $$system(mpicc -show)
+#QMAKE_LFLAGS += $$system(mpicxx -show)
+#QMAKE_CXXFLAGS += $$system(mpicxx -show) -DMPICH_IGNORE_CXX_SEEK
+#QMAKE_CXXFLAGS_RELEASE += $$system(mpicxx -show) -DMPICH_IGNORE_CXX_SEEK

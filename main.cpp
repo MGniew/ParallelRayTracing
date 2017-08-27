@@ -8,8 +8,7 @@
 #include <mpi.h>
 #include <stdio.h>
 
-#include <thread>
-#include <chrono>
+#include "slavempi.h"
 
 int main(int argc, char *argv[])
 {
@@ -20,7 +19,6 @@ int main(int argc, char *argv[])
     int world_rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
 
-
     if(world_rank == 0) {
         srand(time(NULL));
         QApplication a(argc, argv);
@@ -29,6 +27,6 @@ int main(int argc, char *argv[])
         return a.exec();
     }
 
-    printf("rank %d", world_rank);
-    MPI_Finalize();
+    SlaveMPI slave;
+    return slave.exec();
 }

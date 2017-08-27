@@ -12,6 +12,10 @@
 #include <mpi.h>
 #include <stdio.h>
 
+#include "global.h"
+#include "queue"
+#include "vector"
+
 
 
 class MasterThread : public QThread

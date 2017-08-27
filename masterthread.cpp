@@ -27,6 +27,7 @@ MasterThread::~MasterThread()
 
 void MasterThread::run()
 {
+
     // Get the number of processes
     int world_size;
     MPI_Comm_size(MPI_COMM_WORLD, &world_size);
@@ -46,6 +47,13 @@ void MasterThread::run()
            processor_name, world_rank, world_size);
 
 
+    Vector3<float> a(0.3, 0.2, 0.1);
+    std::vector<char> vec;
+    a.serialize(&vec);
+
+    for(int i=1; i<world_size; i++) {
+       MPI_Send(vec.data(), vec.size(), MPI_BYTE, i, 666, MPI_COMM_WORLD);
+    }
 
 
     RayTracer rayTracer;

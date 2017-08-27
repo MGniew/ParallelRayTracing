@@ -2,6 +2,9 @@
 #define VECTOR3_H
 
 #include <math.h>
+#include "vector"
+#include <stdio.h>
+#include <string.h>
 
 template <typename type>
 class Vector3
@@ -30,6 +33,10 @@ public:
     type x;
     type y;
     type z;
+    static const int serializedSize =
+            sizeof(type) +
+            sizeof(type) +
+            sizeof(type);
 
     Vector3 operator +(const Vector3& v)
     {
@@ -147,6 +154,23 @@ public:
     float length() {
         return sqrt(x*x + y*y + z*z);
     }
+
+    void serialize(std::vector<char> *bytes){
+        bytes->resize(serializedSize);
+        char *ptr = bytes->data();
+        memcpy(ptr, &x, sizeof(type)); ptr += sizeof(type);
+        memcpy(ptr, &y,sizeof(type)); ptr += sizeof(type);
+        memcpy(ptr, &z,sizeof(type)); ptr += sizeof(type);
+    }
+
+    void deserialize(const std::vector<char>& bytes) {
+        const char* ptr = bytes.data();
+        memcpy(&x, ptr, sizeof(type)); ptr += sizeof(type);
+        memcpy(&y, ptr, sizeof(type)); ptr += sizeof(type);
+        memcpy(&z, ptr, sizeof(type)); ptr += sizeof(type);
+    }
+
+
 
 };
 

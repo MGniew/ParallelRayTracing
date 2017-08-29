@@ -5,6 +5,7 @@
 #include "camera.h"
 #include "raytracer.h"
 #include <iostream>
+#include "pixels.h"
 
 class SceneObject;
 class Sphere;
@@ -18,7 +19,8 @@ public:
     static Scene* instance;
     Light** lights;
     SceneObject** sceneObjects;
-    Vector3<float>*** pixels; // HxW*3
+    //Vector3<float>*** pixels; // HxW*3
+    Pixels* pixels;
     Vector3<float>* backgroundColor;
     Vector3<float>* globalAmbient;
     int numOfLights;
@@ -38,7 +40,11 @@ public:
     int getNumOfObjects();
     void addObject(SceneObject* sceneObject);
     void addLight(Light* light);
-    void setUpPixels();
+    void setUpPixels(int x, int y);
+    int getStartX();
+    int getStartY();
+    int getWidth();
+    int getHeight();
 };
 
 #endif // SCENE_H

@@ -84,8 +84,7 @@ bool FileLoader::readCameraSettings(const char *line)
     Camera::getInstance(new Vector3<float>(posX, posY, posZ),
                         rotX, rotY, rotZ, zNear, zFar,
                         width, height, povy);
-    Scene::getInstance()->setUpPixels();
-
+    Scene::getInstance()->setUpPixels(width, height);
     return true;
 }
 

@@ -6,6 +6,8 @@ Pixels::Pixels(int x, int y)
 
     this->x = x;
     this->y = y;
+    startx = 0;
+    starty = 0;
     serializedSize = Vector3<float>::serializedSize*x*y;
 
     data = new Vector3<float>**[x];
@@ -55,6 +57,7 @@ void Pixels::deserialize(const std::vector<char> &bytes)
     memcpy(&stopx, ptr, sizeof(int)); ptr += sizeof(int);
     memcpy(&starty, ptr, sizeof(int)); ptr += sizeof(int);
     memcpy(&stopy, ptr, sizeof(int)); ptr += sizeof(int);
+
     std::vector<char> pixdataVec;
     Vector3<float> pixVec;
     pixdataVec.resize(Vector3<float>::serializedSize);
@@ -67,4 +70,10 @@ void Pixels::deserialize(const std::vector<char> &bytes)
             ptr += pixdataVec.size();
         }
     }
+}
+
+void Pixels::setStartXY(int x, int y)
+{
+    this->startx = x;
+    this->starty = y;
 }

@@ -7,7 +7,9 @@
 #include "raytracer.h"
 #include "mpi.h"
 #include "vector"
+#include "pixels.h"
 #include "fileloader.h" //temp
+#include "global.h"
 
 class SlaveMPI
 {

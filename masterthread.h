@@ -36,6 +36,12 @@ protected:
     QWaitCondition condition;
     Camera* camera;
     Scene* scene;
+
+private:
+    void splitToChunks(int num);
+    std::queue<Chunk> queue;
+    int worldSize;
+    void clearQueue(std::queue<Chunk> &q);
 };
 
 #endif // MASTERTHREAD_H

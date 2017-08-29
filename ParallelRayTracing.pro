@@ -36,7 +36,6 @@ SOURCES += \
     camera.cpp \
     fileloader.cpp \
     masterthread.cpp \
-    mastermpi.cpp \
     slavempi.cpp \
     pixels.cpp
 
@@ -53,7 +52,6 @@ HEADERS += \
     vector3.h \
     fileloader.h \
     masterthread.h \
-    mastermpi.h \
     slavempi.h \
     global.h \
     pixels.h

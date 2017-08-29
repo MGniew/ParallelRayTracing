@@ -3,6 +3,7 @@
 
 #include "vector"
 #include "vector3.h"
+#include "iostream"
 
 class Pixels
 {
@@ -14,7 +15,9 @@ public:
     void deserialize(const std::vector<char>& bytes);
     Vector3<float>*** data;
     int x, y;
+    int startx, starty;
     int serializedSize;
+    void setStartXY(int x, int y);
 
 
 };

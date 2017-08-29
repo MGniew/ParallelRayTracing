@@ -35,12 +35,14 @@ Scene::~Scene()
     delete [] sceneObjects;
     numOfObjects = 0;
 
-    for (int i = 0; i <  Camera::getInstance()->getPixWidth(); i++) {
-        for (int j = 0; j <  Camera::getInstance()->getPixHeight(); j++)
-            delete pixels[i][j];
-        delete [] pixels[i];
-    }
-    delete [] pixels;
+//    for (int i = 0; i <  Camera::getInstance()->getPixWidth(); i++) {
+//        for (int j = 0; j <  Camera::getInstance()->getPixHeight(); j++)
+//            delete pixels[i][j];
+//        delete [] pixels[i];
+//    }
+//    delete [] pixels;
+    delete pixels;
+    pixels = nullptr;
 
     instance = nullptr;
 }
@@ -70,16 +72,33 @@ void Scene::addLight(Light *light)
     lights = tempLight;
 }
 
-void Scene::setUpPixels()
+void Scene::setUpPixels(int x, int y)
 {
-    if(pixels != nullptr) return;
-    pixels = new Vector3<float>**[Camera::getInstance()->getPixWidth()];
-        for (int i = 0; i < Camera::getInstance()->getPixWidth(); i++) {
-            pixels[i] = new Vector3<float>*[Camera::getInstance()->getPixHeight()];
-            for (int j = 0; j < Camera::getInstance()->getPixHeight(); j++)
-                pixels[i][j] = new Vector3<float>(0.0, 0.0, 0.0);
-        }
+    delete pixels;
+    pixels = new Pixels(x,y);
 }
+
+int Scene::getStartX()
+{
+    return pixels->startx;
+}
+
+int Scene::getStartY()
+{
+    return pixels->starty;
+}
+
+int Scene::getWidth()
+{
+    return pixels->x;
+}
+
+
+int Scene::getHeight()
+{
+    return pixels->y;
+}
+
 
 int Scene::getNumOfLights()
 {
@@ -88,7 +107,7 @@ int Scene::getNumOfLights()
 
 Vector3<float> ***Scene::getPixels()
 {
-    return pixels;
+    return pixels->data;
 }
 
 Vector3<float> *Scene::getGlobalAmbient()

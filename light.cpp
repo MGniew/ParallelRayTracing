@@ -6,6 +6,8 @@ Light::Light()
     amb = new Vector3<float>(0.1, 0.1, 0.1);
     dif = new Vector3<float>(0.7, 0.8, 0.61);
     spec = new Vector3<float>(0.9, 0.8, 0.8);
+
+    serializedSize = 4 * Vector3<float>::serializedSize;
 }
 
 Light::Light(Vector3<float>* pos, Vector3<float>* amb, Vector3<float>* dif, Vector3<float>* spec)
@@ -14,6 +16,8 @@ Light::Light(Vector3<float>* pos, Vector3<float>* amb, Vector3<float>* dif, Vect
     this->amb = amb;
     this->dif = dif;
     this->spec = spec;
+
+    serializedSize = 4 * Vector3<float>::serializedSize;
 }
 
 Light::~Light()
@@ -54,11 +58,32 @@ void Light::setSpec(float r, float g, float b)
 
 void Light::serialize(std::vector<char> *bytes)
 {
-
+    bytes->resize(serializedSize);
+    char *ptr = bytes->data();
+    std::vector<char> vec;
+    pos->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    amb->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    dif->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    spec->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size());
 }
 
 void Light::deserialize(const std::vector<char> &bytes)
 {
+    const char* ptr = bytes.data();
+    std::vector<char> vec;
+    vec.resize(Vector3<float>::serializedSize);
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    pos->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    amb->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    dif->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size());
+    spec->deserialize(vec);
 
 }
 

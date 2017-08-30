@@ -11,6 +11,7 @@
 
 class SceneObject;
 class Sphere;
+class Triangle;
 
 class Scene : public Serializable
 {

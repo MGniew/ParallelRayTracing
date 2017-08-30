@@ -24,6 +24,7 @@ public:
              float density);
 
     ~Triangle();
+    Triangle();
 
     bool trace(Vector3<float>& crossPoint,
                        Vector3<float>& startPoint,

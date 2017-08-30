@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "sceneobject.h"
 #include "sphere.h"
+#include "triangle.h"
 
 Scene* Scene::instance = nullptr;
 
@@ -132,6 +133,48 @@ void Scene::serialize(std::vector<char> *bytes)
 
 void Scene::deserialize(const std::vector<char> &bytes)
 {
+    const char* ptr = bytes.data();
+    std::vector<char> vec;
+    vec.resize(Vector3<float>::serializedSize);
+
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    backgroundColor->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    globalAmbient->deserialize(vec);
+
+    char type;
+    const char* lastElementPtr = &bytes.back();
+    Sphere* sphere;
+    Triangle* triangle;
+    Light* light;
+    while (ptr < lastElementPtr) {
+        memcpy(&type, ptr, sizeof(type)); ptr += sizeof(type);
+        switch(type) {
+
+            case 't':
+                triangle = new Triangle();
+                vec.resize(triangle->serializedSize);
+                memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+                triangle->deserialize(vec);
+                addObject(triangle);
+                break;
+            case 's':
+                sphere = new Sphere();
+                vec.resize(sphere->serializedSize);
+                memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+                sphere->deserialize(vec);
+                addObject(sphere);
+                break;
+            case 'l':
+                light = new Light();
+                vec.resize(light->serializedSize);
+                memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+                light->deserialize(vec);
+                addLight(light);
+                break;
+        }
+
+    }
 
 }
 

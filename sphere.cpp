@@ -23,6 +23,18 @@ Sphere::~Sphere()
 
 }
 
+Sphere::Sphere()
+{
+    amb = new Vector3<float>;
+    dif = new Vector3<float>;
+    spec = new Vector3<float>;
+    pos = new Vector3<float>;
+
+    serializedSize = 4 * Vector3<float>::serializedSize +
+                   6 * sizeof(float);
+
+}
+
 bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector) {
 
      float a, b, c, d, r1, r2;

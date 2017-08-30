@@ -56,6 +56,22 @@ Triangle::~Triangle()
     delete normalC;
 }
 
+Triangle::Triangle()
+{
+    pointA = new Vector3<float>;
+    pointB = new Vector3<float>;
+    pointC = new Vector3<float>;
+    normalA = new Vector3<float>;
+    normalB = new Vector3<float>;
+    normalC = new Vector3<float>;
+    amb = new Vector3<float>;
+    dif = new Vector3<float>;
+    spec = new Vector3<float>;
+
+    serializedSize = 9 * Vector3<float>::serializedSize +
+                     7 * sizeof(float);
+}
+
 //Möller–Trumbore intersection algorithm
 bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector) {
 

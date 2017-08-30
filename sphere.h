@@ -18,6 +18,7 @@ public:
            float local,
            float density);
     ~Sphere();
+    Sphere();
     bool trace(Vector3<float>& crossPoint,
                Vector3<float>& startPoint,
                Vector3<float>& directionVector); //returns true if hit, cordinates in param

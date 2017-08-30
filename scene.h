@@ -6,11 +6,13 @@
 #include "raytracer.h"
 #include <iostream>
 #include "pixels.h"
+#include "serializable.h"
+
 
 class SceneObject;
 class Sphere;
 
-class Scene
+class Scene : public Serializable
 {
 public:
     Scene();
@@ -48,7 +50,7 @@ public:
 
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);
-    int serializedSize;
+    char getType();
 };
 
 #endif // SCENE_H

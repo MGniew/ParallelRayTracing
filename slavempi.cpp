@@ -28,7 +28,7 @@ int SlaveMPI::exec()
         scene->pixels->setStartXY(chunk.startx, chunk.starty);
         rayTracer.recursiveRayTracer(8);
         std::vector<char> vec;
-        scene->pixels->serialize(&vec, chunk.startx, chunk.stopx, chunk.starty, chunk.stopy);
+        scene->pixels->serialize(&vec);
         MPI_Send(vec.data(), vec.size(), MPI_BYTE, 0, 2, MPI_COMM_WORLD);
         }
 

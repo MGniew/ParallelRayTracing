@@ -37,7 +37,8 @@ SOURCES += \
     fileloader.cpp \
     masterthread.cpp \
     slavempi.cpp \
-    pixels.cpp
+    pixels.cpp \
+    serializable.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -54,7 +55,8 @@ HEADERS += \
     masterthread.h \
     slavempi.h \
     global.h \
-    pixels.h
+    pixels.h \
+    serializable.h
 
 FORMS += \
         mainwindow.ui

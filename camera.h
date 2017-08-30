@@ -3,8 +3,9 @@
 
 #include "vector3.h"
 #include <math.h>
+#include "serializable.h"
 
-class Camera
+class Camera : public Serializable
 {
 public:
     Camera();
@@ -60,7 +61,7 @@ public:
 
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);
-    int serializedSize;
+    char getType();
 
 private:
     Vector3<float>* eye;

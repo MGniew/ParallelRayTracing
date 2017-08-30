@@ -62,6 +62,11 @@ void Light::deserialize(const std::vector<char> &bytes)
 
 }
 
+char Light::getType()
+{
+    return 'l';
+}
+
 Vector3<float>* Light::getSpec()
 {
     return spec;

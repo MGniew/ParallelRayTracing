@@ -30,8 +30,10 @@ Pixels::~Pixels()
     data = nullptr;
 }
 
-void Pixels::serialize(std::vector<char> *bytes, int startx, int stopx, int starty, int stopy)
+void Pixels::serialize(std::vector<char> *bytes)
 {
+    int stopx = startx + x;
+    int stopy = starty + y;
     bytes->resize(serializedSize + 4*sizeof(int));
     char* ptr = bytes->data();
     std::vector<char> pixdataVec;
@@ -47,6 +49,7 @@ void Pixels::serialize(std::vector<char> *bytes, int startx, int stopx, int star
             ptr += pixdataVec.size();
         }
     }
+
 }
 
 void Pixels::deserialize(const std::vector<char> &bytes)
@@ -70,6 +73,11 @@ void Pixels::deserialize(const std::vector<char> &bytes)
             ptr += pixdataVec.size();
         }
     }
+}
+
+char Pixels::getType()
+{
+    return 'p';
 }
 
 void Pixels::setStartXY(int x, int y)

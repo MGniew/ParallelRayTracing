@@ -120,8 +120,8 @@ void Scene::serialize(std::vector<char> *bytes)
     }
 
     //lights
-    type = 'l';
     for (int i=0; i<numOfLights; i++) {
+        type = lights[i]->getType();
         vec.resize(lights[i]->serializedSize);
         lights[i]->serialize(&vec);
         memcpy(ptr, &type, sizeof(type)); ptr += sizeof(type);
@@ -133,6 +133,11 @@ void Scene::serialize(std::vector<char> *bytes)
 void Scene::deserialize(const std::vector<char> &bytes)
 {
 
+}
+
+char Scene::getType()
+{
+    return 's';
 }
 
 

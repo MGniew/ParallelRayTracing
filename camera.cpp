@@ -238,3 +238,8 @@ void Camera::deserialize(const std::vector<char> &bytes)
     setUp();
 }
 
+char Camera::getType()
+{
+    return 'c';
+}
+

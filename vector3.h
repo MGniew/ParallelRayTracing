@@ -5,9 +5,10 @@
 #include "vector"
 #include <stdio.h>
 #include <string.h>
+#include "serializable.h"
 
 template <typename type>
-class Vector3
+class Vector3 : public Serializable
 {
 public:
     Vector3() {
@@ -168,6 +169,10 @@ public:
         memcpy(&x, ptr, sizeof(type)); ptr += sizeof(type);
         memcpy(&y, ptr, sizeof(type)); ptr += sizeof(type);
         memcpy(&z, ptr, sizeof(type)); ptr += sizeof(type);
+    }
+
+    char getType(){
+        return 'v';
     }
 
 

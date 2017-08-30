@@ -45,6 +45,10 @@ public:
     int getStartY();
     int getWidth();
     int getHeight();
+
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    int serializedSize;
 };
 
 #endif // SCENE_H

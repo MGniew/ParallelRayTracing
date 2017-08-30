@@ -15,6 +15,8 @@ Scene::Scene()
     numOfObjects = 0;
 
     pixels = nullptr;
+
+    serializedSize = 2 * Vector3<float>::serializedSize;
 }
 
 Scene::~Scene()
@@ -35,12 +37,6 @@ Scene::~Scene()
     delete [] sceneObjects;
     numOfObjects = 0;
 
-//    for (int i = 0; i <  Camera::getInstance()->getPixWidth(); i++) {
-//        for (int j = 0; j <  Camera::getInstance()->getPixHeight(); j++)
-//            delete pixels[i][j];
-//        delete [] pixels[i];
-//    }
-//    delete [] pixels;
     delete pixels;
     pixels = nullptr;
 
@@ -60,6 +56,8 @@ void Scene::addObject(SceneObject *sceneObject)
     numOfObjects++;
     delete[] sceneObjects;
     sceneObjects = tempSceneObjects;
+
+    serializedSize += sceneObject->serializedSize;
 }
 
 void Scene::addLight(Light *light)
@@ -70,6 +68,8 @@ void Scene::addLight(Light *light)
     numOfLights++;
     delete[] lights;
     lights = tempLight;
+
+    //serializedSize += light->serializedSize;
 }
 
 void Scene::setUpPixels(int x, int y)
@@ -97,6 +97,42 @@ int Scene::getWidth()
 int Scene::getHeight()
 {
     return pixels->y;
+}
+
+void Scene::serialize(std::vector<char> *bytes)
+{
+    bytes->resize(serializedSize);
+    char* ptr = bytes->data();
+    std::vector<char> vec;
+    backgroundColor->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    globalAmbient->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+
+    //objects
+    char type;
+    for (int i=0; i<numOfObjects; i++) {
+        type = sceneObjects[i]->getType();
+        vec.resize(sceneObjects[i]->serializedSize);
+        sceneObjects[i]->serialize(&vec);
+        memcpy(ptr, &type, sizeof(type)); ptr += sizeof(type);
+        memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    }
+
+    //lights
+    type = 'l';
+    for (int i=0; i<numOfLights; i++) {
+        vec.resize(lights[i]->serializedSize);
+        lights[i]->serialize(&vec);
+        memcpy(ptr, &type, sizeof(type)); ptr += sizeof(type);
+        memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    }
+
+}
+
+void Scene::deserialize(const std::vector<char> &bytes)
+{
+
 }
 
 

@@ -56,6 +56,11 @@ public:
     float getDensity();
     void setDensity(float value);
 
+    virtual void serialize(std::vector<char> *bytes) = 0;
+    virtual void deserialize(const std::vector<char>& bytes) = 0;
+    virtual char getType() = 0;
+    int serializedSize;
+
 protected:
     Vector3<float>* amb;
     Vector3<float>* dif;

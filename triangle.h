@@ -43,6 +43,10 @@ public:
     float texCoordsX;
     float texCoordsY;
 
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    char getType();
+
 };
 
 #endif // TRIANGLE_H

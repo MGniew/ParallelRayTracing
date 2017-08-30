@@ -18,7 +18,7 @@ public:
            int pixHeight,
            float povy);
     ~Camera();
-    void setUp(float rotationX, float rotationY, float rotationZ);
+    void setUp();
 
     static Camera* instance;
     static Camera* getInstance();
@@ -58,6 +58,10 @@ public:
     float getPovy();
     void setPovy(float value);
 
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    int serializedSize;
+
 private:
     Vector3<float>* eye;
     Vector3<float>* look;
@@ -71,6 +75,9 @@ private:
     float aspect;
     float worldWidth;
     float worldHeight;
+    float rotationX;
+    float rotationY;
+    float rotationZ;
 
 
 };

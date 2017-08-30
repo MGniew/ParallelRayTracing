@@ -52,6 +52,16 @@ void Light::setSpec(float r, float g, float b)
     spec->z = b;
 }
 
+void Light::serialize(std::vector<char> *bytes)
+{
+
+}
+
+void Light::deserialize(const std::vector<char> &bytes)
+{
+
+}
+
 Vector3<float>* Light::getSpec()
 {
     return spec;

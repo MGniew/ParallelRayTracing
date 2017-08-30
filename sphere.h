@@ -25,6 +25,10 @@ public:
 
     float radius;
     Vector3<float>* pos;
+
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    char getType();
 };
 
 #endif // SPHERE_H

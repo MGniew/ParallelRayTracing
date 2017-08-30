@@ -21,7 +21,9 @@ MasterThread::~MasterThread()
     wait();
     delete scene;
     delete camera;
-    MPI_Finalize();
+
+  //  MPI_Abort(MPI_COMM_WORLD, 0);
+   // MPI_Finalize();
 
 }
 
@@ -62,7 +64,7 @@ void MasterThread::run()
     MPI_Status status;
     std::vector<char> vec;
     int size;
-    int numChunks = 4;
+    int numChunks = 10;
     splitToChunks(numChunks);
     numChunks *= numChunks;
 
@@ -75,8 +77,15 @@ void MasterThread::run()
         i++;
     }
 
+    int flag = 0;
     while(numChunks>0) {
-        MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+        while(!flag) {
+            MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status);
+            if (!isAlive) break;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+        if (!isAlive) break;
+        //MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
         MPI_Get_count(&status, MPI_BYTE, &size);
         vec.resize(size);
         MPI_Recv(vec.data(), size, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);

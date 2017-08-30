@@ -23,6 +23,9 @@ public:
     void setAmb(float r, float g, float b);
     void setDif(float r, float g, float b);
     void setSpec(float r, float g, float b);
+    int serializedSize;
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
 
 };
 

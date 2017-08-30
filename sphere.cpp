@@ -13,6 +13,9 @@ Sphere::Sphere(Vector3<float>* amb,
 {
     this->pos = pos;
     this->radius = radius;
+
+    serializedSize = 4 * Vector3<float>::serializedSize +
+                     6 * sizeof(float);
 }
 
 Sphere::~Sphere()
@@ -54,4 +57,58 @@ Vector3<float> Sphere::getNormalVector(Vector3<float>& crossPoint) {
 
     Vector3<float> normalVector = crossPoint - *pos;
     return normalVector.normalize();
+}
+
+void Sphere::serialize(std::vector<char> *bytes)
+{
+    bytes->resize(serializedSize);
+    char *ptr = bytes->data();
+    std::vector<char> vec;
+
+    amb->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    dif->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    spec->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+
+    memcpy(ptr, &specShin, sizeof(specShin)); ptr += sizeof(specShin);
+
+    pos->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+
+    memcpy(ptr, &radius, sizeof(radius)); ptr += sizeof(radius);
+    memcpy(ptr, &transparency, sizeof(transparency)); ptr += sizeof(transparency);
+    memcpy(ptr, &mirror, sizeof(mirror)); ptr += sizeof(mirror);
+    memcpy(ptr, &local, sizeof(local)); ptr += sizeof(local);
+    memcpy(ptr, &density, sizeof(density));
+}
+
+void Sphere::deserialize(const std::vector<char> &bytes)
+{
+    const char* ptr = bytes.data();
+    std::vector<char> vec;
+    vec.resize(Vector3<float>::serializedSize);
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    amb->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    dif->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    spec->deserialize(vec);
+
+    memcpy(&specShin, ptr, sizeof(specShin)); ptr += sizeof(specShin);
+
+    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    pos->deserialize(vec);
+
+    memcpy(&radius, ptr, sizeof(radius)); ptr += sizeof(radius);
+    memcpy(&transparency, ptr, sizeof(transparency)); ptr += sizeof(transparency);
+    memcpy(&mirror, ptr, sizeof(mirror)); ptr += sizeof(mirror);
+    memcpy(&local, ptr, sizeof(local)); ptr += sizeof(local);
+    memcpy(&density, ptr, sizeof(density));
+}
+
+char Sphere::getType()
+{
+    return 's';
 }

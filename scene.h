@@ -52,6 +52,8 @@ public:
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);
     char getType();
+
+    void print();
 };
 
 #endif // SCENE_H

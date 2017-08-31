@@ -31,6 +31,7 @@ public:
                        Vector3<float> &startPoint,
                        Vector3<float> &directionVector) = 0; //returns true if hit, cordinates in param
     virtual Vector3<float> getNormalVector(Vector3<float> &crossPoint) = 0;
+    virtual void print() = 0;
 
     float getSpecShin();
     void setSpecShin(float value);

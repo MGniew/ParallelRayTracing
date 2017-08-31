@@ -62,11 +62,11 @@ void Light::serialize(std::vector<char> *bytes)
     char *ptr = bytes->data();
     std::vector<char> vec;
     pos->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     amb->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     dif->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     spec->serialize(&vec);
     memcpy(ptr, vec.data(), vec.size());
 }
@@ -76,11 +76,11 @@ void Light::deserialize(const std::vector<char> &bytes)
     const char* ptr = bytes.data();
     std::vector<char> vec;
     vec.resize(Vector3<float>::serializedSize);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     pos->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     amb->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     dif->deserialize(vec);
     memcpy(vec.data(), ptr, vec.size());
     spec->deserialize(vec);
@@ -90,6 +90,16 @@ void Light::deserialize(const std::vector<char> &bytes)
 char Light::getType()
 {
     return 'l';
+}
+
+void Light::print()
+{
+    std::cout << "Light: " << std::endl;
+    std::cout << "pos: "; pos->print();
+    std::cout << "amb: "; amb->print();
+    std::cout << "dif: "; dif->print();
+    std::cout << "spec: "; spec->print();
+    std::cout << "-------------------------" << std::endl;
 }
 
 Vector3<float>* Light::getSpec()

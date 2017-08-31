@@ -68,6 +68,20 @@ void MasterThread::run()
     splitToChunks(numChunks);
     numChunks *= numChunks;
 
+    vec.resize(camera->serializedSize);
+    camera->serialize(&vec);
+    for(int i=1; i<worldSize; i++) {
+        MPI_Send(vec.data(), vec.size(), MPI_BYTE, i, 5, MPI_COMM_WORLD);
+    }
+
+    vec.resize(scene->serializedSize);
+    scene->serialize(&vec);
+    for(int i=1; i<worldSize; i++) {
+        MPI_Send(vec.data(), vec.size(), MPI_BYTE, i, 5, MPI_COMM_WORLD);
+    }
+
+
+
     int i = 1;
     Chunk chunk;
     while(!queue.empty() && i<worldSize) {
@@ -76,6 +90,7 @@ void MasterThread::run()
         MPI_Send(&chunk, sizeof(chunk), MPI_BYTE, i, 1, MPI_COMM_WORLD);
         i++;
     }
+
 
     int flag = 0;
     while(numChunks>0) {

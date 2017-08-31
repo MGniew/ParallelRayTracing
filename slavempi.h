@@ -15,12 +15,14 @@ class SlaveMPI
 {
 public:
     SlaveMPI();
+    ~SlaveMPI();
     int exec();
 
     int x, y;
     Vector3<float>*** pixels;
     Camera* camera;
     Scene* scene;
+    MPI_Status status;
 
 };
 

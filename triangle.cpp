@@ -177,6 +177,30 @@ Vector3<float> Triangle::getNormalVector(Vector3<float>& crossPoint) {
     return result;
 }
 
+void Triangle::print()
+{
+    std::cout << "Triangle: " << std::endl;
+    std::cout << "normalA"; normalA->print();
+    std::cout << "normalB: "; normalB->print();
+    std::cout << "normalC: "; normalC->print();
+    std::cout << "pointA: "; pointA->print();
+    std::cout << "pointB: "; pointB->print();
+    std::cout << "pointC: "; pointC->print();
+    std::cout << "amb: "; amb->print();
+    std::cout << "dif: "; dif->print();
+    std::cout << "spec: "; spec->print();
+
+    std::cout << "texCoordsX: " << texCoordsX << std::endl;
+    std::cout << "texCoordsY: " << texCoordsY << std::endl;
+    std::cout << "mirror: " << mirror << std::endl;
+    std::cout << "transparency: " << transparency << std::endl;
+    std::cout << "local: "  << local << std::endl;
+    std::cout << "specShin: " << specShin << std::endl;
+    std::cout << "density: " << density << std::endl;
+    std::cout << "=--------------------------------------" << std::endl;
+
+}
+
 float Triangle::Area(Vector3<float> a, Vector3<float> b)
 {
     return a.vectorProduct(b).length()/2;
@@ -189,27 +213,27 @@ void Triangle::serialize(std::vector<char> *bytes)
     std::vector<char> vec;
 
     pointA->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     pointB->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     pointC->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     normalA->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     normalB->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     normalC->serialize(&vec);
-    memcpy(ptr, vec.data(), vec.size()); ptr += sizeof(vec.size());
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
 
     memcpy(ptr, &texCoordsX, sizeof(texCoordsX)); ptr += sizeof(texCoordsX);
     memcpy(ptr, &texCoordsY, sizeof(texCoordsY)); ptr += sizeof(texCoordsY);
 
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
-    amb->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
-    dif->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
-    spec->deserialize(vec);
+    amb->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    dif->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    spec->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
 
     memcpy(ptr, &specShin, sizeof(specShin)); ptr += sizeof(specShin);
     memcpy(ptr, &transparency, sizeof(transparency)); ptr += sizeof(transparency);
@@ -224,27 +248,27 @@ void Triangle::deserialize(const std::vector<char> &bytes)
     std::vector<char> vec;
     vec.resize(Vector3<float>::serializedSize);
 
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     pointA->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     pointB->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     pointC->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     normalA->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     normalB->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     normalC->deserialize(vec);
 
     memcpy(&texCoordsX, ptr, sizeof(texCoordsX)); ptr += sizeof(texCoordsX);
     memcpy(&texCoordsY, ptr, sizeof(texCoordsY)); ptr += sizeof(texCoordsY);
 
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     amb->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     dif->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     spec->deserialize(vec);
 
     memcpy(&specShin, ptr, sizeof(specShin)); ptr += sizeof(specShin);

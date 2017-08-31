@@ -58,7 +58,7 @@ void Scene::addObject(SceneObject *sceneObject)
     delete[] sceneObjects;
     sceneObjects = tempSceneObjects;
 
-    serializedSize += sceneObject->serializedSize;
+    serializedSize += sceneObject->serializedSize + sizeof(char);
 }
 
 void Scene::addLight(Light *light)
@@ -70,7 +70,7 @@ void Scene::addLight(Light *light)
     delete[] lights;
     lights = tempLight;
 
-    //serializedSize += light->serializedSize;
+    serializedSize += light->serializedSize + sizeof(char);
 }
 
 void Scene::setUpPixels(int x, int y)
@@ -127,6 +127,7 @@ void Scene::serialize(std::vector<char> *bytes)
         lights[i]->serialize(&vec);
         memcpy(ptr, &type, sizeof(type)); ptr += sizeof(type);
         memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+
     }
 
 }
@@ -137,9 +138,9 @@ void Scene::deserialize(const std::vector<char> &bytes)
     std::vector<char> vec;
     vec.resize(Vector3<float>::serializedSize);
 
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     backgroundColor->deserialize(vec);
-    memcpy(vec.data(), ptr, vec.size()); ptr += sizeof(vec.size());
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     globalAmbient->deserialize(vec);
 
     char type;
@@ -181,6 +182,15 @@ void Scene::deserialize(const std::vector<char> &bytes)
 char Scene::getType()
 {
     return 's';
+}
+
+void Scene::print()
+{
+    for(int i =0; i<numOfObjects;i++)
+        sceneObjects[i]->print();
+
+    for(int i=0;i<numOfLights;i++)
+        lights[i]->print();
 }
 
 

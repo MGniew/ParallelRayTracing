@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "serializable.h"
+#include "iostream"
 
 template <typename type>
 class Vector3 : public Serializable
@@ -173,6 +174,10 @@ public:
 
     char getType(){
         return 'v';
+    }
+
+    void print() {
+        std::cout << x << " " << y << " " << z << std::endl;
     }
 
 

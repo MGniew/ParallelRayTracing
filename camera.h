@@ -63,7 +63,7 @@ public:
     void deserialize(const std::vector<char>& bytes);
     char getType();
 
-private:
+//private:
     Vector3<float>* eye;
     Vector3<float>* look;
     Vector3<float>* up;

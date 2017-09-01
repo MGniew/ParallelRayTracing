@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "sceneobject.h"
 #include "sphere.h"
+#include "triangle.h"
 
 Scene* Scene::instance = nullptr;
 
@@ -15,6 +16,8 @@ Scene::Scene()
     numOfObjects = 0;
 
     pixels = nullptr;
+
+    serializedSize = 2 * Vector3<float>::serializedSize;
 }
 
 Scene::~Scene()
@@ -35,12 +38,8 @@ Scene::~Scene()
     delete [] sceneObjects;
     numOfObjects = 0;
 
-    for (int i = 0; i <  Camera::getInstance()->getPixWidth(); i++) {
-        for (int j = 0; j <  Camera::getInstance()->getPixHeight(); j++)
-            delete pixels[i][j];
-        delete [] pixels[i];
-    }
-    delete [] pixels;
+    delete pixels;
+    pixels = nullptr;
 
     instance = nullptr;
 }
@@ -58,6 +57,8 @@ void Scene::addObject(SceneObject *sceneObject)
     numOfObjects++;
     delete[] sceneObjects;
     sceneObjects = tempSceneObjects;
+
+    serializedSize += sceneObject->serializedSize + sizeof(char);
 }
 
 void Scene::addLight(Light *light)
@@ -68,18 +69,130 @@ void Scene::addLight(Light *light)
     numOfLights++;
     delete[] lights;
     lights = tempLight;
+
+    serializedSize += light->serializedSize + sizeof(char);
 }
 
-void Scene::setUpPixels()
+void Scene::setUpPixels(int x, int y)
 {
-    if(pixels != nullptr) return;
-    pixels = new Vector3<float>**[Camera::getInstance()->getPixWidth()];
-        for (int i = 0; i < Camera::getInstance()->getPixWidth(); i++) {
-            pixels[i] = new Vector3<float>*[Camera::getInstance()->getPixHeight()];
-            for (int j = 0; j < Camera::getInstance()->getPixHeight(); j++)
-                pixels[i][j] = new Vector3<float>(0.0, 0.0, 0.0);
-        }
+    delete pixels;
+    pixels = new Pixels(x,y);
 }
+
+int Scene::getStartX()
+{
+    return pixels->startx;
+}
+
+int Scene::getStartY()
+{
+    return pixels->starty;
+}
+
+int Scene::getWidth()
+{
+    return pixels->x;
+}
+
+
+int Scene::getHeight()
+{
+    return pixels->y;
+}
+
+void Scene::serialize(std::vector<char> *bytes)
+{
+    bytes->resize(serializedSize);
+    char* ptr = bytes->data();
+    std::vector<char> vec;
+    backgroundColor->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    globalAmbient->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+
+    //objects
+    char type;
+    for (int i=0; i<numOfObjects; i++) {
+        type = sceneObjects[i]->getType();
+        vec.resize(sceneObjects[i]->serializedSize);
+        sceneObjects[i]->serialize(&vec);
+        memcpy(ptr, &type, sizeof(type)); ptr += sizeof(type);
+        memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    }
+
+    //lights
+    for (int i=0; i<numOfLights; i++) {
+        type = lights[i]->getType();
+        vec.resize(lights[i]->serializedSize);
+        lights[i]->serialize(&vec);
+        memcpy(ptr, &type, sizeof(type)); ptr += sizeof(type);
+        memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+
+    }
+
+}
+
+void Scene::deserialize(const std::vector<char> &bytes)
+{
+    const char* ptr = bytes.data();
+    std::vector<char> vec;
+    vec.resize(Vector3<float>::serializedSize);
+
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+    backgroundColor->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+    globalAmbient->deserialize(vec);
+
+    char type;
+    const char* lastElementPtr = &bytes.back();
+    Sphere* sphere;
+    Triangle* triangle;
+    Light* light;
+    while (ptr < lastElementPtr) {
+        memcpy(&type, ptr, sizeof(type)); ptr += sizeof(type);
+        switch(type) {
+
+            case 't':
+                triangle = new Triangle();
+                vec.resize(triangle->serializedSize);
+                memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+                triangle->deserialize(vec);
+                addObject(triangle);
+                break;
+            case 's':
+                sphere = new Sphere();
+                vec.resize(sphere->serializedSize);
+                memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+                sphere->deserialize(vec);
+                addObject(sphere);
+                break;
+            case 'l':
+                light = new Light();
+                vec.resize(light->serializedSize);
+                memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+                light->deserialize(vec);
+                addLight(light);
+                break;
+        }
+
+    }
+
+}
+
+char Scene::getType()
+{
+    return 's';
+}
+
+void Scene::print()
+{
+    for(int i =0; i<numOfObjects;i++)
+        sceneObjects[i]->print();
+
+    for(int i=0;i<numOfLights;i++)
+        lights[i]->print();
+}
+
 
 int Scene::getNumOfLights()
 {
@@ -88,7 +201,7 @@ int Scene::getNumOfLights()
 
 Vector3<float> ***Scene::getPixels()
 {
-    return pixels;
+    return pixels->data;
 }
 
 Vector3<float> *Scene::getGlobalAmbient()

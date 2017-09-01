@@ -24,11 +24,13 @@ public:
              float density);
 
     ~Triangle();
+    Triangle();
 
     bool trace(Vector3<float>& crossPoint,
                        Vector3<float>& startPoint,
                        Vector3<float>& directionVector);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
+    void print();
 
 
     static float Area(Vector3<float> a, Vector3<float> b);
@@ -42,6 +44,10 @@ public:
     Vector3<float> *normalC;
     float texCoordsX;
     float texCoordsY;
+
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    char getType();
 
 };
 

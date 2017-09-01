@@ -9,6 +9,18 @@
 #include "qwaitcondition.h"
 
 
+#include <mpi.h>
+#include <stdio.h>
+
+#include "global.h"
+#include "queue"
+#include "vector"
+#include "thread"
+#include "chrono"
+using namespace myGlobals;
+
+
+
 class MasterThread : public QThread
 {
     Q_OBJECT
@@ -27,6 +39,23 @@ protected:
     QWaitCondition condition;
     Camera* camera;
     Scene* scene;
+
+private:
+    void splitToChunks(int num);
+    std::queue<Chunk> queue;
+    int worldSize;
+    MPI_Status status;
+    void clearQueue(std::queue<Chunk> &q);
+    void sendCamera();
+    void sendScene();
+    void sendDepth(int depth);
+    bool sendNextChunk(int dest);
+    void sendExitSignal();
+    int recvPixels(MPI_Status &stat);
+    int recvMessage();
+    void finishPending();
+    int pending;
+
 };
 
 #endif // MASTERTHREAD_H

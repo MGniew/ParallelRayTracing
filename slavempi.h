@@ -8,8 +8,9 @@
 #include "mpi.h"
 #include "vector"
 #include "pixels.h"
-#include "fileloader.h" //temp
 #include "global.h"
+
+using namespace myGlobals;
 
 class SlaveMPI
 {
@@ -19,10 +20,17 @@ public:
     int exec();
 
     int x, y;
+    int depth;
     Vector3<float>*** pixels;
     Camera* camera;
     Scene* scene;
     MPI_Status status;
+    void recvCamera();
+    void recvScene();
+    void recvDepth();
+    void recvChunk();
+    int recvMessage();
+    void sendPixels();
 
 };
 

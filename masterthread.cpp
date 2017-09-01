@@ -1,5 +1,6 @@
 #include "masterthread.h"
 
+
 MasterThread::MasterThread(QObject *parent) : QThread(parent)
 {
     isAlive = true;
@@ -11,6 +12,10 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
     scene = Scene::getInstance();
     MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
 
+    sendCamera();
+    sendScene();
+    sendDepth(5);
+
     start(HighPriority);
 
 }
@@ -18,13 +23,13 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
 MasterThread::~MasterThread()
 {
     isAlive = false;
+    std::cout << "exiting..." << std::endl;
     wait();
+    finishPending();
+    sendExitSignal();
     delete scene;
     delete camera;
-
-  //  MPI_Abort(MPI_COMM_WORLD, 0);
-   // MPI_Finalize();
-
+    MPI_Finalize();
 }
 
 void MasterThread::splitToChunks(int num) {
@@ -59,67 +64,111 @@ void MasterThread::clearQueue(std::queue<Chunk> &q)
     std::swap(q,empty);
 }
 
+void MasterThread::sendCamera()
+{
+    std::vector<char> vec;
+    vec.resize(camera->serializedSize);
+    camera->serialize(&vec);
+    MPI_Bcast(vec.data(), vec.size(), MPI_BYTE, 0, MPI_COMM_WORLD);
+}
+
+void MasterThread::sendScene() {
+
+    int size;
+    std::vector<char> vec;
+    size = scene->serializedSize;
+    vec.resize(size);
+    scene->serialize(&vec);
+    MPI_Bcast(&size, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(vec.data(), vec.size(), MPI_BYTE, 0, MPI_COMM_WORLD);
+
+}
+
+void MasterThread::sendDepth(int depth) {
+    MPI_Bcast(&depth, 1, MPI_INT, 0, MPI_COMM_WORLD);
+}
+
+bool MasterThread::sendNextChunk(int dest) {
+
+     if (queue.empty()) {
+         return false;
+     }
+
+     Chunk chunk;
+     chunk = queue.front();
+     queue.pop();
+     MPI_Send(&chunk, sizeof(chunk), MPI_BYTE, dest, CHUNK, MPI_COMM_WORLD);
+     return true;
+}
+
+void MasterThread::sendExitSignal()
+{
+    for(int i=1;i<worldSize;i++)
+        MPI_Send(nullptr, 0, MPI_BYTE, i, EXIT, MPI_COMM_WORLD);
+}
+
+int MasterThread::recvPixels(MPI_Status &status)
+{
+    int size;
+    std::vector<char> vec;
+    MPI_Get_count(&status, MPI_BYTE, &size);
+    vec.resize(size);
+    MPI_Recv(vec.data(), size, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+    scene->pixels->deserialize(vec);
+    return status.MPI_SOURCE;
+}
+
+int MasterThread::recvMessage()
+{
+    int flag = 0;
+    while(!flag) {
+        MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status);
+        if (!isAlive) return EXIT;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    return PIXELS;
+
+}
+
+void MasterThread::finishPending()
+{
+    while(pending>0) {
+        MPI_Probe(MPI_ANY_SOURCE, PIXELS, MPI_COMM_WORLD, &status);
+        recvPixels(status);
+        pending--;
+    }
+
+}
+
 void MasterThread::run()
 {
-    MPI_Status status;
-    std::vector<char> vec;
-    int size;
-    int numChunks = 10;
+    int numChunks = 5;
     splitToChunks(numChunks);
     numChunks *= numChunks;
 
-    vec.resize(camera->serializedSize);
-    camera->serialize(&vec);
-    for(int i=1; i<worldSize; i++) {
-        MPI_Send(vec.data(), vec.size(), MPI_BYTE, i, 5, MPI_COMM_WORLD);
-    }
-
-    vec.resize(scene->serializedSize);
-    scene->serialize(&vec);
-    for(int i=1; i<worldSize; i++) {
-        MPI_Send(vec.data(), vec.size(), MPI_BYTE, i, 5, MPI_COMM_WORLD);
+    pending = 0;
+    for (int i=1; i<worldSize; i++) {
+        if (!sendNextChunk(i)) break;
+        pending++;
     }
 
 
+    int dest;
+    while(pending>0) {
 
-    int i = 1;
-    Chunk chunk;
-    while(!queue.empty() && i<worldSize) {
-        chunk = queue.front();
-        queue.pop();
-        MPI_Send(&chunk, sizeof(chunk), MPI_BYTE, i, 1, MPI_COMM_WORLD);
-        i++;
-    }
-
-
-    int flag = 0;
-    while(numChunks>0) {
-        while(!flag) {
-            MPI_Iprobe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &flag, &status);
-            if (!isAlive) break;
-            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        switch(recvMessage()) {
+            case EXIT: return; break;
+            case PIXELS:
+                dest = recvPixels(status);
+                if (!sendNextChunk(dest))
+                    pending--;
+                break;
+            default: break;
         }
-        if (!isAlive) break;
-        //MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        MPI_Get_count(&status, MPI_BYTE, &size);
-        vec.resize(size);
-        MPI_Recv(vec.data(), size, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
-        scene->pixels->deserialize(vec);
-
-
-        if(!queue.empty()) {
-            chunk = queue.front();
-            queue.pop();
-            MPI_Send(&chunk, sizeof(chunk), MPI_BYTE, status.MPI_SOURCE, 1, MPI_COMM_WORLD);
-        }
-        numChunks--;
         emit workIsReady();
     }
 
     emit workIsReady();
+    recvMessage(); //temp
 
-//    while(isAlive)
-//    {
-
-//    }
 }

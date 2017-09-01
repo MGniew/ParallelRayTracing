@@ -18,13 +18,19 @@ public:
            float local,
            float density);
     ~Sphere();
+    Sphere();
     bool trace(Vector3<float>& crossPoint,
                Vector3<float>& startPoint,
                Vector3<float>& directionVector); //returns true if hit, cordinates in param
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
+    void print();
 
     float radius;
     Vector3<float>* pos;
+
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    char getType();
 };
 
 #endif // SPHERE_H

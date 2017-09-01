@@ -5,11 +5,15 @@
 #include "camera.h"
 #include "raytracer.h"
 #include <iostream>
+#include "pixels.h"
+#include "serializable.h"
+
 
 class SceneObject;
 class Sphere;
+class Triangle;
 
-class Scene
+class Scene : public Serializable
 {
 public:
     Scene();
@@ -18,7 +22,8 @@ public:
     static Scene* instance;
     Light** lights;
     SceneObject** sceneObjects;
-    Vector3<float>*** pixels; // HxW*3
+    //Vector3<float>*** pixels; // HxW*3
+    Pixels* pixels;
     Vector3<float>* backgroundColor;
     Vector3<float>* globalAmbient;
     int numOfLights;
@@ -38,6 +43,17 @@ public:
     int getNumOfObjects();
     void addObject(SceneObject* sceneObject);
     void addLight(Light* light);
+    void setUpPixels(int x, int y);
+    int getStartX();
+    int getStartY();
+    int getWidth();
+    int getHeight();
+
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    char getType();
+
+    void print();
 };
 
 #endif // SCENE_H

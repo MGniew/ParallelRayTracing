@@ -34,7 +34,11 @@ SOURCES += \
     raytracer.cpp \
     light.cpp \
     camera.cpp \
-    fileloader.cpp
+    fileloader.cpp \
+    masterthread.cpp \
+    slavempi.cpp \
+    pixels.cpp \
+    serializable.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,9 +51,25 @@ HEADERS += \
     light.h \
     camera.h \
     vector3.h \
-    fileloader.h
+    fileloader.h \
+    masterthread.h \
+    slavempi.h \
+    global.h \
+    pixels.h \
+    serializable.h
 
 FORMS += \
         mainwindow.ui
 
 LIBS += -lglut -lGLU
+
+QMAKE_CXX = mpicxx
+QMAKE_CXX_RELEASE = $$QMAKE_CXX
+QMAKE_CXX_DEBUG = $$QMAKE_CXX
+QMAKE_LINK = $$QMAKE_CXX
+QMAKE_CC = mpicc
+
+#QMAKE_CFLAGS += $$system(mpicc -show)
+#QMAKE_LFLAGS += $$system(mpicxx -show)
+#QMAKE_CXXFLAGS += $$system(mpicxx -show) -DMPICH_IGNORE_CXX_SEEK
+#QMAKE_CXXFLAGS_RELEASE += $$system(mpicxx -show) -DMPICH_IGNORE_CXX_SEEK

@@ -6,7 +6,6 @@ RayTracer::RayTracer()
 {
     scene = Scene::getInstance();
     camera = Camera::getInstance();
-    buffer = scene->getPixels();
 }
 
 void RayTracer::recursiveRayTracer(int depth)
@@ -14,14 +13,14 @@ void RayTracer::recursiveRayTracer(int depth)
 
     Vector3<float> worldPosOfPixel;
     Vector3<float> directionVector;
+    buffer = scene->getPixels();
 
-    for(int i = 0; i < camera->getPixWidth(); i++) {
-        for(int j = 0; j < camera->getPixHeight(); j++) {
-            worldPosOfPixel = camera->getWorldPosOfPixel(i,j);
+    for(int i = 0; i < scene->getWidth(); i++) {
+        for(int j = 0; j < scene->getHeight(); j++) {
+            worldPosOfPixel = camera->getWorldPosOfPixel(i + scene->getStartX(),j + scene->getStartY());
             directionVector = worldPosOfPixel - *camera->getEye();
             directionVector.normalize();
             buffer[i][j]->setValues(getColorRecursive(worldPosOfPixel, directionVector, depth));
-
         }
     }
 }
@@ -80,43 +79,43 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
 }
 
 
-//check with z Far
-void RayTracer::basicRayTracer()
-{
-    Vector3<float> worldPosOfPixel;
-    Vector3<float> directionVector;
-    Vector3<float> crossPoint;
-    SceneObject* sceneObject;
+////check with z Far
+//void RayTracer::basicRayTracer()
+//{
+//    Vector3<float> worldPosOfPixel;
+//    Vector3<float> directionVector;
+//    Vector3<float> crossPoint;
+//    SceneObject* sceneObject;
 
-    //for every pixel
-    for(int i = 0; i < camera->getPixWidth(); i++) {
-        for(int j = 0; j < camera->getPixHeight(); j++) {
+//    //for every pixel
+//    for(int i = 0; i < camera->getPixWidth(); i++) {
+//        for(int j = 0; j < camera->getPixHeight(); j++) {
 
-            //get ray
-            worldPosOfPixel = camera->getWorldPosOfPixel(i,j);
+//            //get ray
+//            worldPosOfPixel = camera->getWorldPosOfPixel(i,j);
 
-            //calcualte starting dir vector
-            directionVector = worldPosOfPixel - *camera->getEye();
-            directionVector.normalize();
+//            //calcualte starting dir vector
+//            directionVector = worldPosOfPixel - *camera->getEye();
+//            directionVector.normalize();
 
-            sceneObject = getClosest(crossPoint, worldPosOfPixel, directionVector);
+//            sceneObject = getClosest(crossPoint, worldPosOfPixel, directionVector);
 
 
-            if (sceneObject == nullptr) {
-                buffer[i][j]->setValues(*scene->getBackgroundColor());
+//            if (sceneObject == nullptr) {
+//                buffer[i][j]->setValues(*scene->getBackgroundColor());
 
-            }
-            else {
-                 Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
-                 Vector3<float> observationVector = directionVector*-1;
-                 buffer[i][j]->setValues(sceneObject->getLocalColor
-                                                        (normalVector,
-                                                        crossPoint,
-                                                        observationVector));
-            }
-    }
-    }
-}
+//            }
+//            else {
+//                 Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
+//                 Vector3<float> observationVector = directionVector*-1;
+//                 buffer[i][j]->setValues(sceneObject->getLocalColor
+//                                                        (normalVector,
+//                                                        crossPoint,
+//                                                        observationVector));
+//            }
+//    }
+//    }
+//}
 
 
 SceneObject *RayTracer::getClosest(Vector3<float> &crossPoint,

@@ -5,13 +5,14 @@
 #include <GL/glut.h>
 #include "scene.h"
 #include "camera.h"
-#include "raytracer.h"
-#include "fileloader.h"
 #include "vector3.h"
 #include "qpainter.h"
+#include "masterthread.h"
 
 class GLwidget : public QOpenGLWidget
 {
+
+    Q_OBJECT
 
 public:
     GLwidget(QWidget *parent = 0);
@@ -23,6 +24,10 @@ protected:
     void paintGL();
     Camera* camera;
     Scene* scene;
+    MasterThread masterThread;
+
+private slots:
+    void refresh();
 };
 
 #endif // GLWIDGET_H

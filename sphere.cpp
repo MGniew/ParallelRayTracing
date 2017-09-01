@@ -13,10 +13,25 @@ Sphere::Sphere(Vector3<float>* amb,
 {
     this->pos = pos;
     this->radius = radius;
+
+    serializedSize = 4 * Vector3<float>::serializedSize +
+                     6 * sizeof(float);
 }
 
 Sphere::~Sphere()
 {
+
+}
+
+Sphere::Sphere()
+{
+    amb = new Vector3<float>;
+    dif = new Vector3<float>;
+    spec = new Vector3<float>;
+    pos = new Vector3<float>;
+
+    serializedSize = 4 * Vector3<float>::serializedSize +
+                   6 * sizeof(float);
 
 }
 
@@ -54,4 +69,77 @@ Vector3<float> Sphere::getNormalVector(Vector3<float>& crossPoint) {
 
     Vector3<float> normalVector = crossPoint - *pos;
     return normalVector.normalize();
+}
+
+void Sphere::print()
+{
+    std::cout << "Sphere" << std::endl;
+
+    std::cout << "amb: "; amb->print();
+    std::cout << "dif: "; dif->print();
+    std::cout << "spec: "; spec->print();
+    std::cout << "pos: "; pos->print();
+
+
+     std::cout << "radius: " << radius << std::endl;
+    std::cout << "mirror: " << mirror << std::endl;
+    std::cout << "transparency: " << transparency << std::endl;
+    std::cout << "local: "  << local << std::endl;
+    std::cout << "specShin: " << specShin << std::endl;
+    std::cout << "density: " << density << std::endl;
+    std::cout << "=--------------------------------------" << std::endl;
+}
+
+void Sphere::serialize(std::vector<char> *bytes)
+{
+    bytes->resize(serializedSize);
+    char *ptr = bytes->data();
+    std::vector<char> vec;
+
+    amb->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    dif->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    spec->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+
+    memcpy(ptr, &specShin, sizeof(specShin)); ptr += sizeof(specShin);
+
+    pos->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+
+    memcpy(ptr, &radius, sizeof(radius)); ptr += sizeof(radius);
+    memcpy(ptr, &transparency, sizeof(transparency)); ptr += sizeof(transparency);
+    memcpy(ptr, &mirror, sizeof(mirror)); ptr += sizeof(mirror);
+    memcpy(ptr, &local, sizeof(local)); ptr += sizeof(local);
+    memcpy(ptr, &density, sizeof(density));
+}
+
+void Sphere::deserialize(const std::vector<char> &bytes)
+{
+    const char* ptr = bytes.data();
+    std::vector<char> vec;
+    vec.resize(Vector3<float>::serializedSize);
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+    amb->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+    dif->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+    spec->deserialize(vec);
+
+    memcpy(&specShin, ptr, sizeof(specShin)); ptr += sizeof(specShin);
+
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+    pos->deserialize(vec);
+
+    memcpy(&radius, ptr, sizeof(radius)); ptr += sizeof(radius);
+    memcpy(&transparency, ptr, sizeof(transparency)); ptr += sizeof(transparency);
+    memcpy(&mirror, ptr, sizeof(mirror)); ptr += sizeof(mirror);
+    memcpy(&local, ptr, sizeof(local)); ptr += sizeof(local);
+    memcpy(&density, ptr, sizeof(density));
+}
+
+char Sphere::getType()
+{
+    return 's';
 }

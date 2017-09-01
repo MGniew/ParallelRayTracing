@@ -3,8 +3,9 @@
 
 #include "vector3.h"
 #include <math.h>
+#include "serializable.h"
 
-class Camera
+class Camera : public Serializable
 {
 public:
     Camera();
@@ -18,7 +19,7 @@ public:
            int pixHeight,
            float povy);
     ~Camera();
-    void setUp(float rotationX, float rotationY, float rotationZ);
+    void setUp();
 
     static Camera* instance;
     static Camera* getInstance();
@@ -58,7 +59,11 @@ public:
     float getPovy();
     void setPovy(float value);
 
-private:
+    void serialize(std::vector<char> *bytes);
+    void deserialize(const std::vector<char>& bytes);
+    char getType();
+
+//private:
     Vector3<float>* eye;
     Vector3<float>* look;
     Vector3<float>* up;
@@ -71,6 +76,9 @@ private:
     float aspect;
     float worldWidth;
     float worldHeight;
+    float rotationX;
+    float rotationY;
+    float rotationZ;
 
 
 };

@@ -56,7 +56,7 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
          normalVector = normalVector*-1;
      }
 
-     crossPoint = crossPoint + normalVector*0.0001;
+     crossPoint = crossPoint + normalVector*EPSILON;
      if(sceneObject->getTransparency()>0) {
          transparencyRay = directionVector.refract(normalVector, sceneObject->getDensity(), 1);
          transparencyColor = getColorRecursive(crossPoint, transparencyRay, depth);

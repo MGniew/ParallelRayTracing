@@ -3,6 +3,8 @@
 
 namespace myGlobals {
 
+const float EPSILON = 0.0001f;
+
 struct Chunk {
     int startx, stopx;
     int starty, stopy;

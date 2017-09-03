@@ -88,7 +88,7 @@ void Sphere::print()
     std::cout << "local: "  << local << std::endl;
     std::cout << "specShin: " << specShin << std::endl;
     std::cout << "density: " << density << std::endl;
-    std::cout << "=--------------------------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 }
 
 void Sphere::serialize(std::vector<char> *bytes)

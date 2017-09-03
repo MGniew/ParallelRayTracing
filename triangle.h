@@ -2,6 +2,9 @@
 #define TRIANGLE_H
 
 #include "sceneobject.h"
+#include "global.h"
+
+using namespace myGlobals;
 
 class Triangle : public SceneObject
 {

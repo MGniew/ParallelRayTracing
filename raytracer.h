@@ -5,6 +5,10 @@
 #include "camera.h"
 #include <list>
 #include <iostream>
+#include "global.h"
+
+using namespace myGlobals;
+
 
 class SceneObject;
 class Scene;

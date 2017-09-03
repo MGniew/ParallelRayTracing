@@ -2,6 +2,9 @@
 #define SPHERE_H
 
 #include "sceneobject.h"
+#include "global.h"
+
+using namespace myGlobals;
 
 
 class Sphere : public SceneObject

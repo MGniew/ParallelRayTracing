@@ -94,10 +94,10 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
     v = directionVector.scalarProduct(qvec) * invDet;
     if (v < 0 || u + v > 1) return false;
 
-    crossPoint = *pointA + v0v1*u + v0v2*v;
     dist = v0v2.scalarProduct(qvec) * invDet;
 
     if ((dist) > EPSILON){
+        crossPoint = startPoint + directionVector*dist;
         return true;
     }
     return false;

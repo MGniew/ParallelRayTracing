@@ -66,11 +66,12 @@ bool SceneObject::isInShadow(Vector3<float> &crossPoint, Vector3<float> &directi
 {
     Scene* scene = Scene::getInstance();
     Vector3<float> tempCrossPoint;
-    float LightDistance = crossPoint.powDistanceFrom(lightPos);
+    float LightDistance = crossPoint.distanceFrom(lightPos);
+    float dist;
 
     for(int obj = 0; obj < scene->getNumOfObjects(); obj++){
-        if ((scene->sceneObjects[obj])->trace(tempCrossPoint, crossPoint, directionVector)) {
-           if (tempCrossPoint.powDistanceFrom(crossPoint) < LightDistance)
+        if ((scene->sceneObjects[obj])->trace(tempCrossPoint, crossPoint, directionVector, dist)) {
+           if (dist < LightDistance)
            return true;
         }
     }

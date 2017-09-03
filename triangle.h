@@ -28,7 +28,8 @@ public:
 
     bool trace(Vector3<float>& crossPoint,
                        Vector3<float>& startPoint,
-                       Vector3<float>& directionVector);
+                       Vector3<float>& directionVector,
+                       float& dist);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
 

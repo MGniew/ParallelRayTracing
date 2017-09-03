@@ -35,7 +35,7 @@ Sphere::Sphere()
 
 }
 
-bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector) {
+bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector, float &dist) {
 
      float a, b, c, d, r1, r2;
      float sqr;
@@ -61,6 +61,7 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
          crossPoint.x = startPoint.x + r1*directionVector.x;
          crossPoint.y = startPoint.y + r1*directionVector.y;
          crossPoint.z = startPoint.z + r1*directionVector.z;
+         dist = r1;
          return true;
 
 }

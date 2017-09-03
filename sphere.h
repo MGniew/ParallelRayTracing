@@ -21,7 +21,8 @@ public:
     Sphere();
     bool trace(Vector3<float>& crossPoint,
                Vector3<float>& startPoint,
-               Vector3<float>& directionVector); //returns true if hit, cordinates in param
+               Vector3<float>& directionVector,
+               float &dist);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
 

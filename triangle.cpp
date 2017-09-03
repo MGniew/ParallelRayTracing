@@ -73,7 +73,7 @@ Triangle::Triangle()
 }
 
 //Möller–Trumbore intersection algorithm
-bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector) {
+bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector, float& dist) {
 
 
     float kEpsilon = 0.000001f;
@@ -97,8 +97,9 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
     if (v < 0 || u + v > 1) return false;
 
     crossPoint = *pointA + v0v1*u + v0v2*v;
+    dist = v0v2.scalarProduct(qvec) * invDet;
 
-    if ((v0v2.scalarProduct(qvec) * invDet) > kEpsilon){
+    if ((dist) > kEpsilon){
         return true;
     }
     return false;

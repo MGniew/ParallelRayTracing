@@ -3,6 +3,7 @@
 
 SlaveMPI::SlaveMPI()
 {   
+    sendName();
     camera = Camera::getInstance();
     scene = Scene::getInstance();
     recvCamera();
@@ -66,6 +67,14 @@ void SlaveMPI::sendPixels()
     std::vector<char> vec;
     scene->pixels->serialize(&vec);
     MPI_Send(vec.data(), vec.size(), MPI_BYTE, 0, PIXELS, MPI_COMM_WORLD);
+}
+
+void SlaveMPI::sendName()
+{
+    char processor_name[MPI_MAX_PROCESSOR_NAME];
+    int name_len;
+    MPI_Get_processor_name(processor_name, &name_len);
+    MPI_Send(processor_name, name_len, MPI_CHAR, 0, NAME, MPI_COMM_WORLD);
 }
 
 void SlaveMPI::recvDepth()

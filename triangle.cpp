@@ -73,10 +73,8 @@ Triangle::Triangle()
 }
 
 //Möller–Trumbore intersection algorithm
-bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector) {
+bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector, float& dist) {
 
-
-    float kEpsilon = 0.000001f;
     Vector3<float> v0v1 = *pointB - *pointA;
     Vector3<float> v0v2 = *pointC - *pointA;
     Vector3<float> pvec =  directionVector.vectorProduct(v0v2);
@@ -84,7 +82,7 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
 
     float det = v0v1.scalarProduct(pvec);
 
-    if(det<kEpsilon && det>-kEpsilon) return false;
+    if(det<EPSILON && det>-EPSILON) return false;
 
     float invDet = 1.0f / det;
 
@@ -96,9 +94,10 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
     v = directionVector.scalarProduct(qvec) * invDet;
     if (v < 0 || u + v > 1) return false;
 
-    crossPoint = *pointA + v0v1*u + v0v2*v;
+    dist = v0v2.scalarProduct(qvec) * invDet;
 
-    if ((v0v2.scalarProduct(qvec) * invDet) > kEpsilon){
+    if ((dist) > EPSILON){
+        crossPoint = startPoint + directionVector*dist;
         return true;
     }
     return false;
@@ -197,7 +196,7 @@ void Triangle::print()
     std::cout << "local: "  << local << std::endl;
     std::cout << "specShin: " << specShin << std::endl;
     std::cout << "density: " << density << std::endl;
-    std::cout << "=--------------------------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 
 }
 

@@ -7,7 +7,7 @@
 #include "camera.h"
 #include "vector3.h"
 #include "qpainter.h"
-#include "masterthread.h"
+
 
 class GLwidget : public QOpenGLWidget
 {
@@ -24,10 +24,7 @@ protected:
     void paintGL();
     Camera* camera;
     Scene* scene;
-    MasterThread masterThread;
 
-private slots:
-    void refresh();
 };
 
 #endif // GLWIDGET_H

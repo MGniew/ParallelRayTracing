@@ -35,10 +35,11 @@ Sphere::Sphere()
 
 }
 
-bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector) {
+bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vector3<float>& directionVector, float &dist) {
 
      float a, b, c, d, r1, r2;
      float sqr;
+
 
      Vector3<float> distance = startPoint-*pos;
      a = directionVector.scalarProduct(directionVector);
@@ -49,18 +50,20 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
 
      if (d<0) return false;
      sqr = sqrt(d);
+     float denominator = 1/(2*a);
          if (d>0) {
-            r1 = (-b - sqr)/(2*a);
-            r2 = (-b + sqr)/(2*a);
+            r1 = (-b - sqr)*denominator;
+            r2 = (-b + sqr)*denominator;
             if (r1 < 0 && r2 < 0) return false;
             if (r1 < 0)
                 r1 = r2;
          } else
-             r1 = (-b)/(2*a);
+             r1 = (-b)*denominator;
 
          crossPoint.x = startPoint.x + r1*directionVector.x;
          crossPoint.y = startPoint.y + r1*directionVector.y;
          crossPoint.z = startPoint.z + r1*directionVector.z;
+         dist = r1;
          return true;
 
 }
@@ -87,7 +90,7 @@ void Sphere::print()
     std::cout << "local: "  << local << std::endl;
     std::cout << "specShin: " << specShin << std::endl;
     std::cout << "density: " << density << std::endl;
-    std::cout << "=--------------------------------------" << std::endl;
+    std::cout << "--------------------------------------" << std::endl;
 }
 
 void Sphere::serialize(std::vector<char> *bytes)

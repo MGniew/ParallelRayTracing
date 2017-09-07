@@ -17,6 +17,9 @@
 #include "vector"
 #include "thread"
 #include "chrono"
+#include <string>
+
+
 using namespace myGlobals;
 
 
@@ -28,9 +31,14 @@ class MasterThread : public QThread
 public:
     MasterThread(QObject *parent = 0);
     ~MasterThread();
+    int getNumOfChunks();
 
 signals:
     void workIsReady();
+    void setTime(double time);
+    void processInfo(double **speeds);
+
+
 
 protected:
     void run() override;
@@ -39,6 +47,8 @@ protected:
     QWaitCondition condition;
     Camera* camera;
     Scene* scene;
+
+    double** processSpeed;
 
 private:
     void splitToChunks(int num);
@@ -54,7 +64,10 @@ private:
     int recvPixels(MPI_Status &stat);
     int recvMessage();
     void finishPending();
+    void updateProcessSpeed();
     int pending;
+    int numChunks;
+
 
 };
 

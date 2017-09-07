@@ -3,8 +3,6 @@
 GLwidget::GLwidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 setFixedSize(200, 200);
-connect(&masterThread, SIGNAL(workIsReady()), this, SLOT(refresh()));
-
 scene = Scene::getInstance();
 camera = Camera::getInstance();
 }
@@ -55,9 +53,4 @@ void GLwidget::paintGL()
     }
     delete pixel;
     glFlush();
-}
-
-void GLwidget::refresh()
-{
-  update();
 }

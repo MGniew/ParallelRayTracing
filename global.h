@@ -17,7 +17,8 @@ enum {
     SCENE,
     CHUNK,
     PIXELS,
-    DEPTH
+    DEPTH,
+    NAME
 };
 
 }

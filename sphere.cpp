@@ -40,6 +40,7 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
      float a, b, c, d, r1, r2;
      float sqr;
 
+
      Vector3<float> distance = startPoint-*pos;
      a = directionVector.scalarProduct(directionVector);
      b = 2 * directionVector.scalarProduct(distance);
@@ -49,14 +50,15 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
 
      if (d<0) return false;
      sqr = sqrt(d);
+     float denominator = 1/(2*a);
          if (d>0) {
-            r1 = (-b - sqr)/(2*a);
-            r2 = (-b + sqr)/(2*a);
+            r1 = (-b - sqr)*denominator;
+            r2 = (-b + sqr)*denominator;
             if (r1 < 0 && r2 < 0) return false;
             if (r1 < 0)
                 r1 = r2;
          } else
-             r1 = (-b)/(2*a);
+             r1 = (-b)*denominator;
 
          crossPoint.x = startPoint.x + r1*directionVector.x;
          crossPoint.y = startPoint.y + r1*directionVector.y;

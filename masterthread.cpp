@@ -14,9 +14,14 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
 
     sendCamera();
     sendScene();
-    sendDepth(5);
+    sendDepth(3);
 
-    start(HighPriority);
+    processSpeed = new double*[worldSize];
+    for(int i = 0; i< worldSize; i++) {
+        processSpeed[i] = new double[3];
+        processSpeed[i][0] = 0;
+        processSpeed[i][1] = 0;
+    }
 
 }
 
@@ -29,6 +34,9 @@ MasterThread::~MasterThread()
     sendExitSignal();
     delete scene;
     delete camera;
+    for(int i = 0; i< worldSize; i++)
+        delete [] processSpeed[i];
+    delete [] processSpeed;
     MPI_Finalize();
 }
 
@@ -113,7 +121,7 @@ int MasterThread::recvPixels(MPI_Status &status)
     std::vector<char> vec;
     MPI_Get_count(&status, MPI_BYTE, &size);
     vec.resize(size);
-    MPI_Recv(vec.data(), size, MPI_BYTE, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
+    MPI_Recv(vec.data(), size, MPI_BYTE, MPI_ANY_SOURCE, PIXELS, MPI_COMM_WORLD, &status);
     scene->pixels->deserialize(vec);
     return status.MPI_SOURCE;
 }
@@ -140,35 +148,54 @@ void MasterThread::finishPending()
 
 }
 
+void MasterThread::updateProcessSpeed()
+{
+    double chunkTime;
+    chunkTime = MPI_Wtime();
+    processSpeed[status.MPI_SOURCE][0]++;
+    processSpeed[status.MPI_SOURCE][1] += chunkTime - processSpeed[status.MPI_SOURCE][2];
+    processSpeed[status.MPI_SOURCE][2] = chunkTime;
+}
+
 void MasterThread::run()
 {
-    int numChunks = 5;
+    double t1, t2;
+    int numChunks = 10;
     splitToChunks(numChunks);
     numChunks *= numChunks;
 
+    t1 = MPI_Wtime();
     pending = 0;
     for (int i=1; i<worldSize; i++) {
         if (!sendNextChunk(i)) break;
+        processSpeed[i][2] = MPI_Wtime();
         pending++;
     }
 
 
     int dest;
+
     while(pending>0) {
 
         switch(recvMessage()) {
             case EXIT: return; break;
             case PIXELS:
                 dest = recvPixels(status);
+                updateProcessSpeed();
                 if (!sendNextChunk(dest))
                     pending--;
                 break;
             default: break;
         }
-        emit workIsReady();
+       // emit workIsReady();
+        emit processInfo(processSpeed);
     }
+    t2 = MPI_Wtime();
 
+
+    emit setTime(t2-t1);
     emit workIsReady();
+
     recvMessage(); //temp
 
 }

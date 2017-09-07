@@ -5,6 +5,9 @@
 #include "qthread.h"
 #include "masterthread.h"
 #include "statisticswindow.h"
+#include "qlabel.h"
+#include "qpushbutton.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -19,13 +22,16 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_pushButton_statistics_released();
+    void ShowStats();
     void setSpeed(double time);
+
+    void on_actionStatistics_triggered();
 
 private:
     Ui::MainWindow *ui;
     StatisticsWindow *statisticWindow;
     MasterThread *masterThread;
+    QLabel* statusLabel;
 };
 
 #endif // MAINWINDOW_H

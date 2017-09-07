@@ -13,6 +13,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(masterThread, SIGNAL(setTime(double)), this, SLOT(setSpeed(double)));
     connect(masterThread, SIGNAL(processInfo(double**)), statisticWindow, SLOT(setProccessSpeed(double**)));
     masterThread->start(QThread::HighPriority);
+
+    statisticWindow->setXY(Camera::getInstance()->getPixWidth(),
+                           Camera::getInstance()->getPixHeight());
+    statisticWindow->setChunks(masterThread->getNumOfChunks());
+    statisticWindow->setObj(Scene::getInstance()->getNumOfObjects());
+
+    statisticWindow->setLights(Scene::getInstance()->getNumOfLights());
 }
 
 MainWindow::~MainWindow()
@@ -22,14 +29,12 @@ MainWindow::~MainWindow()
     delete masterThread;
 }
 
-void MainWindow::on_pushButton_statistics_released()
+void MainWindow::ShowStats()
 {
     if (statisticWindow->isHidden())
         statisticWindow->show();
     else
         statisticWindow->hide();
-
-    ui->pushButton_statistics->addAction(new QAction(nullptr));
 }
 
 void MainWindow::setSpeed(double time)
@@ -37,4 +42,9 @@ void MainWindow::setSpeed(double time)
     QString string = QString("SPF: %1    FPS: %2").arg(time, 0, 'f', 2).arg(1/time, 0, 'f', 2);
     ui->statusBar->showMessage(string);
     statisticWindow->setTime(time);
+}
+
+void MainWindow::on_actionStatistics_triggered()
+{
+    ShowStats();
 }

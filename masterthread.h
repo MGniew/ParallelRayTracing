@@ -31,11 +31,14 @@ class MasterThread : public QThread
 public:
     MasterThread(QObject *parent = 0);
     ~MasterThread();
+    int getNumOfChunks();
 
 signals:
     void workIsReady();
     void setTime(double time);
     void processInfo(double **speeds);
+
+
 
 protected:
     void run() override;
@@ -63,6 +66,8 @@ private:
     void finishPending();
     void updateProcessSpeed();
     int pending;
+    int numChunks;
+
 
 };
 

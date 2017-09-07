@@ -15,6 +15,7 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
     sendCamera();
     sendScene();
     sendDepth(3);
+    numChunks=10;
 
     processSpeed = new double*[worldSize];
     for(int i = 0; i< worldSize; i++) {
@@ -38,6 +39,11 @@ MasterThread::~MasterThread()
         delete [] processSpeed[i];
     delete [] processSpeed;
     MPI_Finalize();
+}
+
+int MasterThread::getNumOfChunks()
+{
+    return numChunks*numChunks;
 }
 
 void MasterThread::splitToChunks(int num) {
@@ -160,9 +166,7 @@ void MasterThread::updateProcessSpeed()
 void MasterThread::run()
 {
     double t1, t2;
-    int numChunks = 10;
     splitToChunks(numChunks);
-    numChunks *= numChunks;
 
     t1 = MPI_Wtime();
     pending = 0;

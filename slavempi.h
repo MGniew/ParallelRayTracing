@@ -31,6 +31,7 @@ public:
     void recvChunk();
     int recvMessage();
     void sendPixels();
+    void sendName();
 
 };
 

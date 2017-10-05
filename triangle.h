@@ -2,6 +2,12 @@
 #define TRIANGLE_H
 
 #include "sceneobject.h"
+#include "global.h"
+
+
+class Plane;
+
+using namespace myGlobals;
 
 class Triangle : public SceneObject
 {
@@ -28,7 +34,8 @@ public:
 
     bool trace(Vector3<float>& crossPoint,
                        Vector3<float>& startPoint,
-                       Vector3<float>& directionVector);
+                       Vector3<float>& directionVector,
+                       float& dist);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
 
@@ -42,6 +49,9 @@ public:
     Vector3<float> *normalA;
     Vector3<float> *normalB;
     Vector3<float> *normalC;
+    Plane getPlane();
+    Vector3<float>* getPointbyNum(int a);
+    void split(Plane plane, front** SceneObject, int numFront, back** SceneObject, numBack);
     float texCoordsX;
     float texCoordsY;
 

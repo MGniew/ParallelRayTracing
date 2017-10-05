@@ -23,13 +23,14 @@ public:
     virtual ~SceneObject();
     Vector3<float> getLocalColor(Vector3<float>& normalVector,
                                  Vector3<float>& crossPoint,
-                                 Vector3<float>& observationVector); //returns RGB, uses Phong model
+                                 Vector3<float>& observationVector);
 
     bool isInShadow(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos);
 
     virtual bool trace(Vector3<float> &crossPoint,
                        Vector3<float> &startPoint,
-                       Vector3<float> &directionVector) = 0; //returns true if hit, cordinates in param
+                       Vector3<float> &directionVector,
+                       float &dist) = 0;
     virtual Vector3<float> getNormalVector(Vector3<float> &crossPoint) = 0;
     virtual void print() = 0;
 

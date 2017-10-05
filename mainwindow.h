@@ -2,6 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "qthread.h"
+#include "masterthread.h"
+#include "statisticswindow.h"
+#include "qlabel.h"
+#include "qpushbutton.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -15,8 +21,17 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+private slots:
+    void ShowStats();
+    void setSpeed(double time);
+
+    void on_actionStatistics_triggered();
+
 private:
     Ui::MainWindow *ui;
+    StatisticsWindow *statisticWindow;
+    MasterThread *masterThread;
+    QLabel* statusLabel;
 };
 
 #endif // MAINWINDOW_H

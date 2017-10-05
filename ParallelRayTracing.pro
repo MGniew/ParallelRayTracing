@@ -41,7 +41,9 @@ SOURCES += \
     slavempi.cpp \
     pixels.cpp \
     serializable.cpp \
-    statisticswindow.cpp
+    statisticswindow.cpp \
+    bsp.cpp \
+    plane.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -60,7 +62,9 @@ HEADERS += \
     global.h \
     pixels.h \
     serializable.h \
-    statisticswindow.h
+    statisticswindow.h \
+    bsp.h \
+    plane.h
 
 FORMS += \
         mainwindow.ui \

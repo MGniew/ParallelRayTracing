@@ -1,4 +1,5 @@
 #include "triangle.h"
+#include "plane.h"
 
 Triangle::Triangle(Vector3<float> *pointA,
                    Vector3<float> *pointB,
@@ -203,6 +204,41 @@ void Triangle::print()
 float Triangle::Area(Vector3<float> a, Vector3<float> b)
 {
     return a.vectorProduct(b).length()/2;
+}
+
+Plane Triangle::getPlane()
+{
+    Vector3<float> v0v1 = *pointB - *pointA;
+    Vector3<float> v0v2 = *pointC - *pointA;
+    Vector3<float> normal = v0v1.vectorProduct(v0v2);
+    //normalizacja?
+
+    float d = normal.x * -pointA->x + normal.y * -pointA->y + normal.z * -pointA->z;
+
+    return Plane(normal.x, normal.y, normal.z, d);
+}
+
+Vector3<float>* Triangle::getPointbyNum(int a)
+{
+    switch (a) {
+    case 1:
+        return pointA;
+        break;
+    case 2:
+        return pointB;
+        break;
+    case 3:
+        return pointC;
+        break;
+    default:
+        return nullptr;
+        break;
+    }
+}
+
+void Triangle::split(Plane plane, front **SceneObject, int numFront, back **SceneObject, numBack)
+{
+
 }
 
 void Triangle::serialize(std::vector<char> *bytes)

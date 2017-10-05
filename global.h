@@ -11,7 +11,6 @@ struct Chunk {
 };
 
 enum {
-
     EXIT,
     CAMERA,
     SCENE,
@@ -19,6 +18,13 @@ enum {
     PIXELS,
     DEPTH,
     NAME
+};
+
+enum {
+    COINCIDENT,
+    BACK,
+    FRONT,
+    SPANNING
 };
 
 }

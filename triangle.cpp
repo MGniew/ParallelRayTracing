@@ -70,7 +70,29 @@ Triangle::Triangle()
     spec = new Vector3<float>;
 
     serializedSize = 9 * Vector3<float>::serializedSize +
-                     7 * sizeof(float);
+            7 * sizeof(float);
+}
+
+Triangle::Triangle(Triangle &triangle) : SceneObject(triangle.getAmb(),
+                                                     triangle.getDif(),
+                                                     triangle.getSpec(),
+                                                     triangle.getSpecShin(),
+                                                     triangle.getTransparency(),
+                                                     triangle.getMirror(),
+                                                     triangle.getLocal(),
+                                                     triangle.getDensity())
+{
+    pointA = new Vector3<float>(*triangle.pointA);
+    pointB = new Vector3<float>(*triangle.pointB);
+    pointC = new Vector3<float>(*triangle.pointC);
+    normalA = new Vector3<float>(*triangle.normalA);
+    normalB = new Vector3<float>(*triangle.normalB);
+    normalC = new Vector3<float>(*triangle.normalC);
+    texCoordsX = triangle.texCoordsX;
+    texCoordsY = triangle.texCoordsY;
+
+    serializedSize = 9 * Vector3<float>::serializedSize +
+            7 * sizeof(float);
 }
 
 //Möller–Trumbore intersection algorithm
@@ -236,13 +258,13 @@ Vector3<float>* Triangle::getPointbyNum(int a)
     }
 }
 
-void Triangle::split(Plane plane, front **SceneObject, int numFront, back **SceneObject, numBack)
+void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangle*>& back)
 {
     std::vector<Vector3<float>> frontSide;
     std::vector<Vector3<float>> backSide;
 
 
-    Vector3<float>* pointA, pointB;
+    Vector3<float> *pointA, *pointB;
     float distA, distB;
 
     pointA = getPointbyNum(3);
@@ -252,33 +274,33 @@ void Triangle::split(Plane plane, front **SceneObject, int numFront, back **Scen
     //should work 4 every poligon
     for (int i=1; i<=3; i++) {
         pointB = getPointbyNum(i);
-        distB = plane.getDistToPoint(point);
+        distB = plane.getDistToPoint(pointB);
 
         if (distB > 0) {
             if (distA < 0) { //different sides
 
                 Vector3<float> v = *pointB - *pointA;
                 float distToSpan = -plane.getDistToPoint(pointA)/ (plane.getNormal().scalarProduct(v));
-                Vector3<float> newPoint = pointA + v*distToSpan;
+                Vector3<float> newPoint = *pointA + (v*distToSpan);
                 frontSide.push_back(newPoint);
                 backSide.push_back(newPoint);
             }
-                frontSide.push_back(pointB);
+                frontSide.push_back(*pointB);
         }
         else if (distB < 0) {
             if (distA > 0) //different sides
             {
                 Vector3<float> v = *pointB - *pointA;
                 float distToSpan = -plane.getDistToPoint(pointA)/ (plane.getNormal().scalarProduct(v));
-                Vector3<float> newPoint = pointA + v*distToSpan;
+                Vector3<float> newPoint = *pointA + v*distToSpan;
                 frontSide.push_back(newPoint);
                 backSide.push_back(newPoint);
             }
-                backSide.push_back(pointB);
+                backSide.push_back(*pointB);
         }
         else {
-            frontSide.push_back(pointB);
-            backSide.push_back(pointB);
+            frontSide.push_back(*pointB);
+            backSide.push_back(*pointB);
         }
             pointA = pointB;
             distA = distB;
@@ -286,30 +308,74 @@ void Triangle::split(Plane plane, front **SceneObject, int numFront, back **Scen
 
     //works only for triangle (4 side polygon to 3 side polygon
     if (frontSide.size() == 3) {
-        front = new SceneObject*[1];
-
-        //konstruktor kopiujący :(
-        front[0] = new Triangle(frontSide[0], frontSide[1], frontSide[2]);
-        numFront = 1;
-        // add to scene objects
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(frontSide[0]);
+        triangle->pointB->setValues(frontSide[1]);
+        triangle->pointC->setValues(frontSide[2]);
+        triangle->normalA->setValues(getNormalVector(frontSide[0]));
+        triangle->normalB->setValues(getNormalVector(frontSide[1]));
+        triangle->normalC->setValues(getNormalVector(frontSide[2]));
+        front.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
     }
     else {
-        front = new SceneObject*[2];
-        front[0] = new Triangle(frontSide[0], frontSide[1], frontSide[2]);
-        front[1] = new Triangle(frontSide[0], frontSide[2], frontSide[3]);
-        numFront = 2;
+
+
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(frontSide[0]);
+        triangle->pointB->setValues(frontSide[1]);
+        triangle->pointC->setValues(frontSide[2]);
+        triangle->normalA->setValues(getNormalVector(frontSide[0]));
+        triangle->normalB->setValues(getNormalVector(frontSide[1]));
+        triangle->normalC->setValues(getNormalVector(frontSide[2]));
+        front.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
+
+        triangle = new Triangle(*this);
+        triangle->pointA->setValues(frontSide[0]);
+        triangle->pointB->setValues(frontSide[2]);
+        triangle->pointC->setValues(frontSide[3]);
+        triangle->normalA->setValues(getNormalVector(frontSide[0]));
+        triangle->normalB->setValues(getNormalVector(frontSide[2]));
+        triangle->normalC->setValues(getNormalVector(frontSide[3]));
+        front.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
     }
 
     if (backSide.size() == 3) {
-        back = new SceneObject*[1];
-        back[0] = new Triangle(backSide[0], backSide[1], backSide[2]);
-        numBack = 1;
+
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(backSide[0]);
+        triangle->pointB->setValues(backSide[1]);
+        triangle->pointC->setValues(backSide[2]);
+        triangle->normalA->setValues(getNormalVector(backSide[0]));
+        triangle->normalB->setValues(getNormalVector(backSide[1]));
+        triangle->normalC->setValues(getNormalVector(backSide[2]));
+        back.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
     }
     else {
-        back = new SceneObject*[2];
-        back[0] = new Triangle(backSide[0], backSide[1], backSide[2]);
-        back[1] = new Triangle(backSide[0], backSide[2], backSide[3]);
-        numBack = 2;
+
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(backSide[0]);
+        triangle->pointB->setValues(backSide[1]);
+        triangle->pointC->setValues(backSide[2]);
+        triangle->normalA->setValues(getNormalVector(backSide[0]));
+        triangle->normalB->setValues(getNormalVector(backSide[1]));
+        triangle->normalC->setValues(getNormalVector(backSide[2]));
+        back.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
+
+        triangle = new Triangle(*this);
+        triangle->pointA->setValues(backSide[0]);
+        triangle->pointB->setValues(backSide[2]);
+        triangle->pointC->setValues(backSide[3]);
+        triangle->normalA->setValues(getNormalVector(backSide[0]));
+        triangle->normalB->setValues(getNormalVector(backSide[2]));
+        triangle->normalC->setValues(getNormalVector(backSide[3]));
+        back.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
+
     }
 
 }

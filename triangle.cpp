@@ -238,6 +238,79 @@ Vector3<float>* Triangle::getPointbyNum(int a)
 
 void Triangle::split(Plane plane, front **SceneObject, int numFront, back **SceneObject, numBack)
 {
+    std::vector<Vector3<float>> frontSide;
+    std::vector<Vector3<float>> backSide;
+
+
+    Vector3<float>* pointA, pointB;
+    float distA, distB;
+
+    pointA = getPointbyNum(3);
+    distA = plane.getDistToPoint(pointA);
+
+
+    //should work 4 every poligon
+    for (int i=1; i<=3; i++) {
+        pointB = getPointbyNum(i);
+        distB = plane.getDistToPoint(point);
+
+        if (distB > 0) {
+            if (distA < 0) { //different sides
+
+                Vector3<float> v = *pointB - *pointA;
+                float distToSpan = -plane.getDistToPoint(pointA)/ (plane.getNormal().scalarProduct(v));
+                Vector3<float> newPoint = pointA + v*distToSpan;
+                frontSide.push_back(newPoint);
+                backSide.push_back(newPoint);
+            }
+                frontSide.push_back(pointB);
+        }
+        else if (distB < 0) {
+            if (distA > 0) //different sides
+            {
+                Vector3<float> v = *pointB - *pointA;
+                float distToSpan = -plane.getDistToPoint(pointA)/ (plane.getNormal().scalarProduct(v));
+                Vector3<float> newPoint = pointA + v*distToSpan;
+                frontSide.push_back(newPoint);
+                backSide.push_back(newPoint);
+            }
+                backSide.push_back(pointB);
+        }
+        else {
+            frontSide.push_back(pointB);
+            backSide.push_back(pointB);
+        }
+            pointA = pointB;
+            distA = distB;
+    }
+
+    //works only for triangle (4 side polygon to 3 side polygon
+    if (frontSide.size() == 3) {
+        front = new SceneObject*[1];
+
+        //konstruktor kopiujący :(
+        front[0] = new Triangle(frontSide[0], frontSide[1], frontSide[2]);
+        numFront = 1;
+        // add to scene objects
+    }
+    else {
+        front = new SceneObject*[2];
+        front[0] = new Triangle(frontSide[0], frontSide[1], frontSide[2]);
+        front[1] = new Triangle(frontSide[0], frontSide[2], frontSide[3]);
+        numFront = 2;
+    }
+
+    if (backSide.size() == 3) {
+        back = new SceneObject*[1];
+        back[0] = new Triangle(backSide[0], backSide[1], backSide[2]);
+        numBack = 1;
+    }
+    else {
+        back = new SceneObject*[2];
+        back[0] = new Triangle(backSide[0], backSide[1], backSide[2]);
+        back[1] = new Triangle(backSide[0], backSide[2], backSide[3]);
+        numBack = 2;
+    }
 
 }
 

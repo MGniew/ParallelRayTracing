@@ -59,10 +59,7 @@ int Plane::classifyObject(SceneObject *obj)
 
 int Plane::classifyPoint(Vector3<float> *point)
 {
-    float sqr = sqrt(a*a + b*b + c*c);
-    float dist;
-    dist = a*point->x + b*point->y + c*point->z + d;
-    dist/=sqr;
+    float dist = getDistToPoint(point);
 
     if (dist > EPSILON)
         return FRONT;
@@ -71,4 +68,20 @@ int Plane::classifyPoint(Vector3<float> *point)
             return BACK;
 
     return COINCIDENT;
+}
+
+float Plane::getDistToPoint(Vector3<float> *point)
+{
+    float sqr = sqrt(a*a + b*b + c*c);
+    float dist;
+    dist = a*point->x + b*point->y + c*point->z + d;
+    dist/=sqr;
+    return dist;
+}
+
+Vector3<float> Plane::getNormal()
+{
+    Vector3<float> normal(a,b,c);
+    normal.normalize();
+    return normal;
 }

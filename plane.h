@@ -5,6 +5,7 @@
 #include "triangle.h"
 #include "sphere.h"
 #include "global.h"
+#include "vector3.h"
 
 class Plane
 {
@@ -19,6 +20,8 @@ public:
 
     int classifyObject(SceneObject* obj);
     int classifyPoint(Vector3<float>* point);
+    float getDistToPoint(Vector3<float>* point);
+    Vector3<float> getNormal();
 
 };
 

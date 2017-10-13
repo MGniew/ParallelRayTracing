@@ -165,39 +165,47 @@ void MasterThread::updateProcessSpeed()
 
 void MasterThread::run()
 {
-    double t1, t2;
-    splitToChunks(numChunks);
 
-    t1 = MPI_Wtime();
-    pending = 0;
-    for (int i=1; i<worldSize; i++) {
-        if (!sendNextChunk(i)) break;
-        processSpeed[i][2] = MPI_Wtime();
-        pending++;
-    }
+    printf("im in");
+    BSP bsp;
+    bsp.build(&(bsp.tree), bsp.tree.polygons, 4);
+    printf("im out");
+    RayTracer raytracer;
+    raytracer.recursiveRayTracer(2);
 
+//    double t1, t2;
+//    splitToChunks(numChunks);
 
-    int dest;
-
-    while(pending>0) {
-
-        switch(recvMessage()) {
-            case EXIT: return; break;
-            case PIXELS:
-                dest = recvPixels(status);
-                updateProcessSpeed();
-                if (!sendNextChunk(dest))
-                    pending--;
-                break;
-            default: break;
-        }
-       // emit workIsReady();
-        emit processInfo(processSpeed);
-    }
-    t2 = MPI_Wtime();
+//    t1 = MPI_Wtime();
+//    pending = 0;
+//    for (int i=1; i<worldSize; i++) {
+//        if (!sendNextChunk(i)) break;
+//        processSpeed[i][2] = MPI_Wtime();
+//        pending++;
+//    }
 
 
-    emit setTime(t2-t1);
+//    int dest;
+
+//    while(pending>0) {
+
+//        switch(recvMessage()) {
+//            case EXIT: return; break;
+//            case PIXELS:
+//                dest = recvPixels(status);
+//                updateProcessSpeed();
+//                if (!sendNextChunk(dest))
+//                    pending--;
+//                break;
+//            default: break;
+//        }
+//       // emit workIsReady();
+//        emit processInfo(processSpeed);
+//    }
+//    t2 = MPI_Wtime();
+
+
+//    emit setTime(t2-t1);
     emit workIsReady();
 
     recvMessage(); //temp

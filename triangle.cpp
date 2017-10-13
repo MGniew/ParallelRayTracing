@@ -233,11 +233,58 @@ Plane Triangle::getPlane()
     Vector3<float> v0v1 = *pointB - *pointA;
     Vector3<float> v0v2 = *pointC - *pointA;
     Vector3<float> normal = v0v1.vectorProduct(v0v2);
-    //normalizacja?
 
     float d = normal.x * -pointA->x + normal.y * -pointA->y + normal.z * -pointA->z;
 
     return Plane(normal.x, normal.y, normal.z, d);
+}
+
+Plane Triangle::getPerpendicularPlane(int i)
+{
+    if (i < 1 || i > 3) return Plane();
+
+    Vector3<float> v0v1 = *pointB - *pointA;
+    Vector3<float> v0v2 = *pointC - *pointA;
+    Vector3<float> normalTriangle = v0v1.vectorProduct(v0v2);
+
+    Vector3<float> edge;
+    Vector3<float>* point;
+
+    switch(i) {
+        case 1:
+            edge = *pointB - *pointA;
+            point = pointA;
+            break;
+        case 2:
+            edge = *pointC - *pointA;
+            point = pointA;
+            break;
+        case 3:
+            edge = *pointC - *pointB;
+            point = pointB;
+            break;
+
+        default:
+            return Plane();
+    }
+    Vector3<float> normal = normalTriangle.vectorProduct(edge);
+    float d = normal.x * -point->x + normal.y * -point->y + normal.z * -point->z;
+    return Plane(normal.x, normal.y, normal.z, d);
+
+
+}
+
+std::list<Plane> Triangle::getPlanes()
+{
+    std::list<Plane> list;
+
+    list.push_back(getPlane());
+    for (int i = 1; i < 4; i++) {
+        Plane plane = getPerpendicularPlane(i);
+        list.push_back(plane);
+
+    }
+    return list;
 }
 
 Vector3<float>* Triangle::getPointbyNum(int a)

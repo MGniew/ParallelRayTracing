@@ -3,6 +3,7 @@
 
 #include "sceneobject.h"
 #include "global.h"
+#include "list"
 
 
 class Plane;
@@ -51,6 +52,8 @@ public:
     Vector3<float> *normalB;
     Vector3<float> *normalC;
     Plane getPlane();
+    Plane getPerpendicularPlane(int i);
+    std::list<Plane> getPlanes();
     Vector3<float>* getPointbyNum(int a);
     void split(Plane plane, std::list<Triangle*> & front, std::list<Triangle*> & back);
     float texCoordsX;

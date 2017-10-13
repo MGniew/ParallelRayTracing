@@ -2,7 +2,10 @@
 
 Plane::Plane()
 {
-
+    a=0;
+    b=0;
+    c=0;
+    d=0;
 }
 
 Plane::Plane(float a, float b, float c, float d)
@@ -64,7 +67,7 @@ int Plane::classifyPoint(Vector3<float> *point)
     if (dist > EPSILON)
         return FRONT;
     else
-        if(dist < EPSILON)
+        if(dist < -EPSILON)
             return BACK;
 
     return COINCIDENT;
@@ -84,4 +87,16 @@ Vector3<float> Plane::getNormal()
     Vector3<float> normal(a,b,c);
     normal.normalize();
     return normal;
+}
+
+void Plane::print()
+{
+    std::cout << "-------------------------------" << std::endl;
+    std::cout << "Plane:" << std::endl;
+    std::cout << "a: " << a << std::endl;
+    std::cout << "b: " << b << std::endl;
+    std::cout << "c: " << c << std::endl;
+    std::cout << "d: " << d << std::endl;
+    std::cout << "-------------------------------" << std::endl;
+
 }

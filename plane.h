@@ -22,6 +22,7 @@ public:
     int classifyPoint(Vector3<float>* point);
     float getDistToPoint(Vector3<float>* point);
     Vector3<float> getNormal();
+    void print();
 
 };
 

@@ -86,19 +86,20 @@ bool Plane::rayIntersectPlane(Vector3<float> startingPoint, Vector3<float> direc
 {
 
     Vector3<float> normal = getNormal();
+    directionVector.normalize();
 
-    float numerator = normal.scalarProduct(directionVector);
-    float denom = normal.scalarProduct(startingPoint);
-    if (denom == 0) return true;
-
-    float t = - ((d + numerator) / denom);
+    float denom = normal.scalarProduct(directionVector);
+    if (fabs(denom) >= EPSILON){
+    float t = (-(d + normal.scalarProduct(startingPoint))/denom);
         return (t >= 0);
+    }
+    return false;
 }
 
 Vector3<float> Plane::getNormal()
 {
     Vector3<float> normal(a,b,c);
-    normal.normalize();
+    //normal.normalize();
     return normal;
 }
 

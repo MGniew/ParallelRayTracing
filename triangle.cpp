@@ -233,6 +233,7 @@ Plane Triangle::getPlane()
     Vector3<float> v0v1 = *pointB - *pointA;
     Vector3<float> v0v2 = *pointC - *pointA;
     Vector3<float> normal = v0v1.vectorProduct(v0v2);
+    normal.normalize();
 
     float d = normal.x * -pointA->x + normal.y * -pointA->y + normal.z * -pointA->z;
 
@@ -246,6 +247,7 @@ Plane Triangle::getPerpendicularPlane(int i)
     Vector3<float> v0v1 = *pointB - *pointA;
     Vector3<float> v0v2 = *pointC - *pointA;
     Vector3<float> normalTriangle = v0v1.vectorProduct(v0v2);
+    normalTriangle.normalize();
 
     Vector3<float> edge;
     Vector3<float>* point;
@@ -268,6 +270,7 @@ Plane Triangle::getPerpendicularPlane(int i)
             return Plane();
     }
     Vector3<float> normal = normalTriangle.vectorProduct(edge);
+    normal.normalize();
     float d = normal.x * -point->x + normal.y * -point->y + normal.z * -point->z;
     return Plane(normal.x, normal.y, normal.z, d);
 

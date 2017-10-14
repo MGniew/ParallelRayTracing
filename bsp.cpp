@@ -12,16 +12,19 @@ BSP::BSP()
 
     for (int i = 0; i < scene->getNumOfObjects(); i++)
     {
-        tree->polygons.push_back(static_cast<Triangle*>(scene->sceneObjects[i]));
+        polygons.push_back(static_cast<Triangle*>(scene->sceneObjects[i]));
     }
+    tree->polygons.empty();
 
 }
 
 BSP::BSP(std::list<Triangle *> polygons) {
 
+    tree = new node;
     tree->front = nullptr;
     tree->back = nullptr;
-    tree->polygons = polygons;
+    this->polygons = polygons;
+    tree->polygons.empty();
 }
 
 BSP::~BSP()
@@ -79,17 +82,20 @@ void BSP::build(node *root, std::list<Triangle*> polygons, int depth)
             }
             break;
 
+            //be or not to be
         case SPANNING: {
-            std::list<Triangle*> tempFrontList, tempBackList;
-            triangle->split(root->partitionPlane, tempFrontList, tempBackList);
-            while (!tempBackList.empty()) {
-                backList.push_back(tempBackList.back());
-                tempBackList.pop_back();
-            }
-            while (!tempFrontList.empty()) {
-                frontList.push_back(tempFrontList.back());
-                tempFrontList.pop_back();
-            }
+//            std::list<Triangle*> tempFrontList, tempBackList;
+//            triangle->split(root->partitionPlane, tempFrontList, tempBackList);
+//            while (!tempBackList.empty()) {
+//                backList.push_back(tempBackList.back());
+//                tempBackList.pop_back();
+//            }
+//            while (!tempFrontList.empty()) {
+//                frontList.push_back(tempFrontList.back());
+//                tempFrontList.pop_back();
+//            }
+
+            root->polygons.push_back(triangle);
         }
             break;
 
@@ -99,8 +105,6 @@ void BSP::build(node *root, std::list<Triangle*> polygons, int depth)
         }
     }
 
-    printf("front: %d ", frontList.size());
-    printf("back : %d \n", backList.size());
     if (frontList.size() > 1 && frontList.size() != size) {
         root->front = new node;
         build(root->front, frontList, depth);
@@ -188,10 +192,7 @@ Plane BSP::getBestPlane(std::list<Triangle *> polygons)
 
 SceneObject *BSP::getClosest(Vector3<float> &crossPoint, Vector3<float> &startingPoint, Vector3<float> &directionVector)
 {
-    //std::list<Triangle*> list;
-   // getTmp(tree, list);
    return intersect(tree, crossPoint, startingPoint, directionVector);
-   // return getClosestInNode(list, crossPoint, startingPoint, directionVector);
 }
 
 SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3<float> &startingPoint, Vector3<float> &directionVector)
@@ -201,9 +202,17 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
         return getClosestInNode(root->polygons, crossPoint, startingPoint, directionVector);
     }
 
+    SceneObject *hit = nullptr;
+    SceneObject *thisNodeHit = nullptr;
+    Vector3<float> tempCross;
+
+    if(!root->polygons.empty()) {
+        thisNodeHit = getClosestInNode(root->polygons, tempCross, startingPoint, directionVector);
+    }
+
     node *near;
     node *far;
-    bool doBoth = false;
+
 
     switch (root->partitionPlane.classifyPoint(&startingPoint)) {
     case FRONT:
@@ -216,7 +225,6 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
             far = root->front;
         break;
 
-         //   co jezeli wektor kierunkowy tez jest rownolegly z plaszczyzna?
     case COINCIDENT: {
 
             Vector3<float> point = startingPoint + directionVector;
@@ -225,13 +233,8 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
                 far = root->back;
             }
             else {
-                if (root->partitionPlane.classifyPoint(&point) == BACK) {
-                    near = root->back;
-                    far = root->front;
-                }
-                else {
-                    doBoth = true;
-                }
+                near = root->back;
+                far = root->front;
             }
         }
         break;
@@ -241,37 +244,25 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
         break;
     }
 
+    hit = intersect(near, crossPoint, startingPoint, directionVector);
 
-    SceneObject* hit;
-    if (!doBoth) {
-        hit = intersect(near, crossPoint, startingPoint, directionVector);
-
-        if (hit == nullptr && root->partitionPlane.rayIntersectPlane(startingPoint,directionVector)) {
-            hit = intersect(far, crossPoint, startingPoint, directionVector);
-        }
+    if (hit == nullptr && root->partitionPlane.rayIntersectPlane(startingPoint,directionVector)) {
+        hit = intersect(far, crossPoint, startingPoint, directionVector);
     }
-    else {
-        hit = intersect(root->front, crossPoint, startingPoint, directionVector);
-        Vector3<float> tempCross;
-        SceneObject* hit2 = intersect(root->back, tempCross, startingPoint, directionVector);
 
-        if (hit2 != nullptr) {
-            if (hit == nullptr) {
-                hit = hit2;
+    if (thisNodeHit != nullptr) {
+        if (hit != nullptr) {
+            if (tempCross.distanceFrom(startingPoint) < crossPoint.distanceFrom(startingPoint)) {
+                hit = thisNodeHit;
                 crossPoint = tempCross;
             }
-            else {
-                if (startingPoint.distanceFrom(crossPoint) > startingPoint.distanceFrom(tempCross)) {
-                    hit = hit2;
-                    crossPoint = tempCross;
-                }
-            }
+        }
+        else {
+            hit = thisNodeHit;
+            crossPoint = tempCross;
         }
     }
 
-//    if (hit == nullptr && root->partitionPlane.rayIntersectPlane(startingPoint,directionVector)) {
-//        hit = intersect(far, crossPoint, startingPoint, directionVector);
-//    }
 
     return hit;
 

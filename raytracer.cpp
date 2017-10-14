@@ -8,7 +8,7 @@ RayTracer::RayTracer()
     scene = Scene::getInstance();
     camera = Camera::getInstance();
     bsp = new BSP;
-    bsp->build(bsp->tree, bsp->tree->polygons, 3);
+    bsp->build(bsp->tree, bsp->polygons, 10000);
 }
 
 RayTracer::~RayTracer()

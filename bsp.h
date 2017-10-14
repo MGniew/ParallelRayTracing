@@ -24,6 +24,7 @@ public:
     } ;
 
     node *tree;
+    std::list<Triangle*> polygons;
 
     void build(node *root, std::list<Triangle*> polygons, int depth);
     Plane getBestPlane(std::list<Triangle*> polygons);

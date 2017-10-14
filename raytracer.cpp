@@ -8,7 +8,9 @@ RayTracer::RayTracer()
     scene = Scene::getInstance();
     camera = Camera::getInstance();
     bsp = new BSP;
+    printf("start building\n");
     bsp->build(bsp->tree, bsp->polygons, 10000);
+    printf("built\n");
 }
 
 RayTracer::~RayTracer()
@@ -24,6 +26,7 @@ void RayTracer::recursiveRayTracer(int depth)
     buffer = scene->getPixels();
 
     for(int i = 0; i < scene->getWidth(); i++) {
+        printf("etap %d\n", i);
         for(int j = 0; j < scene->getHeight(); j++) {
             worldPosOfPixel = camera->getWorldPosOfPixel(i + scene->getStartX(),j + scene->getStartY());
             directionVector = worldPosOfPixel - *camera->getEye();
@@ -51,8 +54,8 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
         return Vector3<float>();
 
     depth--;
-    //sceneObject = getClosest(crossPoint, startPoint, directionVector);
-    sceneObject = bsp->getClosest(crossPoint, startPoint, directionVector);
+    sceneObject = getClosest(crossPoint, startPoint, directionVector);
+    //sceneObject = bsp->getClosest(crossPoint, startPoint, directionVector);
     if (sceneObject == nullptr)
         return Vector3<float>(*scene->backgroundColor);
 

@@ -166,7 +166,11 @@ void MasterThread::updateProcessSpeed()
 void MasterThread::run()
 {
     RayTracer raytracer;
+    double t1 = MPI_Wtime();
     raytracer.recursiveRayTracer(3);
+    double t2 = MPI_Wtime();
+
+    printf("time: %f\n", t2-t1);
 
 //    double t1, t2;
 //    splitToChunks(numChunks);

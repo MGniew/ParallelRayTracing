@@ -165,13 +165,8 @@ void MasterThread::updateProcessSpeed()
 
 void MasterThread::run()
 {
-
-    printf("im in");
-    BSP bsp;
-    bsp.build(&(bsp.tree), bsp.tree.polygons, 4);
-    printf("im out");
     RayTracer raytracer;
-    raytracer.recursiveRayTracer(2);
+    raytracer.recursiveRayTracer(3);
 
 //    double t1, t2;
 //    splitToChunks(numChunks);

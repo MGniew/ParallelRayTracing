@@ -1,11 +1,19 @@
 #include "raytracer.h"
 #include "sceneobject.h"
 #include "scene.h"
+#include "bsp.h"
 
 RayTracer::RayTracer()
 {
     scene = Scene::getInstance();
     camera = Camera::getInstance();
+    bsp = new BSP;
+    bsp->build(bsp->tree, bsp->tree->polygons, 3);
+}
+
+RayTracer::~RayTracer()
+{
+    delete bsp;
 }
 
 void RayTracer::recursiveRayTracer(int depth)
@@ -43,7 +51,8 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
         return Vector3<float>();
 
     depth--;
-    sceneObject = getClosest(crossPoint, startPoint, directionVector);
+    //sceneObject = getClosest(crossPoint, startPoint, directionVector);
+    sceneObject = bsp->getClosest(crossPoint, startPoint, directionVector);
     if (sceneObject == nullptr)
         return Vector3<float>(*scene->backgroundColor);
 

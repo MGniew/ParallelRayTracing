@@ -82,6 +82,19 @@ float Plane::getDistToPoint(Vector3<float> *point)
     return dist;
 }
 
+bool Plane::rayIntersectPlane(Vector3<float> startingPoint, Vector3<float> directionVector)
+{
+
+    Vector3<float> normal = getNormal();
+
+    float numerator = normal.scalarProduct(directionVector);
+    float denom = normal.scalarProduct(startingPoint);
+    if (denom == 0) return true;
+
+    float t = - ((d + numerator) / denom);
+        return (t >= 0);
+}
+
 Vector3<float> Plane::getNormal()
 {
     Vector3<float> normal(a,b,c);

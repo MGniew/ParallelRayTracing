@@ -1,29 +1,42 @@
 #include "bsp.h"
 
+//TODO: metoda przegladajaca merguje liscie (latwiej znalezc blad)
+//najprawdopodobniej dzielenie trojkatow
+
 BSP::BSP()
 {
-    tree.front = nullptr;
-    tree.back = nullptr;
+    tree = new node;
+    tree->front = nullptr;
+    tree->back = nullptr;
     Scene* scene = Scene::getInstance();
 
     for (int i = 0; i < scene->getNumOfObjects(); i++)
     {
-        tree.polygons.push_back(static_cast<Triangle*>(scene->sceneObjects[i]));
+        tree->polygons.push_back(static_cast<Triangle*>(scene->sceneObjects[i]));
     }
 
 }
 
 BSP::BSP(std::list<Triangle *> polygons) {
 
-    tree.front = nullptr;
-    tree.back = nullptr;
-    tree.polygons = polygons;
+    tree->front = nullptr;
+    tree->back = nullptr;
+    tree->polygons = polygons;
 }
 
 BSP::~BSP()
 {
-    delete tree.back;
-    delete tree.front;
+   deleteTree(tree);
+}
+
+
+void BSP::deleteTree(BSP::node *root)
+{
+    if (root != nullptr) {
+        deleteTree(root->front);
+        deleteTree(root->back);
+        delete root;
+    }
 }
 
 void BSP::build(node *root, std::list<Triangle*> polygons, int depth)
@@ -48,7 +61,6 @@ void BSP::build(node *root, std::list<Triangle*> polygons, int depth)
         polygons.pop_back();
 
         result = root->partitionPlane.classifyObject(triangle);
-
         switch (result) {
         case FRONT:
             frontList.push_back(triangle);
@@ -87,9 +99,11 @@ void BSP::build(node *root, std::list<Triangle*> polygons, int depth)
         }
     }
 
+    printf("front: %d ", frontList.size());
+    printf("back : %d \n", backList.size());
     if (frontList.size() > 1 && frontList.size() != size) {
-    root->front = new node;
-    build(root, frontList, depth);
+        root->front = new node;
+        build(root->front, frontList, depth);
     }
     else {
         root->front = new node;
@@ -100,7 +114,7 @@ void BSP::build(node *root, std::list<Triangle*> polygons, int depth)
 
     if (backList.size() > 1 && backList.size() != size) {
         root->back = new node;
-        build(root, backList, depth);
+        build(root->back, backList, depth);
     }
     else {
         root->back = new node;
@@ -174,17 +188,22 @@ Plane BSP::getBestPlane(std::list<Triangle *> polygons)
 
 SceneObject *BSP::getClosest(Vector3<float> &crossPoint, Vector3<float> &startingPoint, Vector3<float> &directionVector)
 {
-    return intersect(&tree, crossPoint, startingPoint, directionVector);
+    //std::list<Triangle*> list;
+   // getTmp(tree, list);
+   return intersect(tree, crossPoint, startingPoint, directionVector);
+   // return getClosestInNode(list, crossPoint, startingPoint, directionVector);
 }
 
 SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3<float> &startingPoint, Vector3<float> &directionVector)
 {
+
     if (root->back == nullptr && root->front == nullptr) {
-        //get closest from root's list
+        return getClosestInNode(root->polygons, crossPoint, startingPoint, directionVector);
     }
 
     node *near;
     node *far;
+    bool doBoth = false;
 
     switch (root->partitionPlane.classifyPoint(&startingPoint)) {
     case FRONT:
@@ -197,16 +216,22 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
             far = root->front;
         break;
 
-            //co jezeli wektor kierunkowy tez jest rownolegly z plaszczyzna?
+         //   co jezeli wektor kierunkowy tez jest rownolegly z plaszczyzna?
     case COINCIDENT: {
+
             Vector3<float> point = startingPoint + directionVector;
             if (root->partitionPlane.classifyPoint(&point) == FRONT) {
                 near = root->front;
                 far = root->back;
             }
             else {
-                near = root->back;
-                far = root->front;
+                if (root->partitionPlane.classifyPoint(&point) == BACK) {
+                    near = root->back;
+                    far = root->front;
+                }
+                else {
+                    doBoth = true;
+                }
             }
         }
         break;
@@ -216,15 +241,50 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
         break;
     }
 
-    SceneObject* hit = intersect(near, crossPoint, startingPoint, directionVector);
 
-    Vector3<float> normal = root->partitionPlane.getNormal();
-    if (hit == nullptr && directionVector.scalarProduct(normal) <= EPSILON) {
-        hit = intersect(far, crossPoint, startingPoint, directionVector);
+    SceneObject* hit;
+    if (!doBoth) {
+        hit = intersect(near, crossPoint, startingPoint, directionVector);
+
+        if (hit == nullptr && root->partitionPlane.rayIntersectPlane(startingPoint,directionVector)) {
+            hit = intersect(far, crossPoint, startingPoint, directionVector);
+        }
     }
+    else {
+        hit = intersect(root->front, crossPoint, startingPoint, directionVector);
+        Vector3<float> tempCross;
+        SceneObject* hit2 = intersect(root->back, tempCross, startingPoint, directionVector);
+
+        if (hit2 != nullptr) {
+            if (hit == nullptr) {
+                hit = hit2;
+                crossPoint = tempCross;
+            }
+            else {
+                if (startingPoint.distanceFrom(crossPoint) > startingPoint.distanceFrom(tempCross)) {
+                    hit = hit2;
+                    crossPoint = tempCross;
+                }
+            }
+        }
+    }
+
+//    if (hit == nullptr && root->partitionPlane.rayIntersectPlane(startingPoint,directionVector)) {
+//        hit = intersect(far, crossPoint, startingPoint, directionVector);
+//    }
 
     return hit;
 
+}
+
+void BSP::getTmp(BSP::node *root, std::list<Triangle *> &list)
+{
+    if (root->back==nullptr && root->front == nullptr) {
+        list.insert(list.end(), root->polygons.begin(), root->polygons.end());
+        return;
+    }
+    getTmp(root->back, list);
+    getTmp(root->front, list);
 }
 
 SceneObject *BSP::getClosestInNode(std::list<Triangle *> polygons, Vector3<float> &crossPoint, Vector3<float> &startingPoint, Vector3<float> &directionVector)

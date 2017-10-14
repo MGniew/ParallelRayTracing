@@ -23,7 +23,7 @@ public:
 
     } ;
 
-    node tree;
+    node *tree;
 
     void build(node *root, std::list<Triangle*> polygons, int depth);
     Plane getBestPlane(std::list<Triangle*> polygons);
@@ -38,10 +38,16 @@ private:
                            Vector3<float> &startingPoint,
                            Vector3<float> &directionVector);
 
+    void getTmp(node *root,
+                std::list<Triangle*> &list);
+
     SceneObject* getClosestInNode(std::list<Triangle*> polygons,
                                   Vector3<float> &crossPoint,
                                   Vector3<float> &startingPoint,
                                   Vector3<float> &directionVector);
+
+    void deleteTree(node *root);
+
 };
 
 #endif // BSP_H

@@ -7,16 +7,20 @@
 #include <iostream>
 #include "global.h"
 
+
 using namespace myGlobals;
 
 
 class SceneObject;
 class Scene;
+class BSP;
+
 
 class RayTracer
 {
 public:
     RayTracer();
+    ~RayTracer();
 
     void basicRayTracer();
 
@@ -31,6 +35,9 @@ public:
 
     Scene* scene;
     Camera* camera;
+
+    BSP* bsp;
+
     Vector3<float>*** buffer;
 
 };

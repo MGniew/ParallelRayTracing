@@ -236,10 +236,10 @@ Vector3<float>* Triangle::getPointbyNum(int a)
     }
 }
 
-void Triangle::split(Plane plane, front **SceneObject, int numFront, back **SceneObject, numBack)
-{
+//void Triangle::split(Plane plane, front **SceneObject, int numFront, back **SceneObject, numBack)
+//{
 
-}
+//}
 
 void Triangle::serialize(std::vector<char> *bytes)
 {

@@ -51,7 +51,7 @@ public:
     Vector3<float> *normalC;
     Plane getPlane();
     Vector3<float>* getPointbyNum(int a);
-    void split(Plane plane, front** SceneObject, int numFront, back** SceneObject, numBack);
+    //void split(Plane plane, SceneObject** front , int numFront, SceneObject **back , numBack);
     float texCoordsX;
     float texCoordsY;
 

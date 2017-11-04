@@ -57,6 +57,27 @@ int Plane::classifyObject(SceneObject *obj)
 
     }
 
+    if (obj->getType() == 's') {
+
+        Sphere* sphere = static_cast<Sphere*>(obj);
+
+
+        if (getDistToPoint(sphere->pos) < sphere->radius) {
+            return SPANNING;
+        }
+
+        switch(classifyPoint(sphere->pos)) {
+            case FRONT:
+                return FRONT;
+
+            case BACK:
+                return BACK;
+
+        }
+
+        return SPANNING;
+    }
+
     return -1;
 }
 
@@ -101,6 +122,14 @@ Vector3<float> Plane::getNormal()
     Vector3<float> normal(a,b,c);
     //normal.normalize();
     return normal;
+}
+
+bool Plane::isValid()
+{
+    if (a == 0 && b == 0 && c == 0)
+        return false;
+
+    return true;
 }
 
 void Plane::print()

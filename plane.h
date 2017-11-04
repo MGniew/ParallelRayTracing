@@ -23,6 +23,7 @@ public:
     float getDistToPoint(Vector3<float>* point);
     bool rayIntersectPlane(Vector3<float> startingPoint, Vector3<float> directionVector);
     Vector3<float> getNormal();
+    bool isValid();
     void print();
 
 };

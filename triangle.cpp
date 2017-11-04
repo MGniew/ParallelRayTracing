@@ -105,21 +105,22 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
 
     float det = v0v1.scalarProduct(pvec);
 
-    if(det<EPSILON && det>-EPSILON) return false;
+    //smaller EPSILON works better here
+    if(det < SMALL_EPSILON && det > -SMALL_EPSILON) return false;
 
     float invDet = 1.0f / det;
 
     Vector3<float> tvec = startPoint - *pointA;
     u = tvec.scalarProduct(pvec) * invDet;
-    if (u < 0 || u > 1) return false;
+    if (u < - EPSILON || u > 1 + EPSILON) return false;
 
     Vector3<float> qvec = tvec.vectorProduct(v0v1);
     v = directionVector.scalarProduct(qvec) * invDet;
-    if (v < 0 || u + v > 1) return false;
+    if (v <  - EPSILON  || u + v > 1 + EPSILON) return false;
 
     dist = v0v2.scalarProduct(qvec) * invDet;
 
-    if ((dist) > EPSILON){
+    if ((dist) > SMALL_EPSILON){
         crossPoint = startPoint + directionVector*dist;
         return true;
     }
@@ -326,19 +327,19 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         pointB = getPointbyNum(i);
         distB = plane.getDistToPoint(pointB);
 
-        if (distB > 0) {
-            if (distA < 0) { //different sides
+        if (distB >= EPSILON) {
+            if (distA < -EPSILON) { //different sides
 
                 Vector3<float> v = *pointB - *pointA;
-                float distToSpan = -plane.getDistToPoint(pointA)/ (plane.getNormal().scalarProduct(v));
-                Vector3<float> newPoint = *pointA + (v*distToSpan);
+                float distToSpan = -plane.getDistToPoint(pointA)/(plane.getNormal().scalarProduct(v));
+                Vector3<float> newPoint = *pointA + v*distToSpan;
                 frontSide.push_back(newPoint);
                 backSide.push_back(newPoint);
             }
                 frontSide.push_back(*pointB);
         }
-        else if (distB < 0) {
-            if (distA > 0) //different sides
+        else if (distB <= -EPSILON) {
+            if (distA > EPSILON) //different sides
             {
                 Vector3<float> v = *pointB - *pointA;
                 float distToSpan = -plane.getDistToPoint(pointA)/ (plane.getNormal().scalarProduct(v));
@@ -402,7 +403,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(backSide[1]));
         triangle->normalC->setValues(getNormalVector(backSide[2]));
         back.push_back(triangle);
-        Scene::getInstance()->addObject(front.back());
+        Scene::getInstance()->addObject(back.back());
     }
     else {
 
@@ -414,7 +415,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(backSide[1]));
         triangle->normalC->setValues(getNormalVector(backSide[2]));
         back.push_back(triangle);
-        Scene::getInstance()->addObject(front.back());
+        Scene::getInstance()->addObject(back.back());
 
         triangle = new Triangle(*this);
         triangle->pointA->setValues(backSide[0]);
@@ -424,7 +425,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(backSide[2]));
         triangle->normalC->setValues(getNormalVector(backSide[3]));
         back.push_back(triangle);
-        Scene::getInstance()->addObject(front.back());
+        Scene::getInstance()->addObject(back.back());
 
     }
 

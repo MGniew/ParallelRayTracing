@@ -7,6 +7,9 @@
 #include <ctime>
 #include "serializable.h"
 
+
+class BSP;
+
 class SceneObject : public Serializable
 {
 public:
@@ -23,7 +26,8 @@ public:
     virtual ~SceneObject();
     Vector3<float> getLocalColor(Vector3<float>& normalVector,
                                  Vector3<float>& crossPoint,
-                                 Vector3<float>& observationVector);
+                                 Vector3<float>& observationVector,
+                                 BSP *bsp);
 
     bool isInShadow(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos);
 

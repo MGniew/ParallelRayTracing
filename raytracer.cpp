@@ -54,8 +54,8 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
         return Vector3<float>();
 
     depth--;
-    sceneObject = getClosest(crossPoint, startPoint, directionVector);
-    //sceneObject = bsp->getClosest(crossPoint, startPoint, directionVector);
+    //sceneObject = getClosest(crossPoint, startPoint, directionVector);
+    sceneObject = bsp->getClosest(crossPoint, startPoint, directionVector);
     if (sceneObject == nullptr)
         return Vector3<float>(*scene->backgroundColor);
 
@@ -78,7 +78,7 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
          localColor.setValues(sceneObject->getLocalColor
                                (normalVector,
                                crossPoint,
-                               observationVector));
+                               observationVector, bsp));
      }
      if (sceneObject->getMirror()>0) {
          reflectedRay = directionVector.reflect(normalVector);
@@ -121,7 +121,7 @@ void RayTracer::basicRayTracer()
                  buffer[i][j]->setValues(sceneObject->getLocalColor
                                                         (normalVector,
                                                         crossPoint,
-                                                        observationVector));
+                                                        observationVector, nullptr));
             }
     }
     }

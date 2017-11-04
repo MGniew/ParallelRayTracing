@@ -167,7 +167,7 @@ void MasterThread::run()
 {
     RayTracer raytracer;
     double t1 = MPI_Wtime();
-    raytracer.recursiveRayTracer(3);
+    raytracer.recursiveRayTracer(1);
     double t2 = MPI_Wtime();
 
     printf("time: %f\n", t2-t1);

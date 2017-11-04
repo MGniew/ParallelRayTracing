@@ -84,18 +84,18 @@ void BSP::build(node *root, std::list<Triangle*> polygons, int depth)
 
             //be or not to be
         case SPANNING: {
-            std::list<Triangle*> tempFrontList, tempBackList;
-            triangle->split(root->partitionPlane, tempFrontList, tempBackList);
-            while (!tempBackList.empty()) {
-                backList.push_back(tempBackList.back());
-                tempBackList.pop_back();
-            }
-            while (!tempFrontList.empty()) {
-                frontList.push_back(tempFrontList.back());
-                tempFrontList.pop_back();
-            }
+//            std::list<Triangle*> tempFrontList, tempBackList;
+//            triangle->split(root->partitionPlane, tempFrontList, tempBackList);
+//            while (!tempBackList.empty()) {
+//                backList.push_back(tempBackList.back());
+//                tempBackList.pop_back();
+//            }
+//            while (!tempFrontList.empty()) {
+//                frontList.push_back(tempFrontList.back());
+//                tempFrontList.pop_back();
+//            }
 
-            //root->polygons.push_back(triangle);
+            root->polygons.push_back(triangle);
         }
             break;
 
@@ -203,17 +203,16 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
         return getClosestInNode(root->polygons, crossPoint, startingPoint, directionVector);
     }
 
-//    SceneObject *hit = nullptr;
-//    SceneObject *thisNodeHit = nullptr;
-//    Vector3<float> tempCross;
+    SceneObject *thisNodeHit = nullptr;
+    Vector3<float> tempCross;
 
-//    if(!root->polygons.empty()) {
-//        thisNodeHit = getClosestInNode(root->polygons, tempCross, startingPoint, directionVector);
-//    }
+    if(!root->polygons.empty()) {
+        thisNodeHit = getClosestInNode(root->polygons, tempCross, startingPoint, directionVector);
+    }
 
     node *near;
     node *far;
-    SceneObject *hit;
+    SceneObject *hit = nullptr;;
 
 
     switch (root->partitionPlane.classifyPoint(&startingPoint)) {
@@ -252,18 +251,18 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
         hit = intersect(far, crossPoint, startingPoint, directionVector);
     }
 
-//    if (thisNodeHit != nullptr) {
-//        if (hit != nullptr) {
-//            if (tempCross.distanceFrom(startingPoint) < crossPoint.distanceFrom(startingPoint)) {
-//                hit = thisNodeHit;
-//                crossPoint = tempCross;
-//            }
-//        }
-//        else {
-//            hit = thisNodeHit;
-//            crossPoint = tempCross;
-//        }
-//    }
+    if (thisNodeHit != nullptr) {
+        if (hit != nullptr) {
+            if (tempCross.distanceFrom(startingPoint) < crossPoint.distanceFrom(startingPoint)) {
+                hit = thisNodeHit;
+                crossPoint = tempCross;
+            }
+        }
+        else {
+            hit = thisNodeHit;
+            crossPoint = tempCross;
+        }
+    }
 
 
     return hit;

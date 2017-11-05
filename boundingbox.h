@@ -1,7 +1,7 @@
 #ifndef BOUNDINGBOX_H
 #define BOUNDINGBOX_H
-#include "plane.h"
 #include <algorithm>
+#include "vector3.h"
 
 class BoundingBox {
 

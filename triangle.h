@@ -6,6 +6,7 @@
 #include "list"
 
 
+class BoundingBox;
 class Plane;
 
 using namespace myGlobals;

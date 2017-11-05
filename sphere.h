@@ -3,9 +3,11 @@
 
 #include "sceneobject.h"
 #include "global.h"
+#include "boundingbox.h"
 
 using namespace myGlobals;
 
+class BoundingBox;
 
 class Sphere : public SceneObject
 {

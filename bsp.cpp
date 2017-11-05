@@ -326,7 +326,17 @@ bool BSP::isInShadow(Vector3<float> &crossPoint, Vector3<float> &directionVector
 BoundingBox BSP::getBoundingBox(std::list<SceneObject *> polygons)
 {
     BoundingBox box;
+
+    box.maxX = polygons.back()->getBoundingBox().maxX;
+    box.minX = polygons.back()->getBoundingBox().minX;
+    box.maxY = polygons.back()->getBoundingBox().maxY;
+    box.minY = polygons.back()->getBoundingBox().minY;
+    box.maxZ = polygons.back()->getBoundingBox().maxZ;
+    box.minZ = polygons.back()->getBoundingBox().minZ;
+
     BoundingBox objectBox;
+
+
 
     for (std::list<SceneObject *>::iterator it = polygons.begin(); it != polygons.end(); ++it) {
 

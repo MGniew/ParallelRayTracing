@@ -1,4 +1,5 @@
 #include "sphere.h"
+#include "boundingbox.h"
 
 Sphere::Sphere(Vector3<float>* amb,
                Vector3<float>* dif,

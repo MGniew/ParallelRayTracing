@@ -1,5 +1,6 @@
 #include "triangle.h"
 #include "plane.h"
+#include "boundingbox.h"
 
 Triangle::Triangle(Vector3<float> *pointA,
                    Vector3<float> *pointB,
@@ -236,32 +237,32 @@ BoundingBox Triangle::getBoundingBox()
     float mostBack = getPointbyNum(1)->z;
 
 
-    Vector3<float> point;
+    Vector3<float> *point;
     for (int i = 2; i <= 3; i++){
         point = getPointbyNum(i);
 
-        if (point.y > mostUp) {
-            mostUp = point.y;
+        if (point->y > mostUp) {
+            mostUp = point->y;
         }
 
-        if (point.y < mostDown) {
-            mostDown = point.y;
+        if (point->y < mostDown) {
+            mostDown = point->y;
         }
 
-        if (point.x > mostRight) {
-            mostRight = point.x;
+        if (point->x > mostRight) {
+            mostRight = point->x;
         }
 
-        if (point.x < mostLeft) {
-            mostLeft = point.x;
+        if (point->x < mostLeft) {
+            mostLeft = point->x;
         }
 
-        if (point.z > mostFront) {
-            mostFront = point.z;
+        if (point->z > mostFront) {
+            mostFront = point->z;
         }
 
-        if (point.z < mostBack) {
-            mostBack = point.z;
+        if (point->z < mostBack) {
+            mostBack = point->z;
         }
     }
 

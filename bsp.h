@@ -2,7 +2,7 @@
 #define BSP_H
 
 #include "list"
-#include "sceneobject.h".h"
+#include "sceneobject.h"
 #include "plane.h"
 #include "limits.h"
 #include "boundingbox.h"

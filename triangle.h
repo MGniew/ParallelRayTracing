@@ -40,6 +40,7 @@ public:
                        float& dist);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
+    BoundingBox getBoundingBox();
 
 
     static float Area(Vector3<float> a, Vector3<float> b);

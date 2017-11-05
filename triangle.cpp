@@ -224,6 +224,58 @@ void Triangle::print()
 
 }
 
+BoundingBox Triangle::getBoundingBox()
+{
+    BoundingBox box;
+
+    float mostUp = getPointbyNum(1)->y;
+    float mostDown = getPointbyNum(1)->y;
+    float mostRight = getPointbyNum(1)->x;
+    float mostLeft = getPointbyNum(1)->x;
+    float mostFront = getPointbyNum(1)->z;
+    float mostBack = getPointbyNum(1)->z;
+
+
+    Vector3<float> point;
+    for (int i = 2; i <= 3; i++){
+        point = getPointbyNum(i);
+
+        if (point.y > mostUp) {
+            mostUp = point.y;
+        }
+
+        if (point.y < mostDown) {
+            mostDown = point.y;
+        }
+
+        if (point.x > mostRight) {
+            mostRight = point.x;
+        }
+
+        if (point.x < mostLeft) {
+            mostLeft = point.x;
+        }
+
+        if (point.z > mostFront) {
+            mostFront = point.z;
+        }
+
+        if (point.z < mostBack) {
+            mostBack = point.z;
+        }
+    }
+
+    box.maxX = mostRight;
+    box.minX = mostLeft;
+    box.maxY = mostUp;
+    box.minY = mostDown;
+    box.maxZ = mostFront;
+    box.minZ = mostBack;
+
+    return box;
+
+}
+
 float Triangle::Area(Vector3<float> a, Vector3<float> b)
 {
     return a.vectorProduct(b).length()/2;

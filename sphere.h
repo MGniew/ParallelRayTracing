@@ -28,6 +28,7 @@ public:
                float &dist);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
+    BoundingBox getBoundingBox();
 
     float radius;
     Vector3<float>* pos;

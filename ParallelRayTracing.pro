@@ -43,7 +43,8 @@ SOURCES += \
     serializable.cpp \
     statisticswindow.cpp \
     bsp.cpp \
-    plane.cpp
+    plane.cpp \
+    boundingbox.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -64,7 +65,8 @@ HEADERS += \
     serializable.h \
     statisticswindow.h \
     bsp.h \
-    plane.h
+    plane.h \
+    boundingbox.h
 
 FORMS += \
         mainwindow.ui \

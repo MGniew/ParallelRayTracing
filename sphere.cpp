@@ -93,6 +93,20 @@ void Sphere::print()
     std::cout << "--------------------------------------" << std::endl;
 }
 
+BoundingBox Sphere::getBoundingBox()
+{
+    BoundingBox box;
+
+    box.maxX = pos->x + radius;
+    box.minX = pos->x - radius;
+    box.maxY = pos->y + radius;
+    box.minY = pos->y - radius;
+    box.maxZ = pos->z + radius;
+    box.minZ = pos->z - radius;
+
+    return box;
+}
+
 void Sphere::serialize(std::vector<char> *bytes)
 {
     bytes->resize(serializedSize);

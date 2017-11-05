@@ -5,6 +5,7 @@
 #include "sceneobject.h".h"
 #include "plane.h"
 #include "limits.h"
+#include "boundingbox.h"
 
 class BSP
 {
@@ -21,7 +22,7 @@ public:
         node* front;
         node* back;
 
-    } ;
+    };
 
     node *tree;
     std::list<SceneObject*> polygons;
@@ -38,6 +39,8 @@ public:
 
 private:
 
+    BoundingBox boundingBox;
+    BoundingBox getBoundingBox(std::list<SceneObject*> polygons);
     SceneObject* intersect(node *root,
                            Vector3<float> &crossPoint,
                            Vector3<float> &startingPoint,

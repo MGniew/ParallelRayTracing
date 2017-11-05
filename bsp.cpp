@@ -10,8 +10,11 @@ BSP::BSP()
     for (int i = 0; i < scene->getNumOfObjects(); i++)
     {
         polygons.push_back(scene->sceneObjects[i]);
+
     }
     tree->polygons.empty();
+
+    boundingBox = getBoundingBox(polygons);
 
 }
 
@@ -21,6 +24,7 @@ BSP::BSP(std::list<SceneObject *> polygons) {
     tree->front = nullptr;
     tree->back = nullptr;
     this->polygons = polygons;
+    boundingBox = getBoundingBox(polygons);
     tree->polygons.empty();
 }
 
@@ -195,8 +199,10 @@ Plane BSP::getBestPlane(std::list<SceneObject *> polygons)
 
 SceneObject *BSP::getClosest(Vector3<float> &crossPoint, Vector3<float> &startingPoint, Vector3<float> &directionVector)
 {
-    return intersect(tree, crossPoint, startingPoint, directionVector);
-
+    if (boundingBox.intersect(startingPoint, directionVector)) {
+        return intersect(tree, crossPoint, startingPoint, directionVector);
+    }
+    return nullptr;
 }
 
 SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3<float> &startingPoint, Vector3<float> &directionVector)
@@ -314,7 +320,44 @@ SceneObject *BSP::getClosestInNode(std::list<SceneObject *> polygons, Vector3<fl
 
 bool BSP::isInShadow(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
 {
-    isInShadow_tree(tree, crossPoint, directionVector, crossPoint.distanceFrom(lightPos));
+    return isInShadow_tree(tree, crossPoint, directionVector, crossPoint.distanceFrom(lightPos));
+}
+
+BoundingBox BSP::getBoundingBox(std::list<SceneObject *> polygons)
+{
+    BoundingBox box;
+    BoundingBox objectBox;
+
+    for (std::list<SceneObject *>::iterator it = polygons.begin(); it != polygons.end(); ++it) {
+
+        objectBox = (*it)->getBoundingBox();
+
+        if (objectBox.maxX > box.maxX) {
+            box.maxX = objectBox.maxX;
+        }
+
+        if (objectBox.minX < box.minX) {
+            box.minX = objectBox.minX;
+        }
+
+        if (objectBox.maxY > box.maxY) {
+            box.maxY = objectBox.maxY;
+        }
+
+        if (objectBox.minY < box.minY) {
+            box.minY = objectBox.minY;
+        }
+
+        if (objectBox.maxZ > box.maxZ) {
+            box.maxZ = objectBox.maxZ;
+        }
+
+        if (objectBox.minZ < box.minZ) {
+            box.minZ = objectBox.minZ;
+        }
+    }
+
+    return box;
 }
 
 bool BSP::isInShadow_tree(BSP::node *root, Vector3<float> &crossPoint, Vector3<float> &directionVector, float lightDistance)
@@ -377,6 +420,3 @@ bool BSP::isInShadow_tree(BSP::node *root, Vector3<float> &crossPoint, Vector3<f
     }
     return hit;
 }
-
-
-

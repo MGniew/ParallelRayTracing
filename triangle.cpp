@@ -482,7 +482,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
 
     }
 
-//}
+}
 
 void Triangle::serialize(std::vector<char> *bytes)
 {

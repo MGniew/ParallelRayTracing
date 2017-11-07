@@ -9,8 +9,6 @@
 #include "boundingbox.h"
 
 
-class BSP;
-
 class SceneObject : public Serializable
 {
 public:

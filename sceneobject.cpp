@@ -1,6 +1,5 @@
 #include "sceneobject.h"
 #include "vector3.h"
-#include "bsp.h"
 
 SceneObject::SceneObject()
 {
@@ -83,7 +82,7 @@ bool SceneObject::isInShadow(Vector3<float> &crossPoint, Vector3<float> &directi
 bool SceneObject::isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
 {
     Scene* scene = Scene::getInstance();
-    return scene->bsp->isInShadow(crossPoint, directionVector, lightPos);
+    return scene->isInShadowBSP(crossPoint, directionVector, lightPos);
 }
 
 float SceneObject::getSpecShin()

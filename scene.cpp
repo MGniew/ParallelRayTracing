@@ -107,6 +107,11 @@ SceneObject *Scene::getClosestBSP(Vector3<float> &crossPoint, Vector3<float> &st
     return bsp->getClosest(crossPoint, startPoint, directionVector);
 }
 
+bool Scene::isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
+{
+    return bsp->isInShadow(crossPoint, directionVector, lightPos);
+}
+
 void Scene::serialize(std::vector<char> *bytes)
 {
     bytes->resize(serializedSize);
@@ -223,7 +228,7 @@ void Scene::setGlobalAmbient(float r, float g, float b)
     backgroundColor->z = b;
 }
 
-Vector3<float> Scene::buildBSP(int depth)
+void Scene::buildBSP(int depth)
 {
     delete bsp;
     bsp = new BSP();

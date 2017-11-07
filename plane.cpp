@@ -2,7 +2,10 @@
 
 Plane::Plane()
 {
-
+    a=0;
+    b=0;
+    c=0;
+    d=0;
 }
 
 Plane::Plane(float a, float b, float c, float d)
@@ -54,21 +57,89 @@ int Plane::classifyObject(SceneObject *obj)
 
     }
 
+    if (obj->getType() == 's') {
+
+        Sphere* sphere = static_cast<Sphere*>(obj);
+
+
+        if (getDistToPoint(sphere->pos) < sphere->radius) {
+            return SPANNING;
+        }
+
+        switch(classifyPoint(sphere->pos)) {
+            case FRONT:
+                return FRONT;
+
+            case BACK:
+                return BACK;
+
+        }
+
+        return SPANNING;
+    }
+
     return -1;
 }
 
 int Plane::classifyPoint(Vector3<float> *point)
 {
-    float sqr = sqrt(a*a + b*b + c*c);
-    float dist;
-    dist = a*point->x + b*point->y + c*point->z + d;
-    dist/=sqr;
+    float dist = getDistToPoint(point);
 
     if (dist > EPSILON)
         return FRONT;
     else
-        if(dist < EPSILON)
+        if(dist < -EPSILON)
             return BACK;
 
     return COINCIDENT;
+}
+
+float Plane::getDistToPoint(Vector3<float> *point)
+{
+    float sqr = sqrt(a*a + b*b + c*c);
+    float dist;
+    dist = a*point->x + b*point->y + c*point->z + d;
+    dist/=sqr;
+    return dist;
+}
+
+bool Plane::rayIntersectPlane(Vector3<float> startingPoint, Vector3<float> directionVector)
+{
+
+    Vector3<float> normal = getNormal();
+    directionVector.normalize();
+
+    float denom = normal.scalarProduct(directionVector);
+    if (fabs(denom) >= EPSILON){
+    float t = (-(d + normal.scalarProduct(startingPoint))/denom);
+        return (t >= 0);
+    }
+    return false;
+}
+
+Vector3<float> Plane::getNormal()
+{
+    Vector3<float> normal(a,b,c);
+    //normal.normalize();
+    return normal;
+}
+
+bool Plane::isValid()
+{
+    if (a == 0 && b == 0 && c == 0)
+        return false;
+
+    return true;
+}
+
+void Plane::print()
+{
+    std::cout << "-------------------------------" << std::endl;
+    std::cout << "Plane:" << std::endl;
+    std::cout << "a: " << a << std::endl;
+    std::cout << "b: " << b << std::endl;
+    std::cout << "c: " << c << std::endl;
+    std::cout << "d: " << d << std::endl;
+    std::cout << "-------------------------------" << std::endl;
+
 }

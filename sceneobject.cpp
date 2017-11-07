@@ -52,7 +52,8 @@ Vector3<float> SceneObject::getLocalColor(Vector3<float> &normalVector,
         if (v_dot_r < 0)
             v_dot_r = 0;
 
-        if (n_dot_l > 0 && !isInShadow(crossPoint, lightVector, *lightPossition)) {
+     // if (n_dot_l > 0 && !isInShadow(crossPoint, lightVector, *lightPossition)) {
+        if (n_dot_l > 0 && !isInShadowBSP(crossPoint, lightVector, *lightPossition)) {
             returnColor += (dif->multiplyByVector(*scene->lights[i]->dif))*n_dot_l +
                     spec->multiplyByVector(*scene->lights[i]->spec)*pow(double(v_dot_r), specShin) +
                     amb->multiplyByVector(*scene->lights[i]->amb);
@@ -76,6 +77,12 @@ bool SceneObject::isInShadow(Vector3<float> &crossPoint, Vector3<float> &directi
         }
     }
     return false;
+}
+
+bool SceneObject::isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
+{
+    Scene* scene = Scene::getInstance();
+    return scene->isInShadowBSP(crossPoint, directionVector, lightPos);
 }
 
 float SceneObject::getSpecShin()

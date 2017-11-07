@@ -1,4 +1,5 @@
 #include "sphere.h"
+#include "boundingbox.h"
 
 Sphere::Sphere(Vector3<float>* amb,
                Vector3<float>* dif,
@@ -91,6 +92,20 @@ void Sphere::print()
     std::cout << "specShin: " << specShin << std::endl;
     std::cout << "density: " << density << std::endl;
     std::cout << "--------------------------------------" << std::endl;
+}
+
+BoundingBox Sphere::getBoundingBox()
+{
+    BoundingBox box;
+
+    box.maxX = pos->x + radius;
+    box.minX = pos->x - radius;
+    box.maxY = pos->y + radius;
+    box.minY = pos->y - radius;
+    box.maxZ = pos->z + radius;
+    box.minZ = pos->z - radius;
+
+    return box;
 }
 
 void Sphere::serialize(std::vector<char> *bytes)

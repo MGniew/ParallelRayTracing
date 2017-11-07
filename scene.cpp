@@ -2,6 +2,7 @@
 #include "sceneobject.h"
 #include "sphere.h"
 #include "triangle.h"
+#include "bsp.h"
 
 Scene* Scene::instance = nullptr;
 
@@ -16,6 +17,7 @@ Scene::Scene()
     numOfObjects = 0;
 
     pixels = nullptr;
+    bsp = nullptr;
 
     serializedSize = 2 * Vector3<float>::serializedSize;
 }
@@ -24,7 +26,7 @@ Scene::~Scene()
 {
     delete backgroundColor;
     delete globalAmbient;
-
+    delete bsp;
 
     for (int i=0; i<numOfLights; i++) {
         delete lights[i];
@@ -98,6 +100,16 @@ int Scene::getWidth()
 int Scene::getHeight()
 {
     return pixels->y;
+}
+
+SceneObject *Scene::getClosestBSP(Vector3<float> &crossPoint, Vector3<float> &startPoint, Vector3<float> &directionVector)
+{
+    return bsp->getClosest(crossPoint, startPoint, directionVector);
+}
+
+bool Scene::isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
+{
+    return bsp->isInShadow(crossPoint, directionVector, lightPos);
 }
 
 void Scene::serialize(std::vector<char> *bytes)
@@ -214,6 +226,13 @@ void Scene::setGlobalAmbient(float r, float g, float b)
     backgroundColor->x = r;
     backgroundColor->y = g;
     backgroundColor->z = b;
+}
+
+void Scene::buildBSP(int depth)
+{
+    delete bsp;
+    bsp = new BSP();
+    bsp->build(bsp->tree, bsp->polygons, depth);
 }
 
 Scene *Scene::getInstance()

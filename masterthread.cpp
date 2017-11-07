@@ -163,9 +163,23 @@ void MasterThread::updateProcessSpeed()
     processSpeed[status.MPI_SOURCE][2] = chunkTime;
 }
 
+void MasterThread::waitUntillRdy()
+{
+    for(int i = 1; i< worldSize; i++) {
+        MPI_Recv(nullptr, 0, MPI_BYTE, MPI_ANY_SOURCE, READY, MPI_COMM_WORLD, &status);
+    }
+}
+
 void MasterThread::run()
 {
     double t1, t2;
+    t1 = MPI_Wtime();
+    waitUntillRdy();
+    t2 = MPI_Wtime();
+    printf("time: %f\n", t2-t1);
+
+
+
     splitToChunks(numChunks);
 
     t1 = MPI_Wtime();
@@ -176,11 +190,8 @@ void MasterThread::run()
         pending++;
     }
 
-
     int dest;
-
     while(pending>0) {
-
         switch(recvMessage()) {
             case EXIT: return; break;
             case PIXELS:

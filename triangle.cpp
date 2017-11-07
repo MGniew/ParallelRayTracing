@@ -1,5 +1,6 @@
 #include "triangle.h"
 #include "plane.h"
+#include "boundingbox.h"
 
 Triangle::Triangle(Vector3<float> *pointA,
                    Vector3<float> *pointB,
@@ -70,7 +71,29 @@ Triangle::Triangle()
     spec = new Vector3<float>;
 
     serializedSize = 9 * Vector3<float>::serializedSize +
-                     7 * sizeof(float);
+            7 * sizeof(float);
+}
+
+Triangle::Triangle(Triangle &triangle) : SceneObject(triangle.getAmb(),
+                                                     triangle.getDif(),
+                                                     triangle.getSpec(),
+                                                     triangle.getSpecShin(),
+                                                     triangle.getTransparency(),
+                                                     triangle.getMirror(),
+                                                     triangle.getLocal(),
+                                                     triangle.getDensity())
+{
+    pointA = new Vector3<float>(*triangle.pointA);
+    pointB = new Vector3<float>(*triangle.pointB);
+    pointC = new Vector3<float>(*triangle.pointC);
+    normalA = new Vector3<float>(*triangle.normalA);
+    normalB = new Vector3<float>(*triangle.normalB);
+    normalC = new Vector3<float>(*triangle.normalC);
+    texCoordsX = triangle.texCoordsX;
+    texCoordsY = triangle.texCoordsY;
+
+    serializedSize = 9 * Vector3<float>::serializedSize +
+            7 * sizeof(float);
 }
 
 //Möller–Trumbore intersection algorithm
@@ -83,21 +106,22 @@ bool Triangle::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vec
 
     float det = v0v1.scalarProduct(pvec);
 
-    if(det<EPSILON && det>-EPSILON) return false;
+    //smaller EPSILON works better here
+    if(det < SMALL_EPSILON && det > -SMALL_EPSILON) return false;
 
     float invDet = 1.0f / det;
 
     Vector3<float> tvec = startPoint - *pointA;
     u = tvec.scalarProduct(pvec) * invDet;
-    if (u < 0 || u > 1) return false;
+    if (u < - EPSILON || u > 1 + EPSILON) return false;
 
     Vector3<float> qvec = tvec.vectorProduct(v0v1);
     v = directionVector.scalarProduct(qvec) * invDet;
-    if (v < 0 || u + v > 1) return false;
+    if (v <  - EPSILON  || u + v > 1 + EPSILON) return false;
 
     dist = v0v2.scalarProduct(qvec) * invDet;
 
-    if ((dist) > EPSILON){
+    if ((dist) > SMALL_EPSILON){
         crossPoint = startPoint + directionVector*dist;
         return true;
     }
@@ -201,6 +225,58 @@ void Triangle::print()
 
 }
 
+BoundingBox Triangle::getBoundingBox()
+{
+    BoundingBox box;
+
+    float mostUp = getPointbyNum(1)->y;
+    float mostDown = getPointbyNum(1)->y;
+    float mostRight = getPointbyNum(1)->x;
+    float mostLeft = getPointbyNum(1)->x;
+    float mostFront = getPointbyNum(1)->z;
+    float mostBack = getPointbyNum(1)->z;
+
+
+    Vector3<float> *point;
+    for (int i = 2; i <= 3; i++){
+        point = getPointbyNum(i);
+
+        if (point->y > mostUp) {
+            mostUp = point->y;
+        }
+
+        if (point->y < mostDown) {
+            mostDown = point->y;
+        }
+
+        if (point->x > mostRight) {
+            mostRight = point->x;
+        }
+
+        if (point->x < mostLeft) {
+            mostLeft = point->x;
+        }
+
+        if (point->z > mostFront) {
+            mostFront = point->z;
+        }
+
+        if (point->z < mostBack) {
+            mostBack = point->z;
+        }
+    }
+
+    box.maxX = mostRight;
+    box.minX = mostLeft;
+    box.maxY = mostUp;
+    box.minY = mostDown;
+    box.maxZ = mostFront;
+    box.minZ = mostBack;
+
+    return box;
+
+}
+
 float Triangle::Area(Vector3<float> a, Vector3<float> b)
 {
     return a.vectorProduct(b).length()/2;
@@ -211,11 +287,61 @@ Plane Triangle::getPlane()
     Vector3<float> v0v1 = *pointB - *pointA;
     Vector3<float> v0v2 = *pointC - *pointA;
     Vector3<float> normal = v0v1.vectorProduct(v0v2);
-    //normalizacja?
+    normal.normalize();
 
     float d = normal.x * -pointA->x + normal.y * -pointA->y + normal.z * -pointA->z;
 
     return Plane(normal.x, normal.y, normal.z, d);
+}
+
+Plane Triangle::getPerpendicularPlane(int i)
+{
+    if (i < 1 || i > 3) return Plane();
+
+    Vector3<float> v0v1 = *pointB - *pointA;
+    Vector3<float> v0v2 = *pointC - *pointA;
+    Vector3<float> normalTriangle = v0v1.vectorProduct(v0v2);
+    normalTriangle.normalize();
+
+    Vector3<float> edge;
+    Vector3<float>* point;
+
+    switch(i) {
+        case 1:
+            edge = *pointB - *pointA;
+            point = pointA;
+            break;
+        case 2:
+            edge = *pointC - *pointA;
+            point = pointA;
+            break;
+        case 3:
+            edge = *pointC - *pointB;
+            point = pointB;
+            break;
+
+        default:
+            return Plane();
+    }
+    Vector3<float> normal = normalTriangle.vectorProduct(edge);
+    normal.normalize();
+    float d = normal.x * -point->x + normal.y * -point->y + normal.z * -point->z;
+    return Plane(normal.x, normal.y, normal.z, d);
+
+
+}
+
+std::list<Plane> Triangle::getPlanes()
+{
+    std::list<Plane> list;
+
+    list.push_back(getPlane());
+    for (int i = 1; i < 4; i++) {
+        Plane plane = getPerpendicularPlane(i);
+        list.push_back(plane);
+
+    }
+    return list;
 }
 
 Vector3<float>* Triangle::getPointbyNum(int a)
@@ -236,10 +362,127 @@ Vector3<float>* Triangle::getPointbyNum(int a)
     }
 }
 
-//void Triangle::split(Plane plane, front **SceneObject, int numFront, back **SceneObject, numBack)
-//{
+void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangle*>& back)
+{
+    std::vector<Vector3<float>> frontSide;
+    std::vector<Vector3<float>> backSide;
 
-//}
+
+    Vector3<float> *pointA, *pointB;
+    float distA, distB;
+
+    pointA = getPointbyNum(3);
+    distA = plane.getDistToPoint(pointA);
+
+
+    //should work 4 every poligon
+    for (int i=1; i<=3; i++) {
+        pointB = getPointbyNum(i);
+        distB = plane.getDistToPoint(pointB);
+
+        if (distB >= EPSILON) {
+            if (distA < -EPSILON) { //different sides
+
+                Vector3<float> v = *pointB - *pointA;
+                float distToSpan = -plane.getDistToPoint(pointA)/(plane.getNormal().scalarProduct(v));
+                Vector3<float> newPoint = *pointA + v*distToSpan;
+                frontSide.push_back(newPoint);
+                backSide.push_back(newPoint);
+            }
+                frontSide.push_back(*pointB);
+        }
+        else if (distB <= -EPSILON) {
+            if (distA > EPSILON) //different sides
+            {
+                Vector3<float> v = *pointB - *pointA;
+                float distToSpan = -plane.getDistToPoint(pointA)/ (plane.getNormal().scalarProduct(v));
+                Vector3<float> newPoint = *pointA + v*distToSpan;
+                frontSide.push_back(newPoint);
+                backSide.push_back(newPoint);
+            }
+                backSide.push_back(*pointB);
+        }
+        else {
+            frontSide.push_back(*pointB);
+            backSide.push_back(*pointB);
+        }
+            pointA = pointB;
+            distA = distB;
+    }
+
+    //works only for triangle (4 side polygon to 3 side polygon
+    if (frontSide.size() == 3) {
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(frontSide[0]);
+        triangle->pointB->setValues(frontSide[1]);
+        triangle->pointC->setValues(frontSide[2]);
+        triangle->normalA->setValues(getNormalVector(frontSide[0]));
+        triangle->normalB->setValues(getNormalVector(frontSide[1]));
+        triangle->normalC->setValues(getNormalVector(frontSide[2]));
+        front.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
+    }
+    else {
+
+
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(frontSide[0]);
+        triangle->pointB->setValues(frontSide[1]);
+        triangle->pointC->setValues(frontSide[2]);
+        triangle->normalA->setValues(getNormalVector(frontSide[0]));
+        triangle->normalB->setValues(getNormalVector(frontSide[1]));
+        triangle->normalC->setValues(getNormalVector(frontSide[2]));
+        front.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
+
+        triangle = new Triangle(*this);
+        triangle->pointA->setValues(frontSide[0]);
+        triangle->pointB->setValues(frontSide[2]);
+        triangle->pointC->setValues(frontSide[3]);
+        triangle->normalA->setValues(getNormalVector(frontSide[0]));
+        triangle->normalB->setValues(getNormalVector(frontSide[2]));
+        triangle->normalC->setValues(getNormalVector(frontSide[3]));
+        front.push_back(triangle);
+        Scene::getInstance()->addObject(front.back());
+    }
+
+    if (backSide.size() == 3) {
+
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(backSide[0]);
+        triangle->pointB->setValues(backSide[1]);
+        triangle->pointC->setValues(backSide[2]);
+        triangle->normalA->setValues(getNormalVector(backSide[0]));
+        triangle->normalB->setValues(getNormalVector(backSide[1]));
+        triangle->normalC->setValues(getNormalVector(backSide[2]));
+        back.push_back(triangle);
+        Scene::getInstance()->addObject(back.back());
+    }
+    else {
+
+        Triangle* triangle = new Triangle(*this);
+        triangle->pointA->setValues(backSide[0]);
+        triangle->pointB->setValues(backSide[1]);
+        triangle->pointC->setValues(backSide[2]);
+        triangle->normalA->setValues(getNormalVector(backSide[0]));
+        triangle->normalB->setValues(getNormalVector(backSide[1]));
+        triangle->normalC->setValues(getNormalVector(backSide[2]));
+        back.push_back(triangle);
+        Scene::getInstance()->addObject(back.back());
+
+        triangle = new Triangle(*this);
+        triangle->pointA->setValues(backSide[0]);
+        triangle->pointB->setValues(backSide[2]);
+        triangle->pointC->setValues(backSide[3]);
+        triangle->normalA->setValues(getNormalVector(backSide[0]));
+        triangle->normalB->setValues(getNormalVector(backSide[2]));
+        triangle->normalC->setValues(getNormalVector(backSide[3]));
+        back.push_back(triangle);
+        Scene::getInstance()->addObject(back.back());
+
+    }
+
+}
 
 void Triangle::serialize(std::vector<char> *bytes)
 {

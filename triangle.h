@@ -3,8 +3,10 @@
 
 #include "sceneobject.h"
 #include "global.h"
+#include "list"
 
 
+class BoundingBox;
 class Plane;
 
 using namespace myGlobals;
@@ -31,6 +33,7 @@ public:
 
     ~Triangle();
     Triangle();
+    Triangle(Triangle &triangle);
 
     bool trace(Vector3<float>& crossPoint,
                        Vector3<float>& startPoint,
@@ -38,6 +41,7 @@ public:
                        float& dist);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
+    BoundingBox getBoundingBox();
 
 
     static float Area(Vector3<float> a, Vector3<float> b);
@@ -50,8 +54,11 @@ public:
     Vector3<float> *normalB;
     Vector3<float> *normalC;
     Plane getPlane();
+    Plane getPerpendicularPlane(int i);
+    std::list<Plane> getPlanes();
     Vector3<float>* getPointbyNum(int a);
-    //void split(Plane plane, SceneObject** front , int numFront, SceneObject **back , numBack);
+    void split(Plane plane, std::list<Triangle*> & front, std::list<Triangle*> & back);
+
     float texCoordsX;
     float texCoordsY;
 

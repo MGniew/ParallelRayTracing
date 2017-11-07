@@ -8,6 +8,10 @@ RayTracer::RayTracer()
     camera = Camera::getInstance();
 }
 
+RayTracer::~RayTracer()
+{
+}
+
 void RayTracer::recursiveRayTracer(int depth)
 {
 
@@ -43,10 +47,12 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
         return Vector3<float>();
 
     depth--;
-    sceneObject = getClosest(crossPoint, startPoint, directionVector);
+
+    //sceneObject = getClosest(crossPoint, startPoint, directionVector);
+    sceneObject = scene->getClosestBSP(crossPoint, startPoint, directionVector);
+
     if (sceneObject == nullptr)
         return Vector3<float>(*scene->backgroundColor);
-
 
      Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
      Vector3<float> observationVector = directionVector*-1;
@@ -146,4 +152,3 @@ SceneObject *RayTracer::getClosest(Vector3<float> &crossPoint,
     }
     return sceneObject;
 }
-

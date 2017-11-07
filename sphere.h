@@ -3,9 +3,11 @@
 
 #include "sceneobject.h"
 #include "global.h"
+#include "boundingbox.h"
 
 using namespace myGlobals;
 
+class BoundingBox;
 
 class Sphere : public SceneObject
 {
@@ -28,6 +30,7 @@ public:
                float &dist);
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
+    BoundingBox getBoundingBox();
 
     float radius;
     Vector3<float>* pos;

@@ -9,7 +9,6 @@
 
 using namespace myGlobals;
 
-
 class SceneObject;
 class Scene;
 
@@ -17,6 +16,7 @@ class RayTracer
 {
 public:
     RayTracer();
+    ~RayTracer();
 
     void basicRayTracer();
 
@@ -31,6 +31,7 @@ public:
 
     Scene* scene;
     Camera* camera;
+
     Vector3<float>*** buffer;
 
 };

@@ -12,6 +12,7 @@
 class SceneObject;
 class Sphere;
 class Triangle;
+class BSP;
 
 class Scene : public Serializable
 {
@@ -28,6 +29,7 @@ public:
     Vector3<float>* globalAmbient;
     int numOfLights;
     int numOfObjects;
+    BSP* bsp;
 
     static Scene* getInstance();
     void loadScene (char* file);
@@ -37,6 +39,8 @@ public:
 
     Vector3<float> *getGlobalAmbient();
     void setGlobalAmbient(float r, float g, float b);
+
+    void buildBSP(int depth);
 
     Vector3<float> ***getPixels();
     int getNumOfLights();
@@ -48,6 +52,8 @@ public:
     int getStartY();
     int getWidth();
     int getHeight();
+    SceneObject* getClosestBSP(Vector3<float> &crossPoint, Vector3<float> &startPoint, Vector3<float> &directionVector);
+    bool isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos);
 
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);

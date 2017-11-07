@@ -4,6 +4,7 @@
 namespace myGlobals {
 
 const float EPSILON = 0.0001f;
+const float SMALL_EPSILON = 0.0000001f;
 
 struct Chunk {
     int startx, stopx;
@@ -17,7 +18,8 @@ enum {
     CHUNK,
     PIXELS,
     DEPTH,
-    NAME
+    NAME,
+    READY
 };
 
 enum {

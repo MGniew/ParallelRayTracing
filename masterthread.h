@@ -19,7 +19,6 @@
 #include "chrono"
 #include <string>
 
-
 using namespace myGlobals;
 
 
@@ -65,6 +64,7 @@ private:
     int recvMessage();
     void finishPending();
     void updateProcessSpeed();
+    void waitUntillRdy();
     int pending;
     int numChunks;
 

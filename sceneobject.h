@@ -6,6 +6,8 @@
 #include <cstdlib>
 #include <ctime>
 #include "serializable.h"
+#include "boundingbox.h"
+
 
 class SceneObject : public Serializable
 {
@@ -26,6 +28,7 @@ public:
                                  Vector3<float>& observationVector);
 
     bool isInShadow(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos);
+    bool isInShadowBSP(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos);
 
     virtual bool trace(Vector3<float> &crossPoint,
                        Vector3<float> &startPoint,
@@ -33,6 +36,7 @@ public:
                        float &dist) = 0;
     virtual Vector3<float> getNormalVector(Vector3<float> &crossPoint) = 0;
     virtual void print() = 0;
+    virtual BoundingBox getBoundingBox() = 0;
 
     float getSpecShin();
     void setSpecShin(float value);

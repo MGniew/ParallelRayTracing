@@ -58,6 +58,7 @@ public:
     std::list<Plane> getPlanes();
     Vector3<float>* getPointbyNum(int a);
     void split(Plane plane, std::list<Triangle*> & front, std::list<Triangle*> & back);
+
     float texCoordsX;
     float texCoordsY;
 

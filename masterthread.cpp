@@ -163,48 +163,52 @@ void MasterThread::updateProcessSpeed()
     processSpeed[status.MPI_SOURCE][2] = chunkTime;
 }
 
+void MasterThread::waitUntillRdy()
+{
+    for(int i = 1; i< worldSize; i++) {
+        MPI_Recv(nullptr, 0, MPI_BYTE, MPI_ANY_SOURCE, READY, MPI_COMM_WORLD, &status);
+    }
+}
+
 void MasterThread::run()
 {
-    RayTracer raytracer;
-    double t1 = MPI_Wtime();
-    raytracer.recursiveRayTracer(1);
-    double t2 = MPI_Wtime();
-
+    double t1, t2;
+    t1 = MPI_Wtime();
+    waitUntillRdy();
+    t2 = MPI_Wtime();
     printf("time: %f\n", t2-t1);
 
-//    double t1, t2;
-//    splitToChunks(numChunks);
-
-//    t1 = MPI_Wtime();
-//    pending = 0;
-//    for (int i=1; i<worldSize; i++) {
-//        if (!sendNextChunk(i)) break;
-//        processSpeed[i][2] = MPI_Wtime();
-//        pending++;
-//    }
 
 
-//    int dest;
+    splitToChunks(numChunks);
 
-//    while(pending>0) {
+    t1 = MPI_Wtime();
+    pending = 0;
+    for (int i=1; i<worldSize; i++) {
+        if (!sendNextChunk(i)) break;
+        processSpeed[i][2] = MPI_Wtime();
+        pending++;
+    }
 
-//        switch(recvMessage()) {
-//            case EXIT: return; break;
-//            case PIXELS:
-//                dest = recvPixels(status);
-//                updateProcessSpeed();
-//                if (!sendNextChunk(dest))
-//                    pending--;
-//                break;
-//            default: break;
-//        }
-//       // emit workIsReady();
-//        emit processInfo(processSpeed);
-//    }
-//    t2 = MPI_Wtime();
+    int dest;
+    while(pending>0) {
+        switch(recvMessage()) {
+            case EXIT: return; break;
+            case PIXELS:
+                dest = recvPixels(status);
+                updateProcessSpeed();
+                if (!sendNextChunk(dest))
+                    pending--;
+                break;
+            default: break;
+        }
+       // emit workIsReady();
+        emit processInfo(processSpeed);
+    }
+    t2 = MPI_Wtime();
 
 
-//    emit setTime(t2-t1);
+    emit setTime(t2-t1);
     emit workIsReady();
 
     recvMessage(); //temp

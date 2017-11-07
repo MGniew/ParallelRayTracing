@@ -1,14 +1,19 @@
 #include "slavempi.h"
 
-
 SlaveMPI::SlaveMPI()
 {   
     sendName();
+
     camera = Camera::getInstance();
     scene = Scene::getInstance();
     recvCamera();
     recvScene();
     recvDepth();
+        printf("1\n");
+    scene->buildBSP(10000);
+        printf("2\n");
+    sendRdy();
+        printf("3\n");
 }
 
 SlaveMPI::~SlaveMPI()
@@ -75,6 +80,11 @@ void SlaveMPI::sendName()
     int name_len;
     MPI_Get_processor_name(processor_name, &name_len);
     MPI_Send(processor_name, name_len, MPI_CHAR, 0, NAME, MPI_COMM_WORLD);
+}
+
+void SlaveMPI::sendRdy()
+{
+     MPI_Send(nullptr, 0, MPI_BYTE, 0, READY, MPI_COMM_WORLD);
 }
 
 void SlaveMPI::recvDepth()

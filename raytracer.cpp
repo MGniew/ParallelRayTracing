@@ -1,21 +1,15 @@
 #include "raytracer.h"
 #include "sceneobject.h"
 #include "scene.h"
-#include "bsp.h"
 
 RayTracer::RayTracer()
 {
     scene = Scene::getInstance();
     camera = Camera::getInstance();
-    bsp = new BSP;
-    printf("start building\n");
-    bsp->build(bsp->tree, bsp->polygons, 10000);
-    printf("built\n");
 }
 
 RayTracer::~RayTracer()
 {
-    delete bsp;
 }
 
 void RayTracer::recursiveRayTracer(int depth)
@@ -26,7 +20,6 @@ void RayTracer::recursiveRayTracer(int depth)
     buffer = scene->getPixels();
 
     for(int i = 0; i < scene->getWidth(); i++) {
-        printf("etap %d\n", i);
         for(int j = 0; j < scene->getHeight(); j++) {
             worldPosOfPixel = camera->getWorldPosOfPixel(i + scene->getStartX(),j + scene->getStartY());
             directionVector = worldPosOfPixel - *camera->getEye();
@@ -54,11 +47,12 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
         return Vector3<float>();
 
     depth--;
+
     //sceneObject = getClosest(crossPoint, startPoint, directionVector);
-    sceneObject = bsp->getClosest(crossPoint, startPoint, directionVector);
+    sceneObject = scene->getClosestBSP(crossPoint, startPoint, directionVector);
+
     if (sceneObject == nullptr)
         return Vector3<float>(*scene->backgroundColor);
-
 
      Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
      Vector3<float> observationVector = directionVector*-1;
@@ -78,7 +72,7 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
          localColor.setValues(sceneObject->getLocalColor
                                (normalVector,
                                crossPoint,
-                               observationVector, bsp));
+                               observationVector));
      }
      if (sceneObject->getMirror()>0) {
          reflectedRay = directionVector.reflect(normalVector);
@@ -121,7 +115,7 @@ void RayTracer::basicRayTracer()
                  buffer[i][j]->setValues(sceneObject->getLocalColor
                                                         (normalVector,
                                                         crossPoint,
-                                                        observationVector, nullptr));
+                                                        observationVector));
             }
     }
     }
@@ -158,4 +152,3 @@ SceneObject *RayTracer::getClosest(Vector3<float> &crossPoint,
     }
     return sceneObject;
 }
-

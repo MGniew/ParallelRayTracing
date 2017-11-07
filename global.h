@@ -18,7 +18,8 @@ enum {
     CHUNK,
     PIXELS,
     DEPTH,
-    NAME
+    NAME,
+    READY
 };
 
 enum {

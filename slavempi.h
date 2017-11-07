@@ -32,6 +32,7 @@ public:
     int recvMessage();
     void sendPixels();
     void sendName();
+    void sendRdy();
 
 };
 

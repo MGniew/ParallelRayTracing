@@ -65,6 +65,7 @@ private:
     int recvMessage();
     void finishPending();
     void updateProcessSpeed();
+    void waitUntillRdy();
     int pending;
     int numChunks;
 

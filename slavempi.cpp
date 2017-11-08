@@ -6,14 +6,12 @@ SlaveMPI::SlaveMPI()
 
     camera = Camera::getInstance();
     scene = Scene::getInstance();
-    recvCamera();
+    recvCameraBcast();
     recvScene();
     recvDepth();
-        printf("1\n");
     scene->buildBSP(10000);
-        printf("2\n");
     sendRdy();
-        printf("3\n");
+
 }
 
 SlaveMPI::~SlaveMPI()
@@ -37,19 +35,30 @@ int SlaveMPI::exec()
                 sendPixels(); break;
             case DEPTH:
                 recvDepth(); break;
+            case CAMERA:
+                recvCameraPointToPoint(); break;
             default: break;
         }
     }
     return 0;
 }
 
-void SlaveMPI::recvCamera()
+void SlaveMPI::recvCameraBcast()
 {
     std::vector<char> vec;
     vec.resize(camera->serializedSize);
     MPI_Bcast(vec.data(), vec.size(), MPI_BYTE, 0, MPI_COMM_WORLD);
     camera->deserialize(vec);
 }
+
+void SlaveMPI::recvCameraPointToPoint()
+{
+    std::vector<char> vec;
+    vec.resize(camera->serializedSize);
+    MPI_Recv(vec.data(), vec.size(), MPI_BYTE, 0, CAMERA, MPI_COMM_WORLD, &status);
+    camera->deserialize(vec);
+}
+
 
 void SlaveMPI::recvScene()
 {

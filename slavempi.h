@@ -25,7 +25,8 @@ public:
     Camera* camera;
     Scene* scene;
     MPI_Status status;
-    void recvCamera();
+    void recvCameraBcast();
+    void recvCameraPointToPoint();
     void recvScene();
     void recvDepth();
     void recvChunk();

@@ -10,9 +10,7 @@ class Camera : public Serializable
 public:
     Camera();
     Camera(Vector3<float>* eye,
-           float rotationX,
-           float rotationY,
-           float rotationZ,
+           Vector3<float>* lookAt,
            float zNear,
            float zFar,
            int pixWidth,
@@ -24,9 +22,7 @@ public:
     static Camera* instance;
     static Camera* getInstance();
     static Camera* getInstance(Vector3<float>* eye,
-                   float rotationX,
-                   float rotationY,
-                   float rotationZ,
+                   Vector3<float>* lookAt,
                    float zNear,
                    float zFar,
                    int pixWidth,
@@ -34,6 +30,7 @@ public:
                    float povy);
 
     Vector3<float> getWorldPosOfPixel(int x, int y);
+    void rotate();
 
     float getZNear();
     void setZNear(float value);
@@ -67,6 +64,7 @@ public:
     Vector3<float>* eye;
     Vector3<float>* look;
     Vector3<float>* up;
+    Vector3<float>* lookAt;
 
     float zNear;
     float zFar;
@@ -76,9 +74,10 @@ public:
     float aspect;
     float worldWidth;
     float worldHeight;
-    float rotationX;
-    float rotationY;
-    float rotationZ;
+
+    float R;
+    float ver;
+    float hor;
 
 
 };

@@ -17,14 +17,13 @@ void RayTracer::recursiveRayTracer(int depth)
 
     Vector3<float> worldPosOfPixel;
     Vector3<float> directionVector;
-    buffer = scene->getPixels();
 
     for(int i = 0; i < scene->getWidth(); i++) {
         for(int j = 0; j < scene->getHeight(); j++) {
             worldPosOfPixel = camera->getWorldPosOfPixel(i + scene->getStartX(),j + scene->getStartY());
             directionVector = worldPosOfPixel - *camera->getEye();
             directionVector.normalize();
-            buffer[i][j]->setValues(getColorRecursive(worldPosOfPixel, directionVector, depth));
+            scene->setPixelColor(i, j, getColorRecursive(worldPosOfPixel, directionVector, depth));
         }
     }
 }

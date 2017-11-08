@@ -12,9 +12,9 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
     scene = Scene::getInstance();
     MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
 
-    sendCamera();
+    sendCameraBcast();
     sendScene();
-    sendDepth(3);
+    sendDepth(2);
     numChunks=10;
 
     processSpeed = new double*[worldSize];
@@ -78,12 +78,23 @@ void MasterThread::clearQueue(std::queue<Chunk> &q)
     std::swap(q,empty);
 }
 
-void MasterThread::sendCamera()
+void MasterThread::sendCameraBcast()
 {
     std::vector<char> vec;
     vec.resize(camera->serializedSize);
     camera->serialize(&vec);
     MPI_Bcast(vec.data(), vec.size(), MPI_BYTE, 0, MPI_COMM_WORLD);
+}
+
+
+void MasterThread::sendCameraPointToPoint()
+{
+    for (int i = 1; i < worldSize; i++) {
+        std::vector<char> vec;
+        vec.resize(camera->serializedSize);
+        camera->serialize(&vec);
+        MPI_Send(vec.data(), vec.size(), MPI_BYTE, i, CAMERA, MPI_COMM_WORLD);
+    }
 }
 
 void MasterThread::sendScene() {
@@ -179,37 +190,44 @@ void MasterThread::run()
     printf("time: %f\n", t2-t1);
 
 
+    while (true) {
 
-    splitToChunks(numChunks);
+        splitToChunks(numChunks);
 
-    t1 = MPI_Wtime();
-    pending = 0;
-    for (int i=1; i<worldSize; i++) {
-        if (!sendNextChunk(i)) break;
-        processSpeed[i][2] = MPI_Wtime();
-        pending++;
-    }
-
-    int dest;
-    while(pending>0) {
-        switch(recvMessage()) {
-            case EXIT: return; break;
-            case PIXELS:
-                dest = recvPixels(status);
-                updateProcessSpeed();
-                if (!sendNextChunk(dest))
-                    pending--;
-                break;
-            default: break;
+        t1 = MPI_Wtime();
+        pending = 0;
+        for (int i=1; i<worldSize; i++) {
+            if (!sendNextChunk(i)) break;
+            processSpeed[i][2] = MPI_Wtime();
+            pending++;
         }
-       // emit workIsReady();
-        emit processInfo(processSpeed);
+
+        int dest;
+        while(pending>0) {
+            switch(recvMessage()) {
+                case EXIT: return; break;
+                case PIXELS:
+                    dest = recvPixels(status);
+                    updateProcessSpeed();
+                    if (!sendNextChunk(dest))
+                        pending--;
+                    break;
+                default: break;
+            }
+           // emit workIsReady();
+            emit processInfo(processSpeed);
+        }
+        t2 = MPI_Wtime();
+
+        emit setTime(t2-t1);
+
+        //update camera pos
+        camera->rotate();
+        //broadcast camera
+        sendCameraPointToPoint();
+        emit workIsReady();
+
     }
-    t2 = MPI_Wtime();
-
-
-    emit setTime(t2-t1);
-    emit workIsReady();
 
     recvMessage(); //temp
 

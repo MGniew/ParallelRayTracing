@@ -3,29 +3,16 @@
 
 Pixels::Pixels(int x, int y)
 {
-
     this->x = x;
     this->y = y;
     startx = 0;
     starty = 0;
-    serializedSize = Vector3<float>::serializedSize*x*y;
-
-    data = new Vector3<float>**[x];
-        for (int i = 0; i < x; i++) {
-            data[i] = new Vector3<float>*[y];
-            for (int j = 0; j < y; j++)
-                data[i][j] = new Vector3<float>();
-        }
-
+    serializedSize = sizeof(unsigned char)*x*y*3;
+    data = new unsigned char[x*y*3];
 }
 
 Pixels::~Pixels()
 {
-    for (int i = 0; i <  x; i++) {
-        for (int j = 0; j <  y; j++)
-            delete data[i][j];
-        delete [] data[i];
-    }
     delete [] data;
     data = nullptr;
 }
@@ -36,20 +23,11 @@ void Pixels::serialize(std::vector<char> *bytes)
     int stopy = starty + y;
     bytes->resize(serializedSize + 4*sizeof(int));
     char* ptr = bytes->data();
-    std::vector<char> pixdataVec;
     memcpy(ptr, &startx, sizeof(int)); ptr += sizeof(int);
     memcpy(ptr, &stopx, sizeof(int)); ptr += sizeof(int);
     memcpy(ptr, &starty, sizeof(int)); ptr += sizeof(int);
     memcpy(ptr, &stopy, sizeof(int)); ptr += sizeof(int);
-
-    for(int i=0; i<x; i++) {
-        for(int j=0; j<y; j++) {
-            data[i][j]->serialize(&pixdataVec);
-            memcpy(ptr, pixdataVec.data(), pixdataVec.size());
-            ptr += pixdataVec.size();
-        }
-    }
-
+    memcpy(ptr, data, serializedSize);
 }
 
 void Pixels::deserialize(const std::vector<char> &bytes)
@@ -61,17 +39,8 @@ void Pixels::deserialize(const std::vector<char> &bytes)
     memcpy(&starty, ptr, sizeof(int)); ptr += sizeof(int);
     memcpy(&stopy, ptr, sizeof(int)); ptr += sizeof(int);
 
-    std::vector<char> pixdataVec;
-    Vector3<float> pixVec;
-    pixdataVec.resize(Vector3<float>::serializedSize);
-
-    for(int i=startx; i<stopx; i++) {
-        for(int j=starty; j<stopy; j++) {
-            memcpy(pixdataVec.data(), ptr, pixdataVec.size());
-            pixVec.deserialize(pixdataVec);
-            data[i][j]->setValues(pixVec.x, pixVec.y, pixVec.z);
-            ptr += pixdataVec.size();
-        }
+    for(int j=starty; j<stopy; j++) {
+        memcpy(data + j*x*3 + startx*3, ptr, (stopx - startx)*3); ptr += (stopx - startx)*3;
     }
 }
 
@@ -84,4 +53,14 @@ void Pixels::setStartXY(int x, int y)
 {
     this->startx = x;
     this->starty = y;
+}
+
+void Pixels::setPixel(int posX, int posY, Vector3<float> &vec)
+{
+    if(vec.x > 1) vec.x = 1;
+    if(vec.y > 1) vec.y = 1;
+    if(vec.z > 1) vec.z = 1;
+    data[3*posY*x + 3*posX] = (int)(vec.x * 255);
+    data[3*posY*x + 3*posX + 1] = (int)(vec.y * 255);
+    data[3*posY*x + 3*posX + 2] = (int)(vec.z * 255);
 }

@@ -112,6 +112,11 @@ bool Scene::isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionV
     return bsp->isInShadow(crossPoint, directionVector, lightPos);
 }
 
+void Scene::setPixelColor(int x, int y, Vector3<float> color)
+{
+    pixels->setPixel(x, y, color);
+}
+
 void Scene::serialize(std::vector<char> *bytes)
 {
     bytes->resize(serializedSize);
@@ -211,7 +216,7 @@ int Scene::getNumOfLights()
     return numOfLights;
 }
 
-Vector3<float> ***Scene::getPixels()
+unsigned char* Scene::getPixels()
 {
     return pixels->data;
 }

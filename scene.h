@@ -42,7 +42,7 @@ public:
 
     void buildBSP(int depth);
 
-    Vector3<float> ***getPixels();
+    unsigned char *getPixels();
     int getNumOfLights();
     int getNumOfObjects();
     void addObject(SceneObject* sceneObject);
@@ -54,6 +54,7 @@ public:
     int getHeight();
     SceneObject* getClosestBSP(Vector3<float> &crossPoint, Vector3<float> &startPoint, Vector3<float> &directionVector);
     bool isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos);
+    void setPixelColor(int x, int y, Vector3<float> color);
 
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);

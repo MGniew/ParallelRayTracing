@@ -68,22 +68,22 @@ bool FileLoader::ReadFile(const char *fname)
 bool FileLoader::readCameraSettings(const char *line)
 {
     float posX, posY, posZ;
-    float rotX, rotY, rotZ;
+    float lookAtX, lookAtY, lookAtZ;
     float zNear, zFar;
     float width, height;
     float povy;
 
-    if (sscanf(line, "camera eye<%f; %f; %f> rotationX<%f> "
-               "rotationY<%f> rotationZ<%f> zNear<%f> "
+    if (sscanf(line, "camera eye<%f; %f; %f> "
+               "lookAt<%f; %f; %f> zNear<%f> "
                "zFar<%f> pixWidth<%f> pixHeight<%f> povy<%f>",
-               &posX, &posY, &posZ, &rotX, &rotY, &rotZ, &zNear,
+               &posX, &posY, &posZ, &lookAtX, &lookAtY, &lookAtZ, &zNear,
                &zFar, &width, &height, &povy) != 11) {
         return false;
     }
 
     Camera::getInstance(new Vector3<float>(posX, posY, posZ),
-                        rotX, rotY, rotZ, zNear, zFar,
-                        width, height, povy);
+                        new Vector3<float>(lookAtX, lookAtY, lookAtZ),
+                        zNear, zFar, width, height, povy);
     Scene::getInstance()->setUpPixels(width, height);
     return true;
 }

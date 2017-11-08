@@ -15,11 +15,11 @@ public:
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);
     char getType();
-    Vector3<float>*** data;
+    unsigned char* data;
     int x, y;
     int startx, starty;
     void setStartXY(int x, int y);
-
+    void setPixel(int posX, int posY, Vector3<float>& vec);
 
 };
 

@@ -14,7 +14,7 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
 
     sendCameraBcast();
     sendScene();
-    sendDepth(3);
+    sendDepth(2);
     numChunks=10;
 
     processSpeed = new double*[worldSize];
@@ -218,7 +218,6 @@ void MasterThread::run()
             emit processInfo(processSpeed);
         }
         t2 = MPI_Wtime();
-
 
         emit setTime(t2-t1);
 

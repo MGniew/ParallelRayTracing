@@ -140,7 +140,7 @@ Vector3<float> Camera::getWorldPosOfPixel(int x, int y)
 
 void Camera::rotate()
 {
-    hor += M_PI/180;
+    hor += M_PI/720;
     if (hor >= 2 * M_PI)
         hor = 0;
     //calculate next eye pos

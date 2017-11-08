@@ -34,25 +34,16 @@ void GLwidget::resizeGL(int w, int h)
 
 void GLwidget::paintGL()
 {
+
+glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    float* pixel;
-    pixel = new float[3];
+
     QPainter qPainter(this);
     int iMax = camera->getPixWidth();
     int jMax = camera->getPixHeight();
 
-    for(int i = 0; i < iMax; i++) {
-        for(int j = 0; j < jMax; j++) {
-            pixel[0] = scene->getPixels()[i][j]->x;
-            pixel[1] = scene->getPixels()[i][j]->y;
-            pixel[2] = scene->getPixels()[i][j]->z;
-            if (pixel[0] > 1) pixel[0]  = 1;
-            if (pixel[1] > 1) pixel[1]  = 1;
-            if (pixel[2] > 1) pixel[2]  = 1;
-            qPainter.setPen(QColor(pixel[0]*255, pixel[1]*255, pixel[2]*255));
-            qPainter.drawPoint(i, j);
-       }
-    }
-    delete pixel;
+    QImage img((uchar *)scene->pixels->data, iMax, jMax, QImage::Format_RGB888);
+    qPainter.drawImage(0,0,img);
+
     glFlush();
 }

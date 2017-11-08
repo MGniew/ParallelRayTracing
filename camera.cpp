@@ -93,10 +93,6 @@ void Camera::setUp()
     if (hor < 0) {
         hor += 2 * M_PI;
     }
-
-    printf("ver %f\n", ver);
-    printf("hor %f\n", hor);
-
 }
 
 

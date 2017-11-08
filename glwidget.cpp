@@ -4,7 +4,9 @@ GLwidget::GLwidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 setFixedSize(200, 200);
 scene = Scene::getInstance();
+
 camera = Camera::getInstance();
+
 }
 
 GLwidget::~GLwidget()

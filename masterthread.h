@@ -55,7 +55,8 @@ private:
     int worldSize;
     MPI_Status status;
     void clearQueue(std::queue<Chunk> &q);
-    void sendCamera();
+    void sendCameraBcast();
+    void sendCameraPointToPoint();
     void sendScene();
     void sendDepth(int depth);
     bool sendNextChunk(int dest);

@@ -5,29 +5,33 @@ Camera* Camera::instance = nullptr;
 
 Camera::Camera()
 {
+    serializedSize = 4 * Vector3<float>::serializedSize +
+                     9 * sizeof(float) +
+                     2 * sizeof(int);
+
     zNear = 1;
     zFar = 15;
     pixHeight = 500;
     pixWidth = 700;
-    eye = new Vector3<float>(0,0,0);
+    eye = new Vector3<float>(0,0,-1);
     povy = 70;
     look = nullptr;
     up = nullptr;
-    rotationX = 0;
-    rotationY = 0;
-    rotationZ = 0;
+    lookAt = new Vector3<float>(0,0,0);
     setUp();
 }
 
 Camera::Camera(Vector3<float>* eye,
-               float rotationX,
-               float rotationY,
-               float rotationZ,
+               Vector3<float>* lookAt,
                float zNear,
                float zFar,
                int pixWidth,
                int pixHeight,
                float povy) {
+
+    serializedSize = 4 * Vector3<float>::serializedSize +
+                     9 * sizeof(float) +
+                     2 * sizeof(int);
 
     this->zNear = zNear;
     this->zFar = zFar;
@@ -35,9 +39,7 @@ Camera::Camera(Vector3<float>* eye,
     this->pixWidth = pixWidth;
     this->eye = eye;
     this->povy = povy;
-    this->rotationX = rotationX;
-    this->rotationY = rotationY;
-    this->rotationZ = rotationZ;
+    this->lookAt = lookAt;
     look = nullptr;
     up = nullptr;
 
@@ -50,40 +52,56 @@ Camera::~Camera()
     delete eye;
     delete up;
     delete look;
+    delete lookAt;
 }
 
 void Camera::setUp()
 {
-
-    serializedSize = 3 * Vector3<float>::serializedSize +
-                     9 * sizeof(float) +
-                     2 * sizeof(int);
-
     delete look;
     delete up;
 
-    this->look = new Vector3<float>(0.0,0.0,1.0);
+    Vector3<float> lookVec = *lookAt - *eye;
+    lookVec.normalize();
+    this->look = new Vector3<float>(lookVec);
+
     this->up = new Vector3<float>(0.0,1.0,0.0);
-
-    look->rotateX(rotationX);
-    look->rotateY(rotationY);
-    look->rotateZ(rotationZ);
-
-    up->rotateX(rotationX);
-    up->rotateY(rotationY);
-    up->rotateZ(rotationZ);
+    *up = (look->vectorProduct(*up)).vectorProduct(*look);
+    up->normalize();
 
     aspect = (float)pixWidth/pixHeight;
     povy = povy * M_PI/180;
     worldHeight = 2*tan(povy/2) * zNear;
     worldWidth = aspect * worldHeight;
+
+    R = lookAt->distanceFrom(*eye);
+    if (R == 0) {
+        ver = 0;
+        hor = 0;
+    } else {
+        ver = asin(eye->y/R);
+
+        int tmp;
+        if (ver == 0) {
+            tmp = R;
+        } else {
+            tmp = eye->y/cos(ver);
+        }
+        hor = asin((eye->z)/tmp);
+
+    }
+
+    if (hor < 0) {
+        hor += 2 * M_PI;
+    }
+
+    printf("ver %f\n", ver);
+    printf("hor %f\n", hor);
+
 }
 
 
 Camera *Camera::getInstance(Vector3<float>* eye,
-               float rotationX,
-               float rotationY,
-               float rotationZ,
+               Vector3<float>* lookAt,
                float zNear,
                float zFar,
                int pixWidth,
@@ -93,7 +111,7 @@ Camera *Camera::getInstance(Vector3<float>* eye,
     if (instance != nullptr) {
         delete instance;
     }
-    instance = new Camera(eye, rotationX, rotationY, rotationZ, zNear, zFar, pixWidth, pixHeight, povy);
+    instance = new Camera(eye, lookAt, zNear, zFar, pixWidth, pixHeight, povy);
     return instance;
 }
 
@@ -118,6 +136,25 @@ Vector3<float> Camera::getWorldPosOfPixel(int x, int y)
 
     return startingPoint + translationVectorX*x + translationVectorY*y;
 
+}
+
+void Camera::rotate()
+{
+    hor += M_PI/180;
+    if (hor >= 2 * M_PI)
+        hor = 0;
+    //calculate next eye pos
+    eye->x = R * cos(hor) * cos (ver);
+    eye->z = R * sin(hor) * cos (ver);
+
+    //calculate new look vector
+    *look = *lookAt - *eye;
+    look->normalize();
+
+    //calculate new up vector;
+    up->setValues(0.0,1.0,0.0);
+    *up = (look->vectorProduct(*up)).vectorProduct(*look);
+    up->normalize();
 }
 
 
@@ -213,10 +250,12 @@ void Camera::serialize(std::vector<char> *bytes)
     memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     up->serialize(&vec);
     memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    lookAt->serialize(&vec);
+    memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
 
-    memcpy(ptr, &rotationX, sizeof(rotationX)); ptr += sizeof(rotationX);
-    memcpy(ptr, &rotationY, sizeof(rotationY)); ptr += sizeof(rotationY);
-    memcpy(ptr, &rotationZ, sizeof(rotationZ)); ptr += sizeof(rotationZ);
+    memcpy(ptr, &R, sizeof(R)); ptr += sizeof(R);
+    memcpy(ptr, &ver, sizeof(ver)); ptr += sizeof(ver);
+    memcpy(ptr, &hor, sizeof(hor)); ptr += sizeof(hor);
     memcpy(ptr, &zNear, sizeof(zNear)); ptr += sizeof(zNear);
     memcpy(ptr, &zFar, sizeof(zFar)); ptr += sizeof(zFar);
     memcpy(ptr, &pixWidth, sizeof(pixWidth)); ptr += sizeof(pixWidth);
@@ -238,10 +277,12 @@ void Camera::deserialize(const std::vector<char> &bytes)
     look->deserialize(vec);
     memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     up->deserialize(vec);
+    memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
+    lookAt->deserialize(vec);
 
-    memcpy(&rotationX, ptr, sizeof(rotationX)); ptr += sizeof(rotationX);
-    memcpy(&rotationY, ptr, sizeof(rotationY)); ptr += sizeof(rotationY);
-    memcpy(&rotationZ, ptr, sizeof(rotationZ)); ptr += sizeof(rotationZ);
+    memcpy(&R, ptr, sizeof(R)); ptr += sizeof(R);
+    memcpy(&ver, ptr, sizeof(ver)); ptr += sizeof(ver);
+    memcpy(&hor, ptr, sizeof(hor)); ptr += sizeof(hor);
     memcpy(&zNear, ptr, sizeof(zNear)); ptr += sizeof(zNear);
     memcpy(&zFar, ptr, sizeof(zFar)); ptr += sizeof(zFar);
     memcpy(&pixWidth, ptr, sizeof(pixWidth)); ptr += sizeof(pixWidth);

@@ -19,7 +19,10 @@ Scene::Scene()
     pixels = nullptr;
     bsp = nullptr;
 
-    serializedSize = 2 * Vector3<float>::serializedSize;
+    useBSP = false;
+    useShadows = false;
+
+    serializedSize = 2 * Vector3<float>::serializedSize + 2 * sizeof(bool);
 }
 
 Scene::~Scene()
@@ -102,14 +105,60 @@ int Scene::getHeight()
     return pixels->y;
 }
 
-SceneObject *Scene::getClosestBSP(Vector3<float> &crossPoint, Vector3<float> &startPoint, Vector3<float> &directionVector)
+SceneObject *Scene::getClosest(Vector3<float> &crossPoint, Vector3<float> &startPoint, Vector3<float> &directionVector)
 {
-    return bsp->getClosest(crossPoint, startPoint, directionVector);
+    if (useBSP) {
+        return bsp->getClosest(crossPoint, startPoint, directionVector);
+    }
+
+    Vector3<float> tempCrossPoint;
+    SceneObject* sceneObject = nullptr;
+    float distance, tempDistance;
+
+    for(int obj = 0; obj < getNumOfObjects(); obj++)
+    {
+        if ((sceneObjects[obj])->trace(tempCrossPoint, startPoint, directionVector, tempDistance)) {
+            if (sceneObject == nullptr) {
+                sceneObject = sceneObjects[obj];
+                distance = tempDistance;
+                crossPoint = tempCrossPoint;
+            }
+            else {
+                if (tempDistance < distance) {
+                    distance = tempDistance;
+                    sceneObject = sceneObjects[obj];
+                    crossPoint = tempCrossPoint;
+                }
+            }
+
+        }
+    }
+    return sceneObject;
+
+
 }
 
-bool Scene::isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
+bool Scene::isInShadow(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
 {
-    return bsp->isInShadow(crossPoint, directionVector, lightPos);
+    if (!useShadows) {
+        return false;
+    }
+
+    if (useBSP) {
+        return bsp->isInShadow(crossPoint, directionVector, lightPos);
+    }
+
+    Vector3<float> tempCrossPoint;
+    float LightDistance = crossPoint.distanceFrom(lightPos);
+    float dist;
+
+    for(int obj = 0; obj < getNumOfObjects(); obj++){
+        if ((sceneObjects[obj])->trace(tempCrossPoint, crossPoint, directionVector, dist)) {
+           if (dist < LightDistance)
+           return true;
+        }
+    }
+    return false;
 }
 
 void Scene::setPixelColor(int x, int y, Vector3<float> color)
@@ -126,6 +175,8 @@ void Scene::serialize(std::vector<char> *bytes)
     memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     globalAmbient->serialize(&vec);
     memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
+    memcpy(ptr, &useBSP, sizeof(bool)); ptr += sizeof(bool);
+    memcpy(ptr, &useShadows, sizeof(bool)); ptr += sizeof(bool);
 
     //objects
     char type;
@@ -159,6 +210,8 @@ void Scene::deserialize(const std::vector<char> &bytes)
     backgroundColor->deserialize(vec);
     memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     globalAmbient->deserialize(vec);
+    memcpy(&useBSP, ptr, sizeof(bool)); ptr += sizeof(bool);
+    memcpy(&useShadows, ptr, sizeof(bool)); ptr += sizeof(bool);
 
     char type;
     const char* lastElementPtr = &bytes.back();
@@ -208,6 +261,16 @@ void Scene::print()
 
     for(int i=0;i<numOfLights;i++)
         lights[i]->print();
+}
+
+void Scene::setBSPUsage(bool a)
+{
+    useBSP = a;
+}
+
+void Scene::setShadowsUsage(bool a)
+{
+    useShadows = a;
 }
 
 

@@ -27,9 +27,6 @@ public:
                                  Vector3<float>& crossPoint,
                                  Vector3<float>& observationVector);
 
-    bool isInShadow(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos);
-    bool isInShadowBSP(Vector3<float>& crossPoint, Vector3<float>& directionVector, Vector3<float>& lightPos);
-
     virtual bool trace(Vector3<float> &crossPoint,
                        Vector3<float> &startPoint,
                        Vector3<float> &directionVector,

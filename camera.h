@@ -13,11 +13,9 @@ public:
            Vector3<float>* lookAt,
            float zNear,
            float zFar,
-           int pixWidth,
-           int pixHeight,
            float povy);
     ~Camera();
-    void setUp();
+    void setUp(int pixWidth, int pixHeight);
 
     static Camera* instance;
     static Camera* getInstance();
@@ -25,8 +23,6 @@ public:
                    Vector3<float>* lookAt,
                    float zNear,
                    float zFar,
-                   int pixWidth,
-                   int pixHeight,
                    float povy);
 
     Vector3<float> getWorldPosOfPixel(int x, int y);

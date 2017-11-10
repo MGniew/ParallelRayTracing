@@ -18,6 +18,8 @@
 #include "thread"
 #include "chrono"
 #include <string>
+#include "qstring.h"
+
 
 using namespace myGlobals;
 
@@ -28,7 +30,7 @@ class MasterThread : public QThread
     Q_OBJECT
 
 public:
-    MasterThread(QObject *parent = 0);
+    MasterThread(std::string file, int width, int height, int chunks, int depth, bool bsp, bool shadows, int test, QObject *parent = 0);
     ~MasterThread();
     int getNumOfChunks();
 
@@ -36,8 +38,8 @@ signals:
     void workIsReady();
     void setTime(double time);
     void processInfo(double **speeds);
-
-
+    void close();
+    void setName(int num, QString name);
 
 protected:
     void run() override;
@@ -66,8 +68,13 @@ private:
     void finishPending();
     void updateProcessSpeed();
     void waitUntillRdy();
+    void printResult(double spf, double bsp);
+    void getNames();
+    void emitNames();
+    std::vector<std::string> names;
     int pending;
     int numChunks;
+    int test;
 
 
 };

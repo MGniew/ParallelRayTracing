@@ -15,18 +15,15 @@ Camera::Camera()
     pixWidth = 700;
     eye = new Vector3<float>(0,0,-1);
     povy = 70;
-    look = nullptr;
-    up = nullptr;
+    look = new Vector3<float>(0, 0, 1);
+    up = new Vector3<float>(0, 1, 0);
     lookAt = new Vector3<float>(0,0,0);
-    setUp();
 }
 
 Camera::Camera(Vector3<float>* eye,
                Vector3<float>* lookAt,
                float zNear,
                float zFar,
-               int pixWidth,
-               int pixHeight,
                float povy) {
 
     serializedSize = 4 * Vector3<float>::serializedSize +
@@ -35,16 +32,11 @@ Camera::Camera(Vector3<float>* eye,
 
     this->zNear = zNear;
     this->zFar = zFar;
-    this->pixHeight = pixHeight;
-    this->pixWidth = pixWidth;
     this->eye = eye;
     this->povy = povy;
     this->lookAt = lookAt;
     look = nullptr;
     up = nullptr;
-
-    setUp();
-
 }
 
 Camera::~Camera()
@@ -55,10 +47,13 @@ Camera::~Camera()
     delete lookAt;
 }
 
-void Camera::setUp()
+void Camera::setUp(int pixWidth, int pixHeight)
 {
     delete look;
     delete up;
+
+    this->pixHeight = pixHeight;
+    this->pixWidth = pixWidth;
 
     Vector3<float> lookVec = *lookAt - *eye;
     lookVec.normalize();
@@ -100,14 +95,12 @@ Camera *Camera::getInstance(Vector3<float>* eye,
                Vector3<float>* lookAt,
                float zNear,
                float zFar,
-               int pixWidth,
-               int pixHeight,
                float povy)
 {
     if (instance != nullptr) {
         delete instance;
     }
-    instance = new Camera(eye, lookAt, zNear, zFar, pixWidth, pixHeight, povy);
+    instance = new Camera(eye, lookAt, zNear, zFar, povy);
     return instance;
 }
 

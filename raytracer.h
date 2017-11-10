@@ -19,15 +19,10 @@ public:
     ~RayTracer();
 
     void basicRayTracer();
-
     void recursiveRayTracer(int depth);
     Vector3<float> getColorRecursive(Vector3<float> startPoint,
                                      Vector3<float> directionVector,
                                      int depth);
-
-    SceneObject* getClosest(Vector3<float>& crossPoint,
-                            Vector3<float>& startPoint,
-                            Vector3<float>& directionVector);
 
     Scene* scene;
     Camera* camera;

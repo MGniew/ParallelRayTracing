@@ -21,7 +21,7 @@ Sphere::Sphere(Vector3<float>* amb,
 
 Sphere::~Sphere()
 {
-
+    delete pos;
 }
 
 Sphere::Sphere()

@@ -8,7 +8,6 @@ StatisticsWindow::StatisticsWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setUpList();
-    getNames();
     ui->lineEdit_proc->setText(QString::number(worldSize));
 }
 
@@ -65,18 +64,6 @@ void StatisticsWindow::setProccessSpeed(double **speed)
         item->setFlags(item->flags() ^ Qt::ItemIsEditable);
         item->setTextAlignment(Qt::AlignCenter);
         ui->tableWidget->setItem(i, 2, item);
-    }
-}
-
-void StatisticsWindow::getNames()
-{
-    char buff[MPI_MAX_PROCESSOR_NAME];
-    MPI_Status status;
-
-    for (int i=1; i<worldSize; i++) {
-        MPI_Recv(buff, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, MPI_ANY_SOURCE, myGlobals::NAME, MPI_COMM_WORLD, &status);
-        QString myString = QString::fromUtf8(buff);
-        setProccessName(status.MPI_SOURCE, myString);
     }
 }
 

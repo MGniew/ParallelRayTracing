@@ -4,6 +4,7 @@
 #include <QDialog>
 #include "mpi.h"
 #include "global.h"
+#include <string>
 
 namespace Ui {
 class StatisticsWindow;
@@ -22,8 +23,6 @@ public:
     void setXY(int x, int y);
     void setObj(int i);
     void setLights(int i);
-
-    void getNames();
 
 public slots:
     void setProccessName(int num, QString str);

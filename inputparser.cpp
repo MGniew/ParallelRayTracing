@@ -11,7 +11,6 @@ InputParser::InputParser(QStringList &list)
 {
     QStringList::Iterator it;
     for(it = list.begin(); it != list.end(); ++it){
-        std::cout << (*it).toStdString() << std::endl;
         this->tokens.push_back((*it).toStdString());
     }
 }

@@ -5,6 +5,7 @@ MasterThread::MasterThread(std::string file, int width, int height, int chunks, 
 {
     isAlive = true;
     FileLoader fileLoader;
+    std::cout << file << std::endl;
     if(!fileLoader.ReadFile(file.c_str())) {
         exit(-1);
     }
@@ -17,7 +18,7 @@ MasterThread::MasterThread(std::string file, int width, int height, int chunks, 
     scene->setShadowsUsage(shadows);
 
     MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
-
+    getNames();
     sendCameraBcast();
     sendScene();
     sendDepth(depth);
@@ -188,13 +189,56 @@ void MasterThread::waitUntillRdy()
     }
 }
 
+void MasterThread::printResult(double spf, double bsp)
+{
+    Scene* scene = Scene::getInstance();
+    Camera* camera = Camera::getInstance();
+
+    std::cout << "Objets: " << scene->getNumOfObjects() << std::endl;
+    std::cout << "Lights: " << scene->getNumOfLights() << std::endl;
+    std::cout << "width|height: " << camera->getPixWidth() << "|" << camera->getPixHeight() << std::endl;
+    if (scene->useBSP) {
+        std::cout << "BSP: " << bsp << std::endl;
+    }
+    std::cout << "Shadows: " << scene->useShadows << std::endl;
+    std::cout << "fps|spf: " << 1/spf << "|" << spf << std::endl;
+    for (int i = 1; i < worldSize; i++) {
+        std::cout << i << " " << names[i] << ": " << processSpeed[i][1]/processSpeed[i][0] << std::endl;
+    }
+
+
+}
+
+void MasterThread::getNames()
+{
+    char buff[MPI_MAX_PROCESSOR_NAME];
+    MPI_Status status;
+    names.resize(worldSize);
+    names[0] = "master";
+
+    for (int i=1; i<worldSize; i++) {
+        MPI_Recv(buff, MPI_MAX_PROCESSOR_NAME, MPI_CHAR, MPI_ANY_SOURCE, myGlobals::NAME, MPI_COMM_WORLD, &status);
+        names[status.MPI_SOURCE] = std::string(buff);
+    }
+}
+
+void MasterThread::emitNames()
+{
+    for (int i = 1; i < worldSize; i++)
+        emit setName(i, QString::fromStdString(names[i]));
+}
+
 void MasterThread::run()
 {
+    double time = 0; double bsp = 0;
+    int n = test;
     double t1, t2;
+    emitNames();
+
     t1 = MPI_Wtime();
     waitUntillRdy();
     t2 = MPI_Wtime();
-    printf("time: %f\n", t2-t1);
+    bsp = t2 - t1;
 
     while (true) {
 
@@ -226,19 +270,21 @@ void MasterThread::run()
         t2 = MPI_Wtime();
 
         emit setTime(t2-t1);
+        time += t2 - t1;
 
         //update camera pos
         camera->rotate();
         //broadcast camera
         sendCameraPointToPoint();
+
         emit workIsReady();
 
-        if (test > 0) {
-            test --;
-            if (test == 0) break;
+        if (n > 0) {
+            n --;
+            if (n == 0) break;
         }
 
     }
-
+    printResult(time/test, bsp);
     emit close();
 }

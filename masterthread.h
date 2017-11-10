@@ -18,6 +18,8 @@
 #include "thread"
 #include "chrono"
 #include <string>
+#include "qstring.h"
+
 
 using namespace myGlobals;
 
@@ -37,6 +39,7 @@ signals:
     void setTime(double time);
     void processInfo(double **speeds);
     void close();
+    void setName(int num, QString name);
 
 protected:
     void run() override;
@@ -65,6 +68,10 @@ private:
     void finishPending();
     void updateProcessSpeed();
     void waitUntillRdy();
+    void printResult(double spf, double bsp);
+    void getNames();
+    void emitNames();
+    std::vector<std::string> names;
     int pending;
     int numChunks;
     int test;

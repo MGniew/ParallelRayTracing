@@ -70,21 +70,19 @@ bool FileLoader::readCameraSettings(const char *line)
     float posX, posY, posZ;
     float lookAtX, lookAtY, lookAtZ;
     float zNear, zFar;
-    float width, height;
     float povy;
 
     if (sscanf(line, "camera eye<%f; %f; %f> "
                "lookAt<%f; %f; %f> zNear<%f> "
-               "zFar<%f> pixWidth<%f> pixHeight<%f> povy<%f>",
+               "zFar<%f> povy<%f>",
                &posX, &posY, &posZ, &lookAtX, &lookAtY, &lookAtZ, &zNear,
-               &zFar, &width, &height, &povy) != 11) {
+               &zFar, &povy) != 9) {
         return false;
     }
 
     Camera::getInstance(new Vector3<float>(posX, posY, posZ),
                         new Vector3<float>(lookAtX, lookAtY, lookAtZ),
-                        zNear, zFar, width, height, povy);
-    Scene::getInstance()->setUpPixels(width, height);
+                        zNear, zFar, povy);
     return true;
 }
 

@@ -52,8 +52,7 @@ Vector3<float> SceneObject::getLocalColor(Vector3<float> &normalVector,
         if (v_dot_r < 0)
             v_dot_r = 0;
 
-     // if (n_dot_l > 0 && !isInShadow(crossPoint, lightVector, *lightPossition)) {
-        if (n_dot_l > 0 && !isInShadowBSP(crossPoint, lightVector, *lightPossition)) {
+        if (n_dot_l > 0 && !scene->isInShadow(crossPoint, lightVector, *lightPossition)) {
             returnColor += (dif->multiplyByVector(*scene->lights[i]->dif))*n_dot_l +
                     spec->multiplyByVector(*scene->lights[i]->spec)*pow(double(v_dot_r), specShin) +
                     amb->multiplyByVector(*scene->lights[i]->amb);
@@ -63,27 +62,6 @@ Vector3<float> SceneObject::getLocalColor(Vector3<float> &normalVector,
     return returnColor;
 }
 
-bool SceneObject::isInShadow(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
-{
-    Scene* scene = Scene::getInstance();
-    Vector3<float> tempCrossPoint;
-    float LightDistance = crossPoint.distanceFrom(lightPos);
-    float dist;
-
-    for(int obj = 0; obj < scene->getNumOfObjects(); obj++){
-        if ((scene->sceneObjects[obj])->trace(tempCrossPoint, crossPoint, directionVector, dist)) {
-           if (dist < LightDistance)
-           return true;
-        }
-    }
-    return false;
-}
-
-bool SceneObject::isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos)
-{
-    Scene* scene = Scene::getInstance();
-    return scene->isInShadowBSP(crossPoint, directionVector, lightPos);
-}
 
 float SceneObject::getSpecShin()
 {

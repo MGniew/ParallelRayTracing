@@ -52,15 +52,19 @@ public:
     int getStartY();
     int getWidth();
     int getHeight();
-    SceneObject* getClosestBSP(Vector3<float> &crossPoint, Vector3<float> &startPoint, Vector3<float> &directionVector);
-    bool isInShadowBSP(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos);
+    SceneObject* getClosest(Vector3<float> &crossPoint, Vector3<float> &startPoint, Vector3<float> &directionVector);
+    bool isInShadow(Vector3<float> &crossPoint, Vector3<float> &directionVector, Vector3<float> &lightPos);
     void setPixelColor(int x, int y, Vector3<float> color);
 
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);
-    char getType();
-
+    char getType();    
     void print();
+
+    bool useShadows;
+    void setShadowsUsage(bool a);
+    bool useBSP;
+    void setBSPUsage(bool a);
 };
 
 #endif // SCENE_H

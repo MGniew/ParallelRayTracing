@@ -47,8 +47,7 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
 
     depth--;
 
-    //sceneObject = getClosest(crossPoint, startPoint, directionVector);
-    sceneObject = scene->getClosestBSP(crossPoint, startPoint, directionVector);
+    sceneObject = scene->getClosest(crossPoint, startPoint, directionVector);
 
     if (sceneObject == nullptr)
         return Vector3<float>(*scene->backgroundColor);
@@ -101,7 +100,7 @@ void RayTracer::basicRayTracer()
             directionVector = worldPosOfPixel - *camera->getEye();
             directionVector.normalize();
 
-            sceneObject = getClosest(crossPoint, worldPosOfPixel, directionVector);
+            sceneObject = scene->getClosest(crossPoint, worldPosOfPixel, directionVector);
 
 
             if (sceneObject == nullptr) {
@@ -118,36 +117,4 @@ void RayTracer::basicRayTracer()
             }
     }
     }
-}
-
-
-SceneObject *RayTracer::getClosest(Vector3<float> &crossPoint,
-                                   Vector3<float> &startingPoint,
-                                   Vector3<float> &directionVector)
-{
-
-    Scene* scene = Scene::getInstance();
-    Vector3<float> tempCrossPoint;
-    SceneObject* sceneObject = nullptr;
-    float distance, tempDistance;
-
-    for(int obj = 0; obj < scene->getNumOfObjects(); obj++)
-    {
-        if ((scene->sceneObjects[obj])->trace(tempCrossPoint, startingPoint, directionVector, tempDistance)) {
-            if (sceneObject == nullptr) {
-                sceneObject = scene->sceneObjects[obj];
-                distance = tempDistance;
-                crossPoint = tempCrossPoint;
-            }
-            else {
-                if (tempDistance < distance) {
-                    distance = tempDistance;
-                    sceneObject = scene->sceneObjects[obj];
-                    crossPoint = tempCrossPoint;
-                }
-            }
-
-        }
-    }
-    return sceneObject;
 }

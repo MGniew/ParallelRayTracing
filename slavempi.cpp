@@ -9,9 +9,10 @@ SlaveMPI::SlaveMPI()
     recvCameraBcast();
     recvScene();
     recvDepth();
-    scene->buildBSP(10000);
+    if (scene->useBSP) {
+        scene->buildBSP(10000);
+    }
     sendRdy();
-
 }
 
 SlaveMPI::~SlaveMPI()

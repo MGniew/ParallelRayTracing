@@ -44,7 +44,8 @@ SOURCES += \
     statisticswindow.cpp \
     bsp.cpp \
     plane.cpp \
-    boundingbox.cpp
+    boundingbox.cpp \
+    inputparser.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -66,7 +67,8 @@ HEADERS += \
     statisticswindow.h \
     bsp.h \
     plane.h \
-    boundingbox.h
+    boundingbox.h \
+    inputparser.h
 
 FORMS += \
         mainwindow.ui \

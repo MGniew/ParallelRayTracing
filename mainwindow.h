@@ -7,7 +7,9 @@
 #include "statisticswindow.h"
 #include "qlabel.h"
 #include "qpushbutton.h"
-
+#include "inputparser.h"
+#include "qcoreapplication.h"
+#include "QStringList"
 
 namespace Ui {
 class MainWindow;
@@ -32,6 +34,7 @@ private:
     StatisticsWindow *statisticWindow;
     MasterThread *masterThread;
     QLabel* statusLabel;
+    void createMaster();
 };
 
 #endif // MAINWINDOW_H

@@ -28,7 +28,7 @@ class MasterThread : public QThread
     Q_OBJECT
 
 public:
-    MasterThread(QObject *parent = 0);
+    MasterThread(std::string file, int width, int height, int chunks, int depth, bool bsp, bool shadows, QObject *parent = 0);
     ~MasterThread();
     int getNumOfChunks();
 

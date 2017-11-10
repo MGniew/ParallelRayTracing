@@ -2,13 +2,15 @@
 #include "ui_mainwindow.h"
 
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
     statisticWindow = new StatisticsWindow(this);
-    masterThread = new MasterThread;
+    createMaster();
     connect(masterThread, SIGNAL(workIsReady()), ui->openGLWidget, SLOT(update()));
     connect(masterThread, SIGNAL(setTime(double)), this, SLOT(setSpeed(double)));
     connect(masterThread, SIGNAL(processInfo(double**)), statisticWindow, SLOT(setProccessSpeed(double**)));
@@ -47,4 +49,53 @@ void MainWindow::setSpeed(double time)
 void MainWindow::on_actionStatistics_triggered()
 {
     ShowStats();
+}
+
+void MainWindow::createMaster()
+{
+    QStringList list = QCoreApplication::arguments();
+    InputParser parser(list);
+
+    std::string file;
+    std::string value;
+    int width = 700, height = 500, chunks = 10, depth = 3;
+    bool shadows = false, bsp = false;
+
+    if (parser.cmdOptionExists("-s")) {
+        shadows = true;
+    }
+
+    if (parser.cmdOptionExists("-b")) {
+        bsp = true;
+    }
+
+    file = parser.getCmdOption("-f");
+    if (file.empty()) {
+        file = "scene.old.txt";
+    }
+
+    value = parser.getCmdOption("-w");
+    if (!value.empty()) {
+        width = std::stoi(value);
+    }
+
+    value = parser.getCmdOption("-h");
+    if (!value.empty()) {
+        height = std::stoi(value);
+    }
+
+    value = parser.getCmdOption("-c");
+    if (!value.empty()) {
+        chunks = std::stoi(value);
+    }
+
+    value = parser.getCmdOption("-d");
+    if (!value.empty()) {
+        depth = std::stoi(value);
+    }
+
+
+
+
+    masterThread = new MasterThread(file, width, height, chunks, depth, bsp, shadows);
 }

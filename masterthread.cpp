@@ -1,21 +1,27 @@
 #include "masterthread.h"
 
 
-MasterThread::MasterThread(QObject *parent) : QThread(parent)
+MasterThread::MasterThread(std::string file, int width, int height, int chunks, int depth, bool bsp, bool shadows, QObject *parent) : QThread(parent)
 {
     isAlive = true;
     FileLoader fileLoader;
-    if(!fileLoader.ReadFile("scene.old.txt")) {
+    if(!fileLoader.ReadFile(file.c_str())) {
         exit(-1);
     }
     camera = Camera::getInstance();
+    camera->setUp(width, height);
+
     scene = Scene::getInstance();
+    scene->setUpPixels(width, height);
+    scene->setBSPUsage(bsp);
+    scene->setShadowsUsage(shadows);
+
     MPI_Comm_size(MPI_COMM_WORLD, &worldSize);
 
     sendCameraBcast();
     sendScene();
-    sendDepth(2);
-    numChunks=10;
+    sendDepth(depth);
+    numChunks=chunks;
 
     processSpeed = new double*[worldSize];
     for(int i = 0; i< worldSize; i++) {
@@ -23,8 +29,8 @@ MasterThread::MasterThread(QObject *parent) : QThread(parent)
         processSpeed[i][0] = 0;
         processSpeed[i][1] = 0;
     }
-
 }
+
 
 MasterThread::~MasterThread()
 {
@@ -188,7 +194,6 @@ void MasterThread::run()
     waitUntillRdy();
     t2 = MPI_Wtime();
     printf("time: %f\n", t2-t1);
-
 
     while (true) {
 

@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(masterThread, SIGNAL(workIsReady()), ui->openGLWidget, SLOT(update()));
     connect(masterThread, SIGNAL(setTime(double)), this, SLOT(setSpeed(double)));
     connect(masterThread, SIGNAL(processInfo(double**)), statisticWindow, SLOT(setProccessSpeed(double**)));
+    connect(masterThread, SIGNAL(close()), this, SLOT(onQuit()));
     masterThread->start(QThread::HighPriority);
 
     statisticWindow->setXY(Camera::getInstance()->getPixWidth(),
@@ -51,6 +52,11 @@ void MainWindow::on_actionStatistics_triggered()
     ShowStats();
 }
 
+void MainWindow::onQuit()
+{
+    this->close();
+}
+
 void MainWindow::createMaster()
 {
     QStringList list = QCoreApplication::arguments();
@@ -58,7 +64,7 @@ void MainWindow::createMaster()
 
     std::string file;
     std::string value;
-    int width = 700, height = 500, chunks = 10, depth = 3;
+    int width = 700, height = 500, chunks = 10, depth = 3, test = 0;
     bool shadows = false, bsp = false;
 
     if (parser.cmdOptionExists("-s")) {
@@ -77,25 +83,36 @@ void MainWindow::createMaster()
     value = parser.getCmdOption("-w");
     if (!value.empty()) {
         width = std::stoi(value);
+        if (width < 0) width = 0;
     }
 
     value = parser.getCmdOption("-h");
     if (!value.empty()) {
         height = std::stoi(value);
+        if (height < 0) height = 0;
     }
 
     value = parser.getCmdOption("-c");
     if (!value.empty()) {
         chunks = std::stoi(value);
+        if (chunks < 1) chunks = 1;
     }
 
     value = parser.getCmdOption("-d");
     if (!value.empty()) {
         depth = std::stoi(value);
+        if (depth < 1) depth = 1;
+    }
+
+    value = parser.getCmdOption("-t");
+    if (!value.empty()) {
+        test = std::stoi(value);
+        if (test < 0) test = 0;
     }
 
 
 
-
-    masterThread = new MasterThread(file, width, height, chunks, depth, bsp, shadows);
+    masterThread = new MasterThread(file, width, height, chunks, depth, bsp, shadows, test);
 }
+
+

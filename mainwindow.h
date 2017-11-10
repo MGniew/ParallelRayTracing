@@ -26,8 +26,8 @@ public:
 private slots:
     void ShowStats();
     void setSpeed(double time);
-
     void on_actionStatistics_triggered();
+    void onQuit();
 
 private:
     Ui::MainWindow *ui;

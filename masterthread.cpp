@@ -1,7 +1,7 @@
 #include "masterthread.h"
 
 
-MasterThread::MasterThread(std::string file, int width, int height, int chunks, int depth, bool bsp, bool shadows, QObject *parent) : QThread(parent)
+MasterThread::MasterThread(std::string file, int width, int height, int chunks, int depth, bool bsp, bool shadows, int test, QObject *parent) : QThread(parent)
 {
     isAlive = true;
     FileLoader fileLoader;
@@ -22,6 +22,7 @@ MasterThread::MasterThread(std::string file, int width, int height, int chunks, 
     sendScene();
     sendDepth(depth);
     numChunks=chunks;
+    this->test = test;
 
     processSpeed = new double*[worldSize];
     for(int i = 0; i< worldSize; i++) {
@@ -232,8 +233,12 @@ void MasterThread::run()
         sendCameraPointToPoint();
         emit workIsReady();
 
+        if (test > 0) {
+            test --;
+            if (test == 0) break;
+        }
+
     }
 
-    recvMessage(); //temp
-
+    emit close();
 }

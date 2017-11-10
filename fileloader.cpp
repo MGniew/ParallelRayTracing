@@ -59,7 +59,7 @@ bool FileLoader::ReadFile(const char *fname)
             return false;
         }
 
-        printf("%s\n",line);
+        //printf("%s\n",line);
     }
     fclose(file);
     return true;

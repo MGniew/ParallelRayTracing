@@ -24,55 +24,58 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #OPT FLAG
 QMAKE_CXXFLAGS_RELEASE *= -O3
 
+INCLUDEPATH += $$PWD/Headers \
+               $$PWD/Sources \
+               $$PWD/Forms
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
-    glwidget.cpp \
-    scene.cpp \
-    sphere.cpp \
-    sceneobject.cpp \
-    triangle.cpp \
-    raytracer.cpp \
-    light.cpp \
-    camera.cpp \
-    fileloader.cpp \
-    masterthread.cpp \
-    slavempi.cpp \
-    pixels.cpp \
-    serializable.cpp \
-    statisticswindow.cpp \
-    bsp.cpp \
-    plane.cpp \
-    boundingbox.cpp \
-    inputparser.cpp
+    Sources/main.cpp \
+    Sources/mainwindow.cpp \
+    Sources/glwidget.cpp \
+    Sources/scene.cpp \
+    Sources/sphere.cpp \
+    Sources/sceneobject.cpp \
+    Sources/triangle.cpp \
+    Sources/raytracer.cpp \
+    Sources/light.cpp \
+    Sources/camera.cpp \
+    Sources/fileloader.cpp \
+    Sources/masterthread.cpp \
+    Sources/slavempi.cpp \
+    Sources/pixels.cpp \
+    Sources/serializable.cpp \
+    Sources/statisticswindow.cpp \
+    Sources/bsp.cpp \
+    Sources/plane.cpp \
+    Sources/boundingbox.cpp \
+    Sources/inputparser.cpp
 
 HEADERS += \
-        mainwindow.h \
-    glwidget.h \
-    scene.h \
-    sphere.h \
-    sceneobject.h \
-    triangle.h \
-    raytracer.h \
-    light.h \
-    camera.h \
-    vector3.h \
-    fileloader.h \
-    masterthread.h \
-    slavempi.h \
-    global.h \
-    pixels.h \
-    serializable.h \
-    statisticswindow.h \
-    bsp.h \
-    plane.h \
-    boundingbox.h \
-    inputparser.h
+    Headers/mainwindow.h \
+    Headers/glwidget.h \
+    Headers/scene.h \
+    Headers/sphere.h \
+    Headers/sceneobject.h \
+    Headers/triangle.h \
+    Headers/raytracer.h \
+    Headers/light.h \
+    Headers/camera.h \
+    Headers/vector3.h \
+    Headers/fileloader.h \
+    Headers/masterthread.h \
+    Headers/slavempi.h \
+    Headers/global.h \
+    Headers/pixels.h \
+    Headers/serializable.h \
+    Headers/statisticswindow.h \
+    Headers/bsp.h \
+    Headers/plane.h \
+    Headers/boundingbox.h \
+    Headers/inputparser.h
 
 FORMS += \
-        mainwindow.ui \
-    statisticswindow.ui
+    Forms\mainwindow.ui \
+    Forms\statisticswindow.ui
 
 LIBS += -lglut -lGLU
 

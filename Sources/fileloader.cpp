@@ -177,7 +177,7 @@ bool FileLoader::readTriangle(const char *line)
     Scene::getInstance()->addObject(new Triangle(new Vector3<float>(pointAX, pointAY, pointAZ),
                                                  new Vector3<float>(pointBX, pointBY, pointBZ),
                                                  new Vector3<float>(pointCX, pointCY, pointCZ),
-                                                 nullptr, nullptr, nullptr, 0,0,
+                                                 nullptr, nullptr, nullptr,
                                                  new Vector3<float>(ambR, ambG, ambB),
                                                  new Vector3<float>(difR, difG, difB),
                                                  new Vector3<float>(specR, specG, specB),
@@ -290,7 +290,6 @@ bool FileLoader::readObj(const char *line)
 
        Scene::getInstance()->addObject(new Triangle(tabOfPoints[0], tabOfPoints[1], tabOfPoints[2],
                                                     tabOfNormals[0], tabOfNormals[1], tabOfNormals[2],
-                                                    0, 0,
                                                     ambientVector, diffuseVector, specularVector, shininess,
                                                     dissolve, (1-dissolve)/3, 2*(1-dissolve)/3, ior));
      }

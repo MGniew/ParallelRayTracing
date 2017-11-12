@@ -20,8 +20,6 @@ public:
             Vector3<float>* normalA,
             Vector3<float>* normalB,
             Vector3<float>* normalC,
-            float texCoordsX,
-            float texCoordsY,
              Vector3<float> *amb,
              Vector3<float> *dif,
              Vector3<float> *spec,
@@ -58,9 +56,6 @@ public:
     std::list<Plane> getPlanes();
     Vector3<float>* getPointbyNum(int a);
     void split(Plane plane, std::list<Triangle*> & front, std::list<Triangle*> & back);
-
-    float texCoordsX;
-    float texCoordsY;
 
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);

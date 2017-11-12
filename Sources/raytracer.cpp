@@ -104,13 +104,13 @@ void RayTracer::basicRayTracer()
 
 
             if (sceneObject == nullptr) {
-                buffer[i][j]->setValues(*scene->getBackgroundColor());
+                scene->setPixelColor(i,j,*scene->getBackgroundColor());
 
             }
             else {
                  Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
                  Vector3<float> observationVector = directionVector*-1;
-                 buffer[i][j]->setValues(sceneObject->getLocalColor
+                 scene->setPixelColor(i,j, sceneObject->getLocalColor
                                                         (normalVector,
                                                         crossPoint,
                                                         observationVector));

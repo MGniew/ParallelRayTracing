@@ -8,7 +8,6 @@ Triangle::Triangle(Vector3<float> *pointA,
                    Vector3<float> *normalA,
                    Vector3<float> *normalB,
                    Vector3<float> *normalC,
-                   float texCoordsX, float texCoordsY,
                    Vector3<float>* amb,
                    Vector3<float>* dif,
                    Vector3<float>* spec,
@@ -41,11 +40,8 @@ Triangle::Triangle(Vector3<float> *pointA,
     else
         this->normalC = new Vector3<float>(normal.x, normal.y, normal.z);
 
-    this->texCoordsX = texCoordsX;
-    this->texCoordsY = texCoordsY;
-
     serializedSize = 9 * Vector3<float>::serializedSize +
-                     7 * sizeof(float);
+                     5 * sizeof(float);
 }
 
 Triangle::~Triangle()
@@ -71,7 +67,7 @@ Triangle::Triangle()
     spec = new Vector3<float>;
 
     serializedSize = 9 * Vector3<float>::serializedSize +
-            7 * sizeof(float);
+            5 * sizeof(float);
 }
 
 Triangle::Triangle(Triangle &triangle) : SceneObject(triangle.getAmb(),
@@ -89,11 +85,8 @@ Triangle::Triangle(Triangle &triangle) : SceneObject(triangle.getAmb(),
     normalA = new Vector3<float>(*triangle.normalA);
     normalB = new Vector3<float>(*triangle.normalB);
     normalC = new Vector3<float>(*triangle.normalC);
-    texCoordsX = triangle.texCoordsX;
-    texCoordsY = triangle.texCoordsY;
-
     serializedSize = 9 * Vector3<float>::serializedSize +
-            7 * sizeof(float);
+            5 * sizeof(float);
 }
 
 //Möller–Trumbore intersection algorithm
@@ -214,8 +207,6 @@ void Triangle::print()
     std::cout << "dif: "; dif->print();
     std::cout << "spec: "; spec->print();
 
-    std::cout << "texCoordsX: " << texCoordsX << std::endl;
-    std::cout << "texCoordsY: " << texCoordsY << std::endl;
     std::cout << "mirror: " << mirror << std::endl;
     std::cout << "transparency: " << transparency << std::endl;
     std::cout << "local: "  << local << std::endl;
@@ -503,9 +494,6 @@ void Triangle::serialize(std::vector<char> *bytes)
     normalC->serialize(&vec);
     memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
 
-    memcpy(ptr, &texCoordsX, sizeof(texCoordsX)); ptr += sizeof(texCoordsX);
-    memcpy(ptr, &texCoordsY, sizeof(texCoordsY)); ptr += sizeof(texCoordsY);
-
     amb->serialize(&vec);
     memcpy(ptr, vec.data(), vec.size()); ptr += vec.size();
     dif->serialize(&vec);
@@ -538,9 +526,6 @@ void Triangle::deserialize(const std::vector<char> &bytes)
     normalB->deserialize(vec);
     memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     normalC->deserialize(vec);
-
-    memcpy(&texCoordsX, ptr, sizeof(texCoordsX)); ptr += sizeof(texCoordsX);
-    memcpy(&texCoordsY, ptr, sizeof(texCoordsY)); ptr += sizeof(texCoordsY);
 
     memcpy(vec.data(), ptr, vec.size()); ptr += vec.size();
     amb->deserialize(vec);

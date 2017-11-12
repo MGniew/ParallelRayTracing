@@ -32,7 +32,6 @@ public:
     BSP* bsp;
 
     static Scene* getInstance();
-    void loadScene (char* file);
 
     Vector3<float>* getBackgroundColor();
     void setBackgroundColor(float r, float g, float b);

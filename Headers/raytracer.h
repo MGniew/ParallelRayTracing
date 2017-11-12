@@ -27,8 +27,6 @@ public:
     Scene* scene;
     Camera* camera;
 
-    Vector3<float>*** buffer;
-
 };
 
 #endif // RAYTRACER_H

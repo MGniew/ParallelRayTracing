@@ -4,9 +4,6 @@ GLwidget::GLwidget(QWidget *parent) : QOpenGLWidget(parent)
 {
 setFixedSize(200, 200);
 scene = Scene::getInstance();
-
-camera = Camera::getInstance();
-
 }
 
 GLwidget::~GLwidget()
@@ -39,8 +36,8 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     QPainter qPainter(this);
-    int iMax = camera->getPixWidth();
-    int jMax = camera->getPixHeight();
+    int iMax = scene->getWidth();
+    int jMax = scene->getHeight();
 
     QImage img((uchar *)scene->pixels->data, iMax, jMax, QImage::Format_RGB888);
     qPainter.drawImage(0,0,img);

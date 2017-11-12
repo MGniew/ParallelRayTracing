@@ -22,7 +22,6 @@ protected:
     void initializeGL();
     void resizeGL(int w, int h);
     void paintGL();
-    Camera* camera;
     Scene* scene;
 
 };

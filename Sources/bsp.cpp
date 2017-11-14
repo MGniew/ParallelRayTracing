@@ -6,7 +6,6 @@ BSP::BSP()
     tree->front = nullptr;
     tree->back = nullptr;
     Scene* scene = Scene::getInstance();
-    scene->setBSPUsage(false);
     for (int i = 0; i < scene->getNumOfObjects(); i++)
     {
         polygons.push_back(scene->sceneObjects[i]);

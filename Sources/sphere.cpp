@@ -55,11 +55,13 @@ bool Sphere::trace(Vector3<float>& crossPoint, Vector3<float>& startPoint, Vecto
          if (d>0) {
             r1 = (-b - sqr)*denominator;
             r2 = (-b + sqr)*denominator;
-            if (r1 < 0 && r2 < 0) return false;
-            if (r1 < 0)
+            if (r1 < EPSILON && r2 < EPSILON) return false;
+            if (r1 < EPSILON)
                 r1 = r2;
-         } else
+         } else {
              r1 = (-b)*denominator;
+             if (r1 < EPSILON) return false;
+         }
 
          crossPoint.x = startPoint.x + r1*directionVector.x;
          crossPoint.y = startPoint.y + r1*directionVector.y;

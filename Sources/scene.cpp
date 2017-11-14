@@ -27,9 +27,9 @@ Scene::Scene()
 
 Scene::~Scene()
 {
+
     delete backgroundColor;
     delete globalAmbient;
-    delete bsp;
 
     for (int i=0; i<numOfLights; i++) {
         delete lights[i];
@@ -40,13 +40,18 @@ Scene::~Scene()
     for (int i=0; i<numOfObjects;i++) {
         delete sceneObjects[i];
     }
+
     delete [] sceneObjects;
     numOfObjects = 0;
+
 
     delete pixels;
     pixels = nullptr;
 
     instance = nullptr;
+
+    delete bsp;
+    bsp = nullptr;
 }
 
 int Scene::getNumOfObjects()

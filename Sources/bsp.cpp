@@ -6,7 +6,7 @@ BSP::BSP()
     tree->front = nullptr;
     tree->back = nullptr;
     Scene* scene = Scene::getInstance();
-
+    scene->setBSPUsage(false);
     for (int i = 0; i < scene->getNumOfObjects(); i++)
     {
         polygons.push_back(scene->sceneObjects[i]);
@@ -52,7 +52,6 @@ void BSP::build(node *root, std::list<SceneObject*> polygons, int depth)
         root->front = nullptr;
         return;
     }
-
     depth --;
     int size = polygons.size();
     int result;
@@ -76,18 +75,17 @@ void BSP::build(node *root, std::list<SceneObject*> polygons, int depth)
         switch (result) {
         case FRONT:
             frontList.push_back(object);
-            break;
+        break;
 
         case BACK:
             backList.push_back(object);
-            break;
+        break;
 
         case COINCIDENT:
             backList.push_back(object);
             frontList.push_back(object);
-            //root->polygons.push_back(object);
 
-            break;
+        break;
 
         case SPANNING: {
             if (object->getType() == 's') {
@@ -105,14 +103,12 @@ void BSP::build(node *root, std::list<SceneObject*> polygons, int depth)
                     tempFrontList.pop_back();
                 }
             }
-
-            //root->polygons.push_back(object);
         }
-            break;
+        break;
 
 
         default:
-            break;
+        break;
         }
     }
 
@@ -237,8 +233,7 @@ SceneObject *BSP::intersect(BSP::node *root, Vector3<float> &crossPoint, Vector3
 
     case COINCIDENT: {
 
-            Vector3<float> point = startingPoint + directionVector;
-            if (root->partitionPlane.classifyPoint(&point) == FRONT) {
+            if (root->partitionPlane.getNormal().scalarProduct(directionVector) >= 0) {
                 near = root->front;
                 far = root->back;
             }

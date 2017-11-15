@@ -70,21 +70,21 @@ Triangle::Triangle()
             5 * sizeof(float);
 }
 
-Triangle::Triangle(Triangle &triangle) : SceneObject(triangle.getAmb(),
-                                                     triangle.getDif(),
-                                                     triangle.getSpec(),
+Triangle::Triangle(Triangle &triangle) : SceneObject(new Vector3<float>(*triangle.getAmb()),
+                                                     new Vector3<float>(*triangle.getDif()),
+                                                     new Vector3<float>(*triangle.getSpec()),
                                                      triangle.getSpecShin(),
                                                      triangle.getTransparency(),
                                                      triangle.getMirror(),
                                                      triangle.getLocal(),
                                                      triangle.getDensity())
 {
-    pointA = new Vector3<float>(*triangle.pointA);
-    pointB = new Vector3<float>(*triangle.pointB);
-    pointC = new Vector3<float>(*triangle.pointC);
-    normalA = new Vector3<float>(*triangle.normalA);
-    normalB = new Vector3<float>(*triangle.normalB);
-    normalC = new Vector3<float>(*triangle.normalC);
+    pointA = new Vector3<float>(*(triangle.pointA));
+    pointB = new Vector3<float>(*(triangle.pointB));
+    pointC = new Vector3<float>(*(triangle.pointC));
+    normalA = new Vector3<float>(*(triangle.normalA));
+    normalB = new Vector3<float>(*(triangle.normalB));
+    normalC = new Vector3<float>(*(triangle.normalC));
     serializedSize = 9 * Vector3<float>::serializedSize +
             5 * sizeof(float);
 }
@@ -411,7 +411,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(frontSide[1]));
         triangle->normalC->setValues(getNormalVector(frontSide[2]));
         front.push_back(triangle);
-        Scene::getInstance()->addObject(front.back());
+        Scene::getInstance()->addObject(triangle);
     }
     else {
 
@@ -424,7 +424,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(frontSide[1]));
         triangle->normalC->setValues(getNormalVector(frontSide[2]));
         front.push_back(triangle);
-        Scene::getInstance()->addObject(front.back());
+        Scene::getInstance()->addObject(triangle);
 
         triangle = new Triangle(*this);
         triangle->pointA->setValues(frontSide[0]);
@@ -434,7 +434,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(frontSide[2]));
         triangle->normalC->setValues(getNormalVector(frontSide[3]));
         front.push_back(triangle);
-        Scene::getInstance()->addObject(front.back());
+        Scene::getInstance()->addObject(triangle);
     }
 
     if (backSide.size() == 3) {
@@ -447,7 +447,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(backSide[1]));
         triangle->normalC->setValues(getNormalVector(backSide[2]));
         back.push_back(triangle);
-        Scene::getInstance()->addObject(back.back());
+        Scene::getInstance()->addObject(triangle);
     }
     else {
 
@@ -459,7 +459,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(backSide[1]));
         triangle->normalC->setValues(getNormalVector(backSide[2]));
         back.push_back(triangle);
-        Scene::getInstance()->addObject(back.back());
+        Scene::getInstance()->addObject(triangle);
 
         triangle = new Triangle(*this);
         triangle->pointA->setValues(backSide[0]);
@@ -469,7 +469,7 @@ void Triangle::split(Plane plane, std::list<Triangle*>& front, std::list<Triangl
         triangle->normalB->setValues(getNormalVector(backSide[2]));
         triangle->normalC->setValues(getNormalVector(backSide[3]));
         back.push_back(triangle);
-        Scene::getInstance()->addObject(back.back());
+        Scene::getInstance()->addObject(triangle);
 
     }
 

@@ -73,19 +73,21 @@ void Camera::setUp(int pixWidth, int pixHeight)
         ver = 0;
         hor = 0;
     } else {
-        ver = asin(eye->y/R);
-
+        ver = asin((eye->y)/R);
         int tmp;
         if (ver == 0) {
             tmp = R;
         } else {
-            tmp = eye->y/cos(ver);
+            tmp = cos(ver) * R;
         }
         hor = asin((eye->z)/tmp);
-
     }
 
-    if (hor < 0) {
+    while (ver < 0){
+        ver += 2 * M_PI;
+    }
+
+    while (hor < 0) {
         hor += 2 * M_PI;
     }
 }

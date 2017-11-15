@@ -17,9 +17,9 @@ SlaveMPI::SlaveMPI()
 
 SlaveMPI::~SlaveMPI()
 {
-    MPI_Finalize();
-    delete scene;
     delete camera;
+    delete scene;
+    MPI_Finalize();
 }
 
 int SlaveMPI::exec()
@@ -29,13 +29,11 @@ int SlaveMPI::exec()
 
         switch(recvMessage()) {
             case EXIT:
-                return EXIT; break;
+                return 0; break;
             case CHUNK:
                 recvChunk();
                 rayTracer.recursiveRayTracer(depth);
                 sendPixels(); break;
-            case DEPTH:
-                recvDepth(); break;
             case CAMERA:
                 recvCameraPointToPoint(); break;
             default: break;

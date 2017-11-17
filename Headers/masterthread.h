@@ -7,11 +7,7 @@
 #include "raytracer.h"
 #include "fileloader.h"
 #include "qwaitcondition.h"
-
-
-#include <mpi.h>
 #include <stdio.h>
-
 #include "global.h"
 #include "queue"
 #include "vector"
@@ -19,7 +15,7 @@
 #include "chrono"
 #include <string>
 #include "qstring.h"
-
+#include <ctime>
 
 using namespace myGlobals;
 
@@ -48,31 +44,11 @@ protected:
     QWaitCondition condition;
     Camera* camera;
     Scene* scene;
-
-    double** processSpeed;
+    int depth;
 
 private:
-    void splitToChunks(int num);
-    std::queue<Chunk> queue;
-    int worldSize;
-    MPI_Status status;
-    void clearQueue(std::queue<Chunk> &q);
-    void sendCameraBcast();
-    void sendCameraPointToPoint();
-    void sendScene();
-    void sendDepth(int depth);
-    bool sendNextChunk(int dest);
-    void sendExitSignal();
-    int recvPixels(MPI_Status &stat);
-    int recvMessage();
-    void finishPending();
-    void updateProcessSpeed();
-    void waitUntillRdy();
-    void printResult(double spf, double bsp);
-    void getNames();
-    void emitNames();
-    std::vector<std::string> names;
-    int pending;
+
+
     int numChunks;
     int test;
 

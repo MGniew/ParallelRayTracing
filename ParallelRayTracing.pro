@@ -41,7 +41,6 @@ SOURCES += \
     Sources/camera.cpp \
     Sources/fileloader.cpp \
     Sources/masterthread.cpp \
-    Sources/slavempi.cpp \
     Sources/pixels.cpp \
     Sources/serializable.cpp \
     Sources/statisticswindow.cpp \
@@ -63,7 +62,6 @@ HEADERS += \
     Headers/vector3.h \
     Headers/fileloader.h \
     Headers/masterthread.h \
-    Headers/slavempi.h \
     Headers/global.h \
     Headers/pixels.h \
     Headers/serializable.h \
@@ -79,11 +77,11 @@ FORMS += \
 
 LIBS += -lglut -lGLU
 
-QMAKE_CXX = mpicxx
-QMAKE_CXX_RELEASE = $$QMAKE_CXX
-QMAKE_CXX_DEBUG = $$QMAKE_CXX
-QMAKE_LINK = $$QMAKE_CXX
-QMAKE_CC = mpicc
+#QMAKE_CXX = mpicxx
+#QMAKE_CXX_RELEASE = $$QMAKE_CXX
+#QMAKE_CXX_DEBUG = $$QMAKE_CXX
+#QMAKE_LINK = $$QMAKE_CXX
+#QMAKE_CC = mpicc
 
 #QMAKE_CFLAGS += $$system(mpicc -show)
 #QMAKE_LFLAGS += $$system(mpicxx -show)

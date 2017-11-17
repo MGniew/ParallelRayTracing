@@ -2,7 +2,6 @@
 #define STATISTICSWINDOW_H
 
 #include <QDialog>
-#include "mpi.h"
 #include "global.h"
 #include <string>
 
@@ -24,14 +23,9 @@ public:
     void setObj(int i);
     void setLights(int i);
 
-public slots:
-    void setProccessName(int num, QString str);
-    void setProccessSpeed(double **speed);
 
 private:
     Ui::StatisticsWindow *ui;
-    void setUpList();
-    int worldSize;
 
 };
 

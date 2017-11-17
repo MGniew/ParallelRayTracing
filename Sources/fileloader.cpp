@@ -291,7 +291,7 @@ bool FileLoader::readObj(const char *line)
        Scene::getInstance()->addObject(new Triangle(tabOfPoints[0], tabOfPoints[1], tabOfPoints[2],
                                                     tabOfNormals[0], tabOfNormals[1], tabOfNormals[2],
                                                     ambientVector, diffuseVector, specularVector, shininess,
-                                                    dissolve, (1-dissolve)/3, 2*(1-dissolve)/3, ior));
+                                                    dissolve, (1-dissolve)/4, 3*(1-dissolve)/4, ior));
      }
 
 

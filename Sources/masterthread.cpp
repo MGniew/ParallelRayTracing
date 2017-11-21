@@ -15,6 +15,9 @@ MasterThread::MasterThread(std::string file, int width, int height, int chunks, 
     scene = Scene::getInstance();
     scene->setUpPixels(width, height);
     scene->setBSPUsage(bsp);
+    if (bsp) {
+        scene->buildBSP(1000);
+    }
     scene->setShadowsUsage(shadows);
     numChunks=chunks;
     this->depth = depth;
@@ -35,14 +38,13 @@ MasterThread::~MasterThread()
 
 void MasterThread::run()
 {
+
     double time = 0; double bsp = 0;
     int n = test;
     clock_t t1, t2;
     RayTracer rayTracer;
 
-    if (bsp) {
-        scene->buildBSP(1000);
-    }
+
 
     while (true) {
 

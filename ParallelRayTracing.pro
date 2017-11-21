@@ -76,7 +76,6 @@ FORMS += \
     Forms\statisticswindow.ui
 
 LIBS += -lglut -lGLU
-
 #QMAKE_CXX = mpicxx
 #QMAKE_CXX_RELEASE = $$QMAKE_CXX
 #QMAKE_CXX_DEBUG = $$QMAKE_CXX

@@ -21,7 +21,6 @@ Scene::Scene()
 
     useBSP = false;
     useShadows = false;
-
     serializedSize = 2 * Vector3<float>::serializedSize + 2 * sizeof(bool);
 }
 

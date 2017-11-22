@@ -39,7 +39,7 @@ glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     int iMax = scene->getWidth();
     int jMax = scene->getHeight();
 
-    QImage img((uchar *)scene->pixels->data, iMax, jMax, QImage::Format_RGB888);
+    QImage img((uchar *)scene->getPixelsData(), iMax, jMax, QImage::Format_RGB888);
     qPainter.drawImage(0,0,img);
 
     glFlush();

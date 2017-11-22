@@ -284,7 +284,12 @@ int Scene::getNumOfLights()
     return numOfLights;
 }
 
-unsigned char* Scene::getPixels()
+Pixels* Scene::getPixels()
+{
+    return pixels;
+}
+
+unsigned char *Scene::getPixelsData()
 {
     return pixels->data;
 }

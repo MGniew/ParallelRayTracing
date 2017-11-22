@@ -24,6 +24,8 @@ public:
                                      Vector3<float> directionVector,
                                      int depth);
 
+private:
+
     Scene* scene;
     Camera* camera;
 

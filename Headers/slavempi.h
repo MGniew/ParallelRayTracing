@@ -19,6 +19,7 @@ public:
     ~SlaveMPI();
     int exec();
 
+private:
     int x, y;
     int depth;
     Vector3<float>*** pixels;

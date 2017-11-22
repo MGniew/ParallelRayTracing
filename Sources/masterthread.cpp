@@ -147,7 +147,7 @@ int MasterThread::recvPixels(MPI_Status &status)
     MPI_Get_count(&status, MPI_BYTE, &size);
     vec.resize(size);
     MPI_Recv(vec.data(), size, MPI_BYTE, MPI_ANY_SOURCE, PIXELS, MPI_COMM_WORLD, &status);
-    scene->pixels->deserialize(vec);
+    scene->getPixels()->deserialize(vec);
     return status.MPI_SOURCE;
 }
 

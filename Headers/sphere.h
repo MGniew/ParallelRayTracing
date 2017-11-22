@@ -31,13 +31,18 @@ public:
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
     BoundingBox getBoundingBox();
-
-    float radius;
-    Vector3<float>* pos;
+    float getRadius();
+    Vector3<float>* getPos();
 
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);
     char getType();
+
+
+private:
+    float radius;
+    Vector3<float>* pos;
+
 };
 
 #endif // SPHERE_H

@@ -42,7 +42,7 @@ Vector3<float> SceneObject::getLocalColor(Vector3<float> &normalVector,
     Scene* scene = Scene::getInstance();
     Vector3<float> returnColor = amb->multiplyByVector(*scene->getGlobalAmbient());
     for (int i=0; i<scene->getNumOfLights(); i++) {
-        Vector3<float>* lightPossition = scene->lights[i]->pos;
+        Vector3<float>* lightPossition = scene->lights[i]->getPos();
         Vector3<float> lightVector = *lightPossition - crossPoint;
         lightVector.normalize();
         float n_dot_l = lightVector.scalarProduct(normalVector);
@@ -53,9 +53,9 @@ Vector3<float> SceneObject::getLocalColor(Vector3<float> &normalVector,
             v_dot_r = 0;
 
         if (n_dot_l > 0 && !scene->isInShadow(crossPoint, lightVector, *lightPossition)) {
-            returnColor += (dif->multiplyByVector(*scene->lights[i]->dif))*n_dot_l +
-                    spec->multiplyByVector(*scene->lights[i]->spec)*pow(double(v_dot_r), specShin) +
-                    amb->multiplyByVector(*scene->lights[i]->amb);
+            returnColor += (dif->multiplyByVector(*scene->lights[i]->getDif()))*n_dot_l +
+                    spec->multiplyByVector(*scene->lights[i]->getSpec())*pow(double(v_dot_r), specShin) +
+                    amb->multiplyByVector(*scene->lights[i]->getAmb());
             //(float)(1/(1 + 0.01*sqrt(distance) + 0.001*distance)))
         }
     }

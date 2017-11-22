@@ -50,7 +50,7 @@ Vector3<float> RayTracer::getColorRecursive(Vector3<float> startPoint,
     sceneObject = scene->getClosest(crossPoint, startPoint, directionVector);
 
     if (sceneObject == nullptr)
-        return Vector3<float>(*scene->backgroundColor);
+        return Vector3<float>(*scene->getBackgroundColor());
 
      Vector3<float> normalVector = sceneObject->getNormalVector(crossPoint);
      Vector3<float> observationVector = directionVector*-1;

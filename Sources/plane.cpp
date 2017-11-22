@@ -62,11 +62,11 @@ int Plane::classifyObject(SceneObject *obj)
         Sphere* sphere = static_cast<Sphere*>(obj);
 
 
-        if (getDistToPoint(sphere->pos) < sphere->radius) {
+        if (getDistToPoint(sphere->getPos()) < sphere->getRadius()) {
             return SPANNING;
         }
 
-        switch(classifyPoint(sphere->pos)) {
+        switch(classifyPoint(sphere->getPos())) {
             case FRONT:
                 return FRONT;
 

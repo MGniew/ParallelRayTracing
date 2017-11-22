@@ -110,6 +110,16 @@ BoundingBox Sphere::getBoundingBox()
     return box;
 }
 
+float Sphere::getRadius()
+{
+    return radius;
+}
+
+Vector3<float> *Sphere::getPos()
+{
+    return pos;
+}
+
 void Sphere::serialize(std::vector<char> *bytes)
 {
     bytes->resize(serializedSize);

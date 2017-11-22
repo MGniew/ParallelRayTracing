@@ -78,7 +78,7 @@ int SlaveMPI::recvMessage()
 void SlaveMPI::sendPixels()
 {
     std::vector<char> vec;
-    scene->pixels->serialize(&vec);
+    scene->getPixels()->serialize(&vec);
     MPI_Send(vec.data(), vec.size(), MPI_BYTE, 0, PIXELS, MPI_COMM_WORLD);
 }
 
@@ -105,5 +105,5 @@ void SlaveMPI::recvChunk()
     Chunk chunk;
     MPI_Recv(&chunk, sizeof(chunk), MPI_BYTE, 0, MPI_ANY_TAG, MPI_COMM_WORLD, &status);
     scene->setUpPixels(chunk.stopx - chunk.startx, chunk.stopy - chunk.starty);
-    scene->pixels->setStartXY(chunk.startx, chunk.starty);
+    scene->getPixels()->setStartXY(chunk.startx, chunk.starty);
 }

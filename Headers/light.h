@@ -11,11 +11,6 @@ public:
     Light(Vector3<float>* pos, Vector3<float>* amb, Vector3<float>* dif, Vector3<float>* spec);
     ~Light();
 
-    Vector3<float>* pos;
-    Vector3<float>* amb;
-    Vector3<float>* dif;
-    Vector3<float>* spec;
-
     Vector3<float>* getPos();
     Vector3<float>* getAmb();
     Vector3<float>* getDif();
@@ -28,6 +23,13 @@ public:
     void deserialize(const std::vector<char>& bytes);
     char getType();
     void print();
+
+private:
+
+    Vector3<float>* pos;
+    Vector3<float>* amb;
+    Vector3<float>* dif;
+    Vector3<float>* spec;
 
 
 };

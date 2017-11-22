@@ -40,17 +40,7 @@ public:
     Vector3<float> getNormalVector(Vector3<float>& crossPoint);
     void print();
     BoundingBox getBoundingBox();
-
-
     static float Area(Vector3<float> a, Vector3<float> b);
-
-
-    Vector3<float> *pointA;
-    Vector3<float> *pointB;
-    Vector3<float> *pointC;
-    Vector3<float> *normalA;
-    Vector3<float> *normalB;
-    Vector3<float> *normalC;
     Plane getPlane();
     Plane getPerpendicularPlane(int i);
     std::list<Plane> getPlanes();
@@ -60,6 +50,15 @@ public:
     void serialize(std::vector<char> *bytes);
     void deserialize(const std::vector<char>& bytes);
     char getType();
+
+private:
+
+    Vector3<float> *pointA;
+    Vector3<float> *pointB;
+    Vector3<float> *pointC;
+    Vector3<float> *normalA;
+    Vector3<float> *normalB;
+    Vector3<float> *normalC;
 
 };
 

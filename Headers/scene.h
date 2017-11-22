@@ -23,13 +23,7 @@ public:
     static Scene* instance;
     Light** lights;
     SceneObject** sceneObjects;
-    //Vector3<float>*** pixels; // HxW*3
-    Pixels* pixels;
-    Vector3<float>* backgroundColor;
-    Vector3<float>* globalAmbient;
-    int numOfLights;
-    int numOfObjects;
-    BSP* bsp;
+
 
     static Scene* getInstance();
 
@@ -41,7 +35,8 @@ public:
 
     void buildBSP(int depth);
 
-    unsigned char *getPixels();
+    Pixels *getPixels();
+    unsigned char *getPixelsData();
     int getNumOfLights();
     int getNumOfObjects();
     void addObject(SceneObject* sceneObject);
@@ -64,6 +59,15 @@ public:
     void setShadowsUsage(bool a);
     bool useBSP;
     void setBSPUsage(bool a);
+
+private:
+    Vector3<float>* backgroundColor;
+    Vector3<float>* globalAmbient;
+    int numOfLights;
+    int numOfObjects;
+    BSP* bsp;
+    Pixels* pixels;
+
 };
 
 #endif // SCENE_H
